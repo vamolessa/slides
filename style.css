@@ -26,7 +26,7 @@ body {
 
 /* styles */
 
-section {
+main, section {
 	margin: 0;
 	padding-top: 0;
 	padding-bottom: 0;
@@ -41,26 +41,24 @@ section {
 	justify-content: center;
 	align-items: flex-start;
 	align-content: center;
-	row-gap: 16px;
+	row-gap: min(1vh, 10px);
 
 	scroll-snap-align: start;
 
-	background-image: linear-gradient(0deg, rgba(45, 150, 191, 1.0) 0%, rgba(47, 171, 168, 1.0) 100%);
+	background-color: white;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
 }
 
-section.white {
-	background-image: none;
-	background-color: white;
+main {
+	background-image: linear-gradient(0deg, rgb(45, 150, 191) 0%, rgb(47, 171, 168) 100%);
 }
 
-section > * {
+main > *, section > * {
 	margin: 0;
 	padding: 0;
 	font-family: Montserrat;
-	color: white;
 	text-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
 
 	font-weight: 300;
@@ -69,18 +67,24 @@ section > * {
 
 h1 {
 	font-weight: 900;
-	font-size: 10vh;
+	font-size: 8vh;
 }
 h2 {
 	font-size: 4vh;
 	font-style: italic;
 }
-
-section.white > h1 {
-	color: rgba(47, 167, 174, 1.0);
+h1, h2 {
+	margin-bottom: min(1vh, 10px);
 }
-section.white > * {
-	color: rgba(83, 88, 95, 1.0);
+
+section > * {
+	color: rgb(83, 88, 95);
+}
+h1 {
+	color: rgb(47, 167, 174);
+}
+main > * {
+	color: white;
 }
 
 img {
