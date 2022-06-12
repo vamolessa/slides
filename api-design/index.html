@@ -27,7 +27,7 @@
 	importante: escolher onde traça a linha de abstração
 		- escolher o que é abstraido e o que é exposto
 		- ser consciente quanto a isso!
-	lembrar sempre qual a razão da existência das abstrações: esconder detalhes/reduzir complexidade
+	lembrar sempre qual a razão da existência das abstrações: esconder detalhes/gerenciar complexidade
 	IMPORTANTE: os detalhes e sua complexidade AINDA ESTÃO LÁ e não devemos ignorá-los!
 
 	faca de dois legumes: abstrair significa esconder detalhes e adicionar contexto implicíto
@@ -51,6 +51,24 @@
 	- complexidade: complexidade com a qual estamos lidando
 	- potencial: os ganhos que a api nos traz (facilidade, velocidade de iteração, segurança/assertividade, corretude, automatização)
 	- esforço de implementação: literalmente o trabalho necessário para abstrair algo em uma api
+
+	do que é feita uma boa api? (o section logo abaixo)
+
+	agora é a parte prática? precisamos de exemplos! muitos deles!!!
+
+	depois de citar uns exemplos:
+	problema: lembra que abstração serve pra gerenciar complexidade?
+	MUITO CUIDADO para acabar ADICIONANDO complexidade ao sistema
+
+	complexidade?
+	dois tipos de complexidade:
+	- complexidade inerente: propriedades fundamentais do problema que estamos resolvendo
+		- única maneira de reduzi-la é mudando o problema (o que é justo as vezes! design!)
+	- complexidade acidental: complexidade adicionada por nossa própria solução!
+		- essa queremos evitar ao máximo!
+		- idealmente zero!!
+		- geralmente causada por tentar adicionar uma solução que não pertence ao problema em questão!!
+		
 
 	** em algum momento citar o post https://ourmachinery.com/post/dig-shallow-graves/
 	** em algum momento citar o vídeo do velinho palestrando no google sobre design de api
