@@ -10,9 +10,6 @@
 <section>
 	<h1>intrinsicamente relacionado a abstrações</h1>
 	<h2>api = deifinir/comunicar abstração</h2>
-	<footer>
-		<p><a href="ddg.gg">aaaaa</a> bbbbb
-	</footer>
 </section>
 
 <!--
@@ -26,7 +23,7 @@
 		- e tudo bem! isso não invalida suas utilidades
 		- porem, existe um gradiente aí! mesmo sempre existindo vazamento, é de nosso interesse minimizá-lo!!
 		- https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ&index=11
-	
+
 	importante: escolher onde traça a linha de abstração
 		- escolher o que é abstraido e o que é exposto
 		- ser consciente quanto a isso!
@@ -71,11 +68,31 @@
 		- essa queremos evitar ao máximo!
 		- idealmente zero!!
 		- geralmente causada por tentar adicionar uma solução que não pertence ao problema em questão!!
-		
+
+----
+
+	o trabalho não é implementar o que o desginer ou producer pedem,
+	mas sim *entender* o problema e então resolvê-lo
+	- envolve fazer as perguntas certas
+	
+	reutilizar design é mais útil que reutilizar código!
+	às vezes forçar reutilização de código apenas adicionar complexidade sem realmente adicionar valor a quem usa
+	- exemplo da `resource collection` genéricas do jogo plataforma em rust que nunca chegou a existir
+	- exemplo do `load asset` que recebia um caminho para carregamento e que também funcionava como chave de um cache
+		- quebrou rapidamente pois assets de fonte também precisam do parametro do tamanho da fonte
+		- isso levou a um monte de codigo estilo template que distanciava do real problema que deveria ser resolvido:
+			- carregar e cachear assets
+	- comparar com as coleções que existem no pepper
+		- parecidas porém não 100%
+		- facil de adicionar propriedades exclusivas e realmente aconteceu!
 
 	** em algum momento citar o post https://ourmachinery.com/post/dig-shallow-graves/
 	** em algum momento citar o vídeo do velinho palestrando no google sobre design de api
 	** em algum momento citar o vídeo do rapazinho do numbers falando sobre api e meta-api
+	** em algum momento citar o guia de melhores praticas pra contribuintes da godot https://docs.godotengine.org/en/stable/community/contributing/best_practices_for_engine_contributors.html
+
+	comunicar soluções ao inves de features
+	- focar apenas em features nos distancia do real problema que devemos solucionar
 -->
 
 <section>
@@ -116,20 +133,134 @@
 </section>
 
 <!--
-<section>
-	<h1>DeMagnete
-	<h2>3 anos de desenvolvimento!
-	<span>eta trabalheira!!</span>
-	<span>imagina agora como não seria fácil se existisse uma engine que buidasse um DeMagnete com o apertar de um botão! :')</span>
-</section>
+# API Design
 
-<section>
-	<h2>MAS EXISTE! :O
-	<span>(como pode?)</span>
-</section>
+## por que engines?
+Não seria ótimo se existisse uma engine que criasse um DeMagnete com ZERO esforço?
+Apenas apertar UM BOTÃO e *putf*! Build nova!
 
-<section>
-	<span>(print unity)</span>
-</section>
+Acontece que ela existe! Nós a criamos!
+Nosso projeto da unity é uma engine totalmente especializada em buildar DeMagnetes!
+
+Mas por que não existia uma engine assim?
+
+facilidade x controle
+
+## lente
+complexidade x potencial x esforço de implementação
+
+complexidade:
+- dificuldade de entender
+- má integração com o resto do código
+
+potencial
+- composabilidade
+- funções e estruturas ortogonais
+- mais casos de uso contemplados
+
+esforço de implementação
+- tempo do programador
+- conceitos difíceis
+
+----
+
+## comunicação
+Entender bem o caso de uso de quem realmente vai usar a API (outro programador, designer, etc).
+
+## late binding x early binding
+No início, queremos ter algo funcionando de forma simples.
+No final, queremos ter controle total.
+
+## código reutilizável e código fácil de deletar
+A única forma de criar código reutilizável é por extraí-lo de código fácil de deletar.
+
+## pre-condições, invariantes e pós-condições
+Ser explícito e documentar!
+
+ex:
+- null
+	- linguagens mais recentes têm esse conceito embutido (rust, zig, kotlin, C#8)
+	- C# da unity não tem isso
+	- BitStrap: `Option<T>`
+- range de valores
+- ordem de execução
+
+## abstrações
+Abstrações SEMPRE vazam. O desafio é escolher onde traçar a linha.
+
+Modelagem de dados NÃO precisa seguir um modelo do mundo real.
+Siga os dados! Mais importante é levar em consideração o tipo de acesso mais comum.
+
+## simplicidade
+Resolver o problema em questão e não mais.
+Prototipação ajuda bastante a achar rápido o escopo. Escrever código para ser jogado fora (E JOGAR FORA MESMO).
+
+Escrever mais código que o necessário, POR DEFINIÇÃO, apenas aumenta a complexidade da solução.
+
+Diferentes problemas, requerem diferentes soluções.
+Se o problema muda, a solução também muda!
+
+Prototipação existe para entender o problema.
+Comunicação!
+Se você não entende o problema, a solução vai sofrer junto.
+
+Future proofing não existe!
+
+## constness
+Const correctness.
+Sempre preferir funções puras quando possível.
+É um espectro, tentar sempre empurrar funções pro lado mais puro.
+
+## debugabilidade
+Considere debug em sua solução.
+Onde estão seus dados? São fáceis de inspecionar?
+É fácil acompanhar os caminhos de código por "stepping" no debbugger?
+
+## estrutura de dados
+Estruturas sequenciais (arrays) MUITO provavelmente são suficentes pra sua solução.
+Processadores são MUITO bons em varrer memória linear.
+Provavelmente não precisa de um hashmap ali.
+
+## memória e propriedade
+Quem é dono da memória (recurso)?
+Ownership vs Borrowing.
+
+Onde está ocorrendo alocação dinâmica no seu código?
+É possível evitá-las? É possível evitar operações em strings? Minimizá-las?
+
+C# => preferir structs; reusar coleções;
+C++ => memória stack; temp allocator;
+
+## desempenho
+É um sistema grande? Pervasivo? Muitas entidades?
+Onde há 1, há muitos! Qual o caso comum? É possível operar em quantidades?
+É possível agrupar por tipos ao invés de coleções heterogêneas?
+É possível multithread/job system?
+
+## exemplos
+https://mobile.twitter.com/rygorous/status/1507178315886444544
+
+- dados estáticos em scriptable objects
+	- já fazemos isso!
+	- moral: separar dado que não muda/config em arquivos separados pra facilitar alteração, organização e controle
+
+- classe Timer (Holodrive e depois BitStrap)
+	- começo era classe com timer e duration e callback
+	- depois struct e duration vinha de scriptable object
+	- ai reparamo que também não precisava de callback
+	- hoje eu colapsaria tudo em apenas uma função tipo o `SmoothDamp` da unity (recebe um `ref float timer` por parâmetro)
+	- moral: não juntar dado com comportamento cedo demais
+
+	- pergunta: `timer > 0.0f && timer -= delta_time_s` ou `timer < duration && timer += delta_time_s`?
+		- `timer < duration` permite alterar o `duration` enquanto o timer tá rolando e continua funcionando como esperado!
+
+- scene config demagnete
+	- começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
+	- teve potencial suficiente pra ser possível implementar outros tipos de nós posteriormente
+- sistema de dialogos neko
+	- mudou por questão de usabilidade (alan usou de forma diferente)
+	- mudou por entender melhor o problema (passar dialogo localmente x apenas o server passa)
+- BitStrap
+	- um bando de código reutilizável extraídos de um bando de código fácil de deletar
 -->
 
