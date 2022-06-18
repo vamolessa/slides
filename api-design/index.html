@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="../style.css">
 <title>design de apis</title>
 
@@ -12,9 +13,45 @@
 </section>
 
 <section>
-	<h1>api = interface para abstrações
-	<h2>interface = decomposição + comunicação
+	<h1>apis são interfaces
+	<h2>e interface é partição + comunicação
 </section>
+
+<!--
+revisar aqui
+linkar melhor api a abstrações
+-->
+<section>
+	<h1>do que é feita uma boa api?</h1>
+
+	<ul>
+		<li>consciente quanto ao limite de suas abstrações <!-- ??? -->
+		<li>interface simples, abstrações profundas
+		<li>pre-condições, invariantes e pós-condições claras
+		<li>implementação intuitiva
+	</ul>
+</section>
+
+<section style="background-image: url(imagination.jpg)">
+	<h1>abstrações
+</section>
+
+<section>
+	<header>abstrações</header>
+	<h1>abstrair é esconder/gerenciar complexidade
+	<h2>mas ela ainda está lá!
+</section>
+
+<section style="background-image: url(flextape.jpg)">
+	<header>abstrações</header>
+	<h1>porém abstrações vazam
+	<h2>sem exceção
+	<p>exemplo do carro? (marchas, etc)
+	<p>também adicionam complexidade!
+	<p>precisam levantar seu próprio peso!
+</section>
+
+
 
 <!--
 	TODAS abstrações vazam!!
@@ -115,11 +152,6 @@
 </section>
 
 <section>
-	<h1>lente
-	<h2>complexidade x potencial x esforço de implementação
-</section>
-
-<section>
 	<h1>late binding x early binding
 </section>
 
@@ -139,17 +171,6 @@
 
 <!--
 # API Design
-
-## por que engines?
-Não seria ótimo se existisse uma engine que criasse um DeMagnete com ZERO esforço?
-Apenas apertar UM BOTÃO e *putf*! Build nova!
-
-Acontece que ela existe! Nós a criamos!
-Nosso projeto da unity é uma engine totalmente especializada em buildar DeMagnetes!
-
-Mas por que não existia uma engine assim?
-
-facilidade x controle
 
 ## lente
 complexidade x potencial x esforço de implementação

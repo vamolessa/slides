@@ -5,6 +5,10 @@
 	src: url(Montserrat.ttf);
 }
 
+* {
+	font-family: Montserrat;
+}
+
 /* reset */
 html {
 	margin: 0;
@@ -33,30 +37,30 @@ main {
 main *, section * {
 	margin: 0;
 	padding: 0;
-	font-family: Montserrat;
 
 	font-weight: 300;
-	font-size: 3vh;
+	font-size: 4vh;
 }
 
-header * {
-	font-family: Montserrat;
+header, header * {
 	font-weight: 300;
 	font-size: 2vh;
 }
 
-footer * {
-	font-family: Montserrat;
+footer, footer * {
 	font-weight: 300;
 	font-size: 2.3vh;
 }
 
 h1 {
 	font-weight: 900;
+	font-size: 7vh;
+}
+main h1, h1:only-child {
 	font-size: 8vh;
 }
 h2 {
-	font-size: 4vh;
+	font-size: 5vh;
 	font-style: italic;
 }
 h1, h2 {
@@ -73,7 +77,7 @@ main * {
 	color: white;
 }
 section[style*="background-image:"] * {
-	text-shadow: 0 0 2vh rgba(0, 0, 0, 0.8);
+	text-shadow: 0 0 2vh rgb(0, 0, 0);
 	color: white;
 }
 
@@ -85,10 +89,8 @@ img {
 
 main, section, header, footer {
 	margin: 0;
-	padding-top: 0;
-	padding-bottom: 0;
-	padding-left: calc(50vw - (100vh * 4 / 9));
-	padding-right: calc(50vw - (100vh * 4 / 9));
+	padding-left: calc(40vw - ((100vh - 8vh) * 4 / 9));
+	padding-right: calc(50vw - ((100vh - 8vh) * 4 / 9));
 
 	display: flex;
 	flex-direction: column;
@@ -101,9 +103,11 @@ main, section, header, footer {
 
 main, section {
 	position: relative;
-	padding-top: 8vh;
+	padding-top: 15vh;
+	padding-bottom: 5vh;
 	width: auto;
 	height: 100%;
+	box-sizing: border-box;
 
 	scroll-snap-align: start;
 
@@ -114,17 +118,24 @@ main, section {
 }
 
 header, footer {
-	position: absolute;
 	width: 100%;
-	padding-top: 0.8vh;
-	padding-bottom: 1.2vh;
 	left: 0;
-
 	background-color: rgba(0, 0, 0, 0.07);
 }
+section[style*="background-image:"] header, section[style*="background-image:"] footer {
+	text-shadow: none;
+	background-color: rgba(0, 0, 0, 0.3);
+}
 header {
+	position: absolute;
 	top: 0;
+	padding-top: 0.2vh;
+	padding-bottom: 0.2vh;
 }
 footer {
+	position: absolute;
 	bottom: 0;
+	padding-top: 0.8vh;
+	padding-bottom: 1.2vh;
 }
+
