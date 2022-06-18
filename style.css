@@ -34,15 +34,19 @@ main *, section * {
 	margin: 0;
 	padding: 0;
 	font-family: Montserrat;
-	text-shadow: 0 0 2vh rgba(0, 0, 0, 0.3);
 
 	font-weight: 300;
 	font-size: 3vh;
 }
 
+header * {
+	font-family: Montserrat;
+	font-weight: 300;
+	font-size: 2vh;
+}
+
 footer * {
 	font-family: Montserrat;
-	text-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
 	font-weight: 300;
 	font-size: 2.3vh;
 }
@@ -68,6 +72,10 @@ h1 {
 main * {
 	color: white;
 }
+section[style*="background-image:"] * {
+	text-shadow: 0 0 2vh rgba(0, 0, 0, 0.8);
+	color: white;
+}
 
 img {
 	max-width: 80%;
@@ -75,7 +83,7 @@ img {
 	align-self: center;
 }
 
-main, section, footer {
+main, section, header, footer {
 	margin: 0;
 	padding-top: 0;
 	padding-bottom: 0;
@@ -93,6 +101,7 @@ main, section, footer {
 
 main, section {
 	position: relative;
+	padding-top: 8vh;
 	width: auto;
 	height: 100%;
 
@@ -104,14 +113,18 @@ main, section {
 	background-position: center;
 }
 
-footer {
+header, footer {
 	position: absolute;
 	width: 100%;
 	padding-top: 0.8vh;
 	padding-bottom: 1.2vh;
 	left: 0;
-	bottom: 0;
 
 	background-color: rgba(0, 0, 0, 0.07);
 }
-
+header {
+	top: 0;
+}
+footer {
+	bottom: 0;
+}
