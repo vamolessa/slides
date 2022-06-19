@@ -165,7 +165,27 @@ nosso trabalho é resolver problema. escrever código é consequência.
 -->
 
 <!--
-outros:
+# iteração
+
+## código reutilizável e código fácil de deletar
+A única forma de criar código reutilizável é por extraí-lo de código fácil de deletar.
+
+Diferentes problemas, requerem diferentes soluções.
+Se o problema muda, a solução também muda!
+
+Prototipação existe para entender o problema.
+Comunicar com quem irá usar o sistema.
+
+Se você não entende o problema, menos chances de implementar uma boa solução
+
+-->
+
+<!--
+# outros
+
+## late binding x early binding (fica aqui mesmo???)
+No início, queremos ter algo funcionando de forma simples.
+No final, queremos ter controle total.
 
 ## debugabilidade
 Considere debug em sua solução.
@@ -235,18 +255,6 @@ Onde há 1, há muitos! Qual o caso comum? É possível operar em quantidades?
 	é necessário sempre considerar ambos os lados: implementação x uso
 	é preciso contexto para tomar decisão informada quanto a onde melhor traçar a linha da abstração
 
-	significa que ganhos que abstrações trazem são
-	- diretamente proporcional à complexidade que ajudam a esconder
-	- inversamente porporcional à sua superficie de uso (api)
-	(deep vs shallow abstrations)
-
-	lente: complexidade vs potencial x esforço de implementação
-	- complexidade: complexidade com a qual estamos lidando
-	- potencial: os ganhos que a api nos traz (facilidade, velocidade de iteração, segurança/assertividade, corretude, automatização)
-	- esforço de implementação: literalmente o trabalho necessário para abstrair algo em uma api
-
-	do que é feita uma boa api? (o section logo abaixo)
-
 	agora é a parte prática? precisamos de exemplos! muitos deles!!!
 
 	depois de citar uns exemplos:
@@ -302,25 +310,6 @@ Onde há 1, há muitos! Qual o caso comum? É possível operar em quantidades?
 </section>
 
 <!--
-# API Design
-
-## comunicação
-Entender bem o caso de uso de quem realmente vai usar a API (outro programador, designer, etc).
-
-## late binding x early binding
-No início, queremos ter algo funcionando de forma simples.
-No final, queremos ter controle total.
-
-## código reutilizável e código fácil de deletar
-A única forma de criar código reutilizável é por extraí-lo de código fácil de deletar.
-
-Diferentes problemas, requerem diferentes soluções.
-Se o problema muda, a solução também muda!
-
-Prototipação existe para entender o problema.
-Comunicação!
-Se você não entende o problema, a solução vai sofrer junto.
-
 ## exemplos
 https://mobile.twitter.com/rygorous/status/1507178315886444544
 
@@ -346,5 +335,6 @@ https://mobile.twitter.com/rygorous/status/1507178315886444544
 	- mudou por entender melhor o problema (passar dialogo localmente x apenas o server passa)
 - BitStrap
 	- um bando de código reutilizável extraídos de um bando de código fácil de deletar
+
 -->
 
