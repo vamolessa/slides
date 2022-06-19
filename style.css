@@ -77,8 +77,14 @@ main * {
 	color: white;
 }
 section[style*="background-image:"] * {
-	text-shadow: 0 0 2vh rgb(0, 0, 0);
+	text-shadow: 0 0 0.7vh rgb(0, 0, 0);
 	color: white;
+}
+
+em {
+	font-weight: inherit;
+	font-size: inherit;
+	color: inherit;
 }
 
 img {

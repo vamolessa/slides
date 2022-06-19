@@ -9,47 +9,199 @@
 </main>
 
 <section style="background-image: url(thinker.jpg)">
-	<h1>...a coisa vai ficar filosófica
+	<h1><em>api</em> é apresentar uma ou mais <em>abstrações</em> através de uma <em>interface</em>
 </section>
-
-<section>
-	<h1>apis são interfaces
-	<h2>e interface é partição + comunicação
-</section>
-
 <!--
-revisar aqui
-linkar melhor api a abstrações
+intrinsicamente relacionada a abstrações
+fundamental ao gerenciamento de complexidade
 -->
-<section>
-	<h1>do que é feita uma boa api?</h1>
 
+<main>
+	<h1>uma api é boa se ela é <em>profunda</em> e possui <em>interface enxuta</em>
+</main>
+<!--
+esse é o âmago da ideia
+criar abstrações que adicionam valor ao software em questão porém que contribuem minimamente ao aumento de sua complexidade
+-->
+
+<section>
+	<h1>profunda</h1>
 	<ul>
-		<li>consciente quanto ao limite de suas abstrações <!-- ??? -->
-		<li>interface simples, abstrações profundas
-		<li>pre-condições, invariantes e pós-condições claras
-		<li>implementação intuitiva
+		<li>ortogonal
+		<li>composível
+		<li>complexidade adicionada < complexidade abstraída
+		<li>vazamento mínimo
+	</ul>
+
+	<h1>interface enxuta</h1>
+	<ul>
+		<li>padrões razoáveis
+		<li>estado mínimo e explícito
+		<li>pré-condições + invariantes + pós-condições
+		<li>intui sua implementação
 	</ul>
 </section>
+<!--
+ortogonal = conceitos não se sobrepõem. configurar um conceito não influencia outro
+composível = é permitido e talvez até fácil de interagir com outras abstrações
+adicionada < abstraída = puxar mais que seu próprio peso
+vazamento mínimo
+
+padrões razoáveis = criar um "pit of success" pra quem for usar
+estado mínimo = é implementação porém vaza facilmente. ex: ordem de execução
+condições + invariantes = explicidade. também gerenciamento de erros
+	Const correctness.
+	Sempre preferir funções puras quando possível.
+	É um espectro, tentar sempre empurrar funções pro lado mais puro.
+
+	ex:
+	- null
+		- linguagens mais recentes têm esse conceito embutido (rust, zig, kotlin, C#8)
+		- C# da unity não tem isso
+		- BitStrap: `Option<T>`
+	- range de valores
+	- ordem de execução
+intui implementação = faz parte da interface saber (pelo menos) superficialmente sobre sua implementação!
+-->
 
 <section style="background-image: url(imagination.jpg)">
 	<h1>abstrações
+	<h2>é o ato de esconder complexidade
 </section>
+<!--
+razoável porém importantíssimo lembrar que a complexidade ainda está lá (mais sobre isso depois)
+-->
 
-<section>
+<section style="background-image: url(complexity.jpg)">
 	<header>abstrações</header>
-	<h1>abstrair é esconder/gerenciar complexidade
-	<h2>mas ela ainda está lá!
+	<h1>é um modelo com o propósito de interpretar uma realidade complexa e rica em detalhes
+	<h2>e isso é feito introduzindo conceitos pertinentes ao domínio
 </section>
+<!--
+nossa maior ferramenta para lidar com complexidade
+a base inteira de computação é feita por cima de camadas que abstraem detalhes cada vez mais baixo nível
+
+uma abstração apenas pode ser criada por associar um conceito do domínio do problema em questão
+aos detalhes que desejamos esconder. isso muitas vezes criando conceitos novos no processo.
+
+exemplo mais básico desse processo é dar nome a coisas.
+por conta disso, uma abstração nova sempre vai pelo menos aumentar a carga cognitiva de um sistema
+
+porém sua vantagem está em justamente criar uma nova forma (supostamente mais simples) de raciocinar a respeito de um problema
+é um instrumento de comunicação no final das contas
+-->
 
 <section style="background-image: url(flextape.jpg)">
 	<header>abstrações</header>
 	<h1>porém abstrações vazam
 	<h2>sem exceção
-	<p>exemplo do carro? (marchas, etc)
-	<p>também adicionam complexidade!
-	<p>precisam levantar seu próprio peso!
+	<footer>
+		<a href="https://www.youtube.com/watch?v=5l2wMgm7ZOk">why black boxes are so hard to reuse</a>
+	</footer>
 </section>
+<!--
+acontece que abstrações infelizmente têm essa propriedade de inevitavelmente vazar detalhes de sua implementação
+
+ou seja: não existe abstração perfeita. sempre se perde alguma coisa. e pode acontecer até de ter um ganho negativo:
+a abstração deixa o sistema em geral mais complexo do que seria sem ela.
+
+exemplo do carro? (marchas, etc)
+também adicionam complexidade!
+precisam levantar seu próprio peso!
+-->
+
+
+<!--
+toda adição de conceito ao sistema o torna mais complexo.
+
+toda nome é uma abstração. (talvez juntar na parte que fala sobre nomes também?)
+
+"Everything should be made as simple as possible, but not simpler."
+- Einstein. Supostamente
+
+complexidade acidental vs complexidade inerente
+
+como saber qual complexidade estamos introduzindo?
+- entender o problema
+- iteração de implementação E design
+- não tentar future proofing ("fool's errand")
+- não ter medo de refatorar e testar soluções diferentes
+- erros e limitações serão encontrados independente da quantidade de design investido a priori. aceite-os
+
+-->
+
+<!--
+problemas complexos são complexos!
+
+tentar quebrá-lo em pedaços menos não o torna mais simples
+criar mais classes não o torna mais simples
+criar mais funções não o torna mais simples
+(inclusive pode apenas dificultar o entendimento da solução e, por consequência, da api)
+
+escrever mais código que o necessário, POR DEFINIÇÃO, apenas aumenta a complexidade da solução.
+
+a única maneira de simplificar um problema inerentemente complexo é resolvendo outro problema (que seja mais simples)
+-->
+
+<!--
+às vezes não precisa de api/abstração
+
+nosso trabalho é resolver problema. escrever código é consequência.
+
+3 big lies
+- code is platform
+	- hardware é a platforma
+	- pra nos lembrar das implicações de desempenho que nossas abstrações implicam
+- code should be modeled after the world
+	- dados e suas transformações devem guiar o design
+	- pre-mapear relações e conceitos de mundo em uma solução apenas adiciona ruido e restrições desnecessárias
+		- e, portanto, dificulta chegar ao melhor design
+- code is more important than data
+	- dados são mais importantes
+	- código não existe pra ser bonito. a solução não existe pra ser bonita. ambos existem pra resolver o problema
+	- as apis devem refletir isso. elas *precisam* resolver o problema e nada mais.
+		- caso contrario apenas adicionam complexidade acidental ao sistema
+
+-->
+
+<!--
+outros:
+
+## debugabilidade
+Considere debug em sua solução.
+Onde estão seus dados? São fáceis de inspecionar?
+É fácil acompanhar os caminhos de código por "stepping" no debbugger?
+
+## estrutura de dados
+Estruturas sequenciais (arrays) MUITO provavelmente são suficentes pra sua solução.
+Processadores são MUITO bons em varrer memória linear.
+Provavelmente não precisa de um hashmap ali.
+
+## memória e propriedade
+Quem é dono da memória (recurso)?
+Ownership vs Borrowing.
+
+Onde está ocorrendo alocação dinâmica no seu código?
+É possível evitá-las? É possível evitar operações em strings? Minimizá-las?
+
+C# => preferir structs; reusar coleções;
+C++ => memória stack; temp allocator;
+
+## desempenho
+É um sistema grande? Pervasivo? Muitas entidades?
+Onde há 1, há muitos! Qual o caso comum? É possível operar em quantidades?
+É possível agrupar por tipos ao invés de coleções heterogêneas?
+É possível multithread/job system?
+
+-->
+
+
+
+
+
+
+
+
 
 
 
@@ -142,16 +294,6 @@ linkar melhor api a abstrações
 -->
 
 <section>
-	<h1>do que é feita uma boa api?</h1>
-	<ul>
-		<li>consciente quanto ao limite de suas abstrações
-		<li>balanço entre simplicidade e profundidade
-		<li>pre-condições, invariantes e pós-condições claras
-		<li>implementação intuitiva
-	</ul>
-</section>
-
-<section>
 	<h1>late binding x early binding
 </section>
 
@@ -159,36 +301,8 @@ linkar melhor api a abstrações
 	<h1>pre-condições, invariantes e pós-condições
 </section>
 
-<section>
-	<h1>abstrações e vazamentos
-	<h2>(meta-api vai aqui?)
-</section>
-
-<section>
-	<h1>resto
-	<h2>constness; debugabilidade; estrutura de dados; memória e propriedade; desempenho;
-</section>
-
 <!--
 # API Design
-
-## lente
-complexidade x potencial x esforço de implementação
-
-complexidade:
-- dificuldade de entender
-- má integração com o resto do código
-
-potencial
-- composabilidade
-- funções e estruturas ortogonais
-- mais casos de uso contemplados
-
-esforço de implementação
-- tempo do programador
-- conceitos difíceis
-
-----
 
 ## comunicação
 Entender bem o caso de uso de quem realmente vai usar a API (outro programador, designer, etc).
@@ -200,68 +314,12 @@ No final, queremos ter controle total.
 ## código reutilizável e código fácil de deletar
 A única forma de criar código reutilizável é por extraí-lo de código fácil de deletar.
 
-## pre-condições, invariantes e pós-condições
-Ser explícito e documentar!
-
-ex:
-- null
-	- linguagens mais recentes têm esse conceito embutido (rust, zig, kotlin, C#8)
-	- C# da unity não tem isso
-	- BitStrap: `Option<T>`
-- range de valores
-- ordem de execução
-
-## abstrações
-Abstrações SEMPRE vazam. O desafio é escolher onde traçar a linha.
-
-Modelagem de dados NÃO precisa seguir um modelo do mundo real.
-Siga os dados! Mais importante é levar em consideração o tipo de acesso mais comum.
-
-## simplicidade
-Resolver o problema em questão e não mais.
-Prototipação ajuda bastante a achar rápido o escopo. Escrever código para ser jogado fora (E JOGAR FORA MESMO).
-
-Escrever mais código que o necessário, POR DEFINIÇÃO, apenas aumenta a complexidade da solução.
-
 Diferentes problemas, requerem diferentes soluções.
 Se o problema muda, a solução também muda!
 
 Prototipação existe para entender o problema.
 Comunicação!
 Se você não entende o problema, a solução vai sofrer junto.
-
-Future proofing não existe!
-
-## constness
-Const correctness.
-Sempre preferir funções puras quando possível.
-É um espectro, tentar sempre empurrar funções pro lado mais puro.
-
-## debugabilidade
-Considere debug em sua solução.
-Onde estão seus dados? São fáceis de inspecionar?
-É fácil acompanhar os caminhos de código por "stepping" no debbugger?
-
-## estrutura de dados
-Estruturas sequenciais (arrays) MUITO provavelmente são suficentes pra sua solução.
-Processadores são MUITO bons em varrer memória linear.
-Provavelmente não precisa de um hashmap ali.
-
-## memória e propriedade
-Quem é dono da memória (recurso)?
-Ownership vs Borrowing.
-
-Onde está ocorrendo alocação dinâmica no seu código?
-É possível evitá-las? É possível evitar operações em strings? Minimizá-las?
-
-C# => preferir structs; reusar coleções;
-C++ => memória stack; temp allocator;
-
-## desempenho
-É um sistema grande? Pervasivo? Muitas entidades?
-Onde há 1, há muitos! Qual o caso comum? É possível operar em quantidades?
-É possível agrupar por tipos ao invés de coleções heterogêneas?
-É possível multithread/job system?
 
 ## exemplos
 https://mobile.twitter.com/rygorous/status/1507178315886444544
