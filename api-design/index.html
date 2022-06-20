@@ -4,12 +4,16 @@
 <title>design de apis</title>
 
 <main>
-	<h1>design de apis
-	<h2>workshop bitcake 2022
+	<h1>design de apis</h1>
+	<h2>workshop bitcake 2022</h2>
+
+	<footer>
+		por @ahvamolessa
+	</footer>
 </main>
 
 <section style="background-image: url(thinker.jpg)">
-	<h1><em>api</em> é apresentar uma ou mais <em>abstrações</em> através de uma <em>interface</em>
+	<h1><em>api</em> é apresentar <em>abstrações</em> através de uma <em>interface</em>
 </section>
 <!--
 intrinsicamente relacionada a abstrações
@@ -18,16 +22,11 @@ fundamental ao gerenciamento de complexidade
 
 <section style="background-image: url(imagination.jpg)">
 	<h1>abstrações
-	<h2>ato de esconder complexidade
 </section>
-<!--
-razoável
-porém importantíssimo lembrar que a complexidade ainda está lá (mais sobre isso depois)
--->
 
 <section style="background-image: url(complexity.jpg)">
 	<h1>é um modelo com o propósito de interpretar uma realidade rica em detalhes
-	<h2>e isso é feito introduzindo conceitos pertinentes ao domínio
+	<h2>alcançado por introduzir conceitos pertinentes ao domínio
 </section>
 <!--
 nossa maior ferramenta para lidar com complexidade
@@ -36,12 +35,20 @@ a base inteira de computação é feita por cima de camadas que abstraem detalhe
 uma abstração apenas pode ser criada por associar um conceito do domínio do problema em questão
 aos detalhes que desejamos esconder. isso muitas vezes criando conceitos novos no processo.
 
+faca de dois legumes: abstrair significa esconder detalhes adicionando contexto implicíto
+se quem vai usar api não estiver a par desse contexto implícito... coisas ruins podem acontecer :')
+ex: mike conversa naturalmente com lucas, dustin e will.
+mas às vezes tem dificuldade com a eleven às vezes tendo que explicar conceitos
+que outrora fossem básicos e esperados que todos o tivessem
+
+importantíssimo lembrar que os detalhes ainda estão lá! eles NÃO somem
+
 exemplo mais básico desse processo é dar nome a coisas.
 por conta disso, uma abstração nova sempre vai pelo menos aumentar a carga cognitiva de um sistema
 -->
 
 <section>
-	<h1>toda novo conceito adicionado ao sistema, o torna mais complexo
+	<h1>todo novo conceito adicionado ao sistema o torna mais complexo
 </section>
 <!--
 porém sua vantagem está em justamente criar uma nova forma (supostamente mais simples) de raciocinar a respeito de um problema
@@ -54,13 +61,20 @@ porém sua vantagem está em justamente criar uma nova forma (supostamente mais 
 	<ul>
 		<li>limitações da linguagem
 		<li>limitações da plataforma
-		<li>limitações de nosso próprio design (pior de todos)
+		<li>ou pior: limitações de nosso próprio design
 	</ul>
 </section>
 <!--
 todo problema possui uma complexidade inerente
 toda complexidade adicional em sua solução é puramente acidental
 PRECISA refletir honestamente se não estamos inconscientemente adicionando complexidade acidental ao sistema!
+
+- inerente: propriedades fundamentais do problema que estamos resolvendo
+	- única maneira de reduzi-la é mudando o problema (o que é justo as vezes! design!)
+- acidental: adicionada por nossa própria solução!
+	- essa queremos evitar ao máximo!
+	- idealmente zero!!
+	- geralmente causada por tentar adicionar uma solução que não pertence ao problema em questão!!
 -->
 
 <section>
@@ -68,10 +82,10 @@ PRECISA refletir honestamente se não estamos inconscientemente adicionando comp
 
 	<ul>
 		<li>entender o problema
-		<li>iteração de implementação <em>e</em> design
+		<li>prototipação
 		<li>testar soluções diferentes. refatorar
 		<li>evitar future proofing ("fool's errand")
-		<li>erros e limitações serão encontrados independente da quantidade de design investido a priori. aceite-os
+		<li>erros e limitações serão encontrados independente da quantidade de design investido a priori. aceite-os e planeje-se
 	</ul>
 
 	<footer>
@@ -80,18 +94,27 @@ PRECISA refletir honestamente se não estamos inconscientemente adicionando comp
 </section>
 <!--
 entender o problema
-comunicação!
-resolver os problemas certos
-
-iteração
-adições ou modificações devem ser feitas de tal modo que o produto final seja idealmente
-o mesmo caso o sistema inteiro fosse feito do zero com o conhecimento de dominio atual
-- não ter medo de refatoração ao inves de apenas tentar encaixar funcionalidade nova sem mexer muito no que já está lá
+prototipação é como se entende o problema!
+comunicação! comunicação com quem deve usar o sistema
+a única maneira de acertar um bom design de primeira é com muita sorte ou ter experiência prévia resolvendo tal problema
 -->
+
+<section>
+	<h1>código reutilizável vs código fácil de deletar</h1>
+	<h2>a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h2>
+	<footer>
+		<a href="https://caseymuratori.com/blog_0015">semantic compression</a>
+		<a href="https://programmingisterrible.com/post/139222674273/how-to-write-disposable-code-in-large-systems">how to write disposable code in large systems</a>
+	</footer>
+</section>
 
 <section>
 	<h1>problemas complexos são complexos</h1>
 	<p>a única maneira de simplificar um problema inerenentemente complexo é resolvendo outro problema (que seja mais simples)
+
+	<footer>
+		<a href="http://number-none.com/blow/john_carmack_on_inlined_code.html">john carmack on inlined code</a>
+	</footer>
 </section>
 <!--
 tentar quebrá-lo em pedaços menores não o torna mais simples
@@ -109,14 +132,8 @@ fazer as perguntas certas!
 comunicação! entender o problema!
 -->
 
-<section>
-	<h2>"everything should be made as simple as possible, but not simpler."</h2>
-	<p>- Einstein, Albert
-	<footer>supostamente</footer>
-</section>
-
 <section style="background-image: url(flextape.jpg)">
-	<h1>porém abstrações vazam</h1>
+	<h1>abstrações vazam</h1>
 	<h2>sem exceção</h2>
 	<footer>
 		<a href="https://www.youtube.com/watch?v=5l2wMgm7ZOk">why black boxes are so hard to reuse</a>
@@ -128,13 +145,59 @@ acontece que abstrações infelizmente têm essa propriedade de inevitavelmente 
 ou seja: não existe abstração perfeita. alguma coisa sempre se perde.
 e pode acontecer até de ter um ganho negativo: a abstração deixa o sistema em geral mais complexo do que seria sem ela.
 
-TODO: exemplo do carro? (marchas, etc)
-também adicionam complexidade!
-precisam levantar seu próprio peso!
+ex de abstracao:
+- carro manual => passar marcha é um vazamento da implementação do carro (como funciona internamente)
+- carro automatico => não é 100% pois ainda existem `1`, `2`, `P`, além do `D`
+- mesmo que fosse "100%", ainda existe manutenção => precisa entender quando precisa levar ao mecânico, checar agua, oleo, etc
+- toda abstração vaza detalhes de implementação!
+	- e tudo bem! isso não invalida suas utilidades
+	- porem, existe um gradiente aí! mesmo sempre existindo vazamento, é de nosso interesse minimizá-lo!!
+	- https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ&index=11
+-->
+
+<section>
+	<h1>abstrações apenas têm valor quando levantam seu próprio peso</h1>
+	<h2>"programmers know the benefits of everything and the tradeoffs of nothing"</h2>
+
+	<footer>
+		<a href="https://www.youtube.com/watch?v=rI8tNMsozo0">simplicity matters</a>
+	</footer>
+</section>
+<!--
+importante pra nos lembrar dos custos de adicionar abstrações a um sistema
+nos guia a onde traçamos apis
+-->
+
+<section>
+	<h2>"everything should be made as simple as possible, but not simpler."</h2>
+	<p>- Einstein, Albert
+	<footer>supostamente</footer>
+</section>
+<!--
+-->
+
+<section>
+	<h1>apis e abstrações <em>não</em> existem no vácuo</h1>
+
+	<p>intenção de uso influencia design
+	<p>restrições influenciam design
+
+	<footer>
+		<a href="https://cellperformance.beyond3d.com/articles/2006/04/performance-and-good-data-design.html">performance and good data design</a>
+		<a href="https://docs.godotengine.org/en/stable/community/contributing/best_practices_for_engine_contributors.html">best practices for [godot] engine contributors</a>
+	</footer>
+</section>
+<!--
+é necessário sempre considerar ambos os lados: implementação x uso
+é preciso contexto para tomar decisão informada quanto a onde melhor traçar a linha da abstração
 -->
 
 <main>
-	<h1>uma api é boa se ela é <em>profunda</em> e possui <em>interface enxuta</em>
+	<h1>uma api é boa se ela é <em>profunda</em> e possui <em>interface enxuta</em></h1>
+
+	<footer>
+		<a href="https://www.youtube.com/watch?v=bmSAYlu0NcY">a philosophy of software design</a>
+	</footer>
 </main>
 <!--
 esse é o âmago da ideia
@@ -159,8 +222,6 @@ criar abstrações que adicionam valor ao software em questão porém que contri
 	</ul>
 </section>
 <!--
-TODO: expandir agora ou depois?
-
 ortogonal = conceitos são independentes e não se influenciam
 composível = é permitido e talvez até fácil de interagir com outras abstrações
 adicionada < abstraída = puxar mais que seu próprio peso
@@ -181,8 +242,11 @@ condições + invariantes = explicidade. também gerenciamento de erros
 	- range de valores
 	- ordem de execução
 intui implementação = faz parte da interface saber (pelo menos) superficialmente sobre sua implementação!
--->
 
+TODO: https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-
+
+TODO: expandir slides
+-->
 
 <section style="background-image: url(design.jpg)">
 	<h1>às vezes não precisa de api ou abstração
@@ -201,7 +265,6 @@ reutilizar design é mais útil que reutilizar código!
 - comparar com as coleções que existem no pepper
 	- parecidas porém não 100%
 	- facil de adicionar propriedades exclusivas e realmente aconteceu!
-
 -->
 
 <main>
@@ -237,14 +300,14 @@ reutilizar design é mais útil que reutilizar código!
 </main>
 
 <section>
-	<h1>late binding x early binding
+	<h1>late binding x early binding</h1>
 
 	<p>no início, queremos simplicidade
 	<p>no final, queremos controle total
 </section>
 
 <section>
-	<h1>debugabilidade
+	<h1>debugabilidade</h1>
 
 	<p>onde estão os dados?
 	<p>são fáceis de inspecionar?
@@ -252,7 +315,7 @@ reutilizar design é mais útil que reutilizar código!
 </section>
 
 <section>
-	<h1>estruturas de dados
+	<h1>estruturas de dados</h1>
 
 	<p>arrays <em>muito</em> provavelmente são suficientes
 	<p>processadores adoram memória linear
@@ -260,7 +323,7 @@ reutilizar design é mais útil que reutilizar código!
 </section>
 
 <section>
-	<h1>recursos e posse
+	<h1>recursos e posse</h1>
 
 	<p>quem é o responsável pelo recurso?
 	<p>posse vs emprestimo
@@ -276,7 +339,7 @@ reutilizar design é mais útil que reutilizar código!
 </section>
 
 <section>
-	<h1>desempenho
+	<h1>desempenho</h1>
 
 	<p>é um sistema pervasivo? muitas entidades?
 	<p>onde há um, há muitos! qual o caso comum? operar em lotes!
@@ -289,77 +352,6 @@ reutilizar design é mais útil que reutilizar código!
 
 
 
-
-<!--
-# iteração
-
-## código reutilizável e código fácil de deletar
-A única forma de criar código reutilizável é por extraí-lo de código fácil de deletar.
-
-Diferentes problemas, requerem diferentes soluções.
-Se o problema muda, a solução também muda!
-
-Prototipação existe para entender o problema.
-Comunicar com quem irá usar o sistema.
-
-Se você não entende o problema, menos chances de implementar uma boa solução
-
--->
-
-<!--
-	TODAS abstrações vazam!!
-	escolher onde tracar a linha da abstração
-	ex de abstracao:
-	- carro manual => passar marcha é um vazamento da implementação do carro (como funciona internamente)
-	- carro automatico => não é 100% pois ainda existem `1`, `2`, `P`, além do `D`
-	- mesmo que fosse "100%", ainda existe manutenção => precisa entender quando precisa levar ao mecânico, checar agua, oleo, etc
-	- toda abstração vaza detalhes de implementação!
-		- e tudo bem! isso não invalida suas utilidades
-		- porem, existe um gradiente aí! mesmo sempre existindo vazamento, é de nosso interesse minimizá-lo!!
-		- https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ&index=11
-
-	importante: escolher onde traça a linha de abstração
-		- escolher o que é abstraido e o que é exposto
-		- ser consciente quanto a isso!
-	lembrar sempre qual a razão da existência das abstrações: esconder detalhes/gerenciar complexidade
-	IMPORTANTE: os detalhes e sua complexidade AINDA ESTÃO LÁ e não devemos ignorá-los!
-
-	faca de dois legumes: abstrair significa esconder detalhes adicionando contexto implicíto
-	se quem vai usar api não estiver a par desse contexto implícito... coisas ruins podem acontecer :')
-	ex: mike conversa naturalmente com lucas, dustin e will.
-	mas às vezes tem dificuldade com a eleven às vezes tendo que explicar conceitos
-	que outrora fossem básicos e esperados que todos o tivessem
-
-	https://www.reddit.com/r/programming/comments/80agjz/handmade_hero_zero_50_cycles_cost_abstractions/
-
-	apis e abstrações não existem no vácuo
-	é necessário sempre considerar ambos os lados: implementação x uso
-	é preciso contexto para tomar decisão informada quanto a onde melhor traçar a linha da abstração
-
-	agora é a parte prática? precisamos de exemplos! muitos deles!!!
-
-	depois de citar uns exemplos:
-	problema: lembra que abstração serve pra gerenciar complexidade?
-	MUITO CUIDADO para acabar ADICIONANDO complexidade ao sistema
-
-	complexidade?
-	dois tipos de complexidade:
-	- complexidade inerente: propriedades fundamentais do problema que estamos resolvendo
-		- única maneira de reduzi-la é mudando o problema (o que é justo as vezes! design!)
-	- complexidade acidental: complexidade adicionada por nossa própria solução!
-		- essa queremos evitar ao máximo!
-		- idealmente zero!!
-		- geralmente causada por tentar adicionar uma solução que não pertence ao problema em questão!!
-
-----
-	** em algum momento citar "A Philosophy of Software Design" https://www.youtube.com/watch?v=bmSAYlu0NcY
-	** em algum momento citar "Why Black Boxes are so Hard to Reuse" https://www.youtube.com/watch?v=5l2wMgm7ZOk
-	** em algum momento citar o guia de melhores praticas pra contribuintes da godot https://docs.godotengine.org/en/stable/community/contributing/best_practices_for_engine_contributors.html
-	** citar "simplicity matters" https://www.youtube.com/watch?v=rI8tNMsozo0
-
-	comunicar soluções ao inves de features
-	- focar apenas em features nos distancia do real problema que devemos solucionar
--->
 
 <!--
 ## exemplos
