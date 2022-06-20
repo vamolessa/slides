@@ -1,0 +1,24 @@
+config indent_with_tabs false
+lsp-start "zls"
+
+map normal <space>b :<space>build<enter>
+map normal <space>zo :<space>-find-zig-file<enter>
+map normal <space>zf :<space>-find-zig-pattern<enter>
+
+command build @{
+    spawn "zig build -- @buffer-path()"
+}
+command -find-zig-file @{
+    picker-entries-from-lines "fd -tf --path-separator / . @env(HOME)/scoop/apps/zig/current/lib/std"
+    pick "zig open:" @{
+        open history-disabled saving-disabled "@picker-entry()"
+    }
+}
+command -find-zig-pattern @{
+    readline "zig find:" @{
+        open scratch "@readline-input().zig.refs"
+        enqueue-keys aad
+        replace-with-output 'rg --no-ignore-global --path-separator / --line-number "@readline-input()" @env(HOME)/scoop/apps/zig/current/lib/std'
+    }
+}
+
