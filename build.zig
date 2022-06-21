@@ -1,96 +1,122 @@
 const std = @import("std");
 
 pub fn build(b: *std.build.Builder) void {
-    const args = b.args orelse {
-        std.log.err("no slides to build", .{});
-        return;
-    };
+    const stdin = std.io.getStdIn();
+    const src = stdin.reader().readAllAlloc(b.allocator, std.math.maxInt(usize)) catch unreachable;
+    defer b.allocator.free(src);
 
-    var memory = b.allocator.alloc(u8, 8 * 1024 * 1024) catch unreachable;
-    for (args) |arg| {
-        buildSlide(memory, arg);
-    }
-
-    std.log.info("done", .{});
-}
-
-fn buildSlide(memory: []u8, src_path: []const u8) void {
-    const src_extension = std.fs.path.extension(src_path);
-    const dst_extension = ".html";
-    if (std.mem.eql(u8, src_extension, dst_extension)) {
-        std.log.err("src extension: {s} is the same as dst", .{src_path});
-        return;
-    }
-
-    var fixed_buffer_allocator = std.heap.FixedBufferAllocator.init(memory);
-    var allocator = fixed_buffer_allocator.allocator();
-    const dst_path = std.mem.concat(allocator, u8, &.{
-        src_path[0 .. src_path.len - src_extension.len],
-        dst_extension,
-    }) catch unreachable;
-
-    std.log.info("generating slide {s}", .{dst_path});
-
-    const cwd = std.fs.cwd();
-    var dst_file = cwd.createFile(dst_path, .{}) catch |err| {
-        std.log.err("could not write to {s}: {}", .{ dst_path, err });
-        return;
-    };
-    defer dst_file.close();
-
-    const src = cwd.readFile(src_path, memory) catch |err| {
-        std.log.err("could not read from {s}: {}", .{ src_path, err });
-        return;
-    };
-
-    var reader = Reader{ .src = src };
-    var buffered_writer = BufferedWriter{ .unbuffered_writer = dst_file.writer() };
+    const stdout = std.io.getStdOut();
+    var buffered_writer = BufferedWriter { .unbuffered_writer = stdout.writer() };
     defer buffered_writer.flush() catch |err| {
-        std.log.err("could not flush writer for {s}: {}", .{ src_path, err });
+        std.debug.panic("could not flush output: {}", .{err});
     };
+    var writer = buffered_writer.writer();
+    defer endDocument(writer);
 
-    var writer = Writer {
-        .buffered_writer = &buffered_writer,
-    };
-    parseAndGenerate(&reader, &writer);
+    var bytes: []const u8 = src;
+
+    var begun_document = false;
+    var is_inside_list = false;
+
+    while(bytes.len > 0) {
+        var title: []const u8 = "";
+        var maybe_background: ?[]const u8 = null;
+        var maybe_header: ?[]const u8 = null;
+        var maybe_footer: ?[]const u8 = null;
+
+        is_inside_list = false;
+
+        var lines = std.mem.split(u8, bytes, "\n");
+        while (lines.next()) |line| {
+            if (std.mem.startsWith(u8, line, "---")) {
+                // TODO: not here
+                bytes = lines.rest();
+                break;
+            } else if (consumePrefix(line, "background:")) |background| {
+                maybe_background = std.mem.trimLeft(u8, background, " ");
+            } else if (consumePrefix(line, "header:")) |header| {
+                maybe_header = std.mem.trimLeft(u8, header, " ");
+            } else if (consumePrefix(line, "footer:")) |footer| {
+                maybe_footer = std.mem.trimLeft(u8, footer, " ");
+            } else if (consumePrefix(line, "#")) |heading| {
+                title = std.mem.trimLeft(u8, heading, " ");
+            }
+        } else {
+            bytes = "";
+        }
+
+        if (!begun_document) {
+            beginDocument(writer, title);
+        }
+
+        writer.writeAll("<section") catch unreachable;
+        if (maybe_background) |background| {
+            writer.print("style=\"background-image: url({s})\"", .{background}) catch unreachable;
+        }
+        writer.writeAll(">") catch unreachable;
+        defer writer.writeAll("</section>") catch unreachable;
+
+//        switch (nextByte(&line)) {
+//            '#' => {
+//                if (consumeByte(&line, '#')) {
+//                    if (consumeByte(&line, '#')) {
+//                        // speaker notes
+//                    } else {
+//                        // h2
+//                    }
+//                } else {
+//                    // h1
+//                }
+//            }
+//            '-' => {
+//                // ul
+//            }
+//            else => {
+//                // p
+//            }
+//        }
+    }
 }
-
-const Reader = struct {
-    src: []const u8,
-
-    const Self = @This();
-    const Reader = std.io.Reader(*Self, Error, read);
-    const Error = error {};
-    fn read(self: *Self, bytes: []u8) Error!usize {
-        const len = std.math.min(self.src.len, bytes.len);
-        std.mem.copy(u8, bytes, self.src[0..len]);
-        self.src = self.src[len..];
-        return len;
-    }
-
-    fn reader(self: *Self) Self.Reader {
-        return .{ .context = self };
-    }
-};
 
 const BufferedWriter = std.io.BufferedWriter(4 * 1024, std.fs.File.Writer);
+const Writer = BufferedWriter.Writer;
 
-const Writer = struct {
-    buffered_writer: *BufferedWriter,
-    generated_prefix: bool = false,
-
-    pub fn writer(self: *Writer) BufferedWriter.Writer {
-        return self.buffered_writer.writer();
+fn peekByte(bytes: *[]const u8) ?u8 {
+    if (bytes.len == 0) {
+        return null;
+    } else {
+        return bytes[0];
     }
-};
-
-fn parseAndGenerate(reader: *Reader, writer: *Writer) void {
-    writePrefix(writer, "test title");
-    writePostfix(writer);
-    _ = reader;
 }
 
-fn writePrefix(writer: *Writer, title: []const u8) void {
+fn nextByte(bytes: *[]const u8) ?u8 {
+    if (bytes.len == 0) {
+        return null;
+    } else {
+        const b = bytes[0];
+        bytes.* = bytes[1..];
+        return b;
+    }
+}
+
+fn consumeByte(bytes: *[]const u8, byte: u8) bool {
+    if (bytes.len > 0 and bytes[0] == byte) {
+        bytes.* = bytes[1..];
+        return true;
+    } else {
+        return false;
+    }
+}
+
+fn consumePrefix(bytes: []const u8, prefix: []const u8) ?[]const u8 {
+    if (std.mem.startsWith(u8, bytes, prefix)) {
+        return bytes[prefix.len..];
+    } else {
+        return null;
+    }
+}
+
+fn beginDocument(writer: Writer, title: []const u8) void {
     const prefix =
         \\<!DOCTYPE html>
         \\<head>
@@ -102,17 +128,40 @@ fn writePrefix(writer: *Writer, title: []const u8) void {
         \\
         \\
         ;
-
-    writer.writer().print(prefix, .{title}) catch unreachable;
+    writer.print(prefix, .{title}) catch unreachable;
 }
 
-fn writePostfix(writer: *Writer) void {
+fn endDocument(writer: Writer) void {
     const postfix =
         \\
         \\
         \\</body>
         \\
         ;
-
-    writer.writer().writeAll(postfix) catch unreachable;
+    writer.writeAll(postfix) catch unreachable;
 }
+
+fn beginSection(writer: Writer, maybe_background: ?[]const u8, maybe_header: ?[]const u8) void {
+    writer.writeAll("<section") catch unreachable;
+    if (maybe_background) |background| {
+        writer.print("style=\"background-image: url({s})\"", .{background}) catch unreachable;
+    }
+    writer.writeAll(">\n") catch unreachable;
+
+    if (maybe_header) |header| {
+        writer.writeAll("\t<header>\n") catch unreachable;
+        writer.writeAll("\t\t") catch unreachable;
+        writer.writeAll(header);
+        writer.writeAll("\t</header>\n") catch unreachable;
+    }
+}
+
+fn endSection(writer: Writer, maybe_footer: ?[]const u8) void {
+    if (maybe_footer) |footer| {
+        writer.writeAll("\t<footer>\n") catch unreachable;
+        writer.writeAll("\t\t") catch unreachable;
+        writer.writeAll(footer);
+        writer.writeAll("\t</footer>\n") catch unreachable;
+    }
+}
+
