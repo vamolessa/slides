@@ -9,7 +9,6 @@ pub fn main() void {
 
     {
         var args = std.process.args();
-        defer args.deinit();
         _ = args.skip();
         if (args.next(arena.allocator())) |maybe_arg| {
             const arg = maybe_arg catch {
@@ -37,6 +36,7 @@ pub fn main() void {
 
     const stdin = std.io.getStdIn();
     const stdout = std.io.getStdOut();
+    arena.deinit();
     compile(arena.allocator(), stdin, stdout);
 }
 
@@ -70,7 +70,11 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
 
             const src_path = file_entry.name;
             const src_path_without_extension = src_path[0 .. src_path.len - src_extension.len];
-            const dst_path = std.mem.concat(arena.allocator(), u8, &.{
+
+            //arena.deinit();
+            const allocator = arena.allocator();
+
+            const dst_path = std.mem.concat(allocator, u8, &.{
                 src_path_without_extension,
                 dst_extension,
             }) catch {
@@ -81,7 +85,7 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
             const src = dir.openFile(src_path, .{}) catch continue;
             const dst = dir.createFile(dst_path, .{}) catch continue;
 
-            compile(arena.allocator(), src, dst);
+            compile(allocator, src, dst);
             writer.print("compiled {s}/{s} into {s}/{s}\n", .{
                 dir_entry.name,
                 src_path,
