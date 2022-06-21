@@ -9,9 +9,10 @@ pub fn main() void {
         return;
     };
     defer std.heap.page_allocator.free(memory);
-    var fixed_buffer_allocator = std.heap.FixedBufferAllocator.init(memory);
 
     {
+        var fixed_buffer_allocator = std.heap.FixedBufferAllocator.init(memory);
+
         var args = std.process.args();
         _ = args.skip();
         if (args.next(fixed_buffer_allocator.allocator())) |maybe_arg| {
@@ -29,8 +30,7 @@ pub fn main() void {
                 writer.writeAll("  with no option, will compile stdin into stdout\n") catch {};
                 return;
             } else if (std.mem.eql(u8, arg, "--all")) {
-                fixed_buffer_allocator.reset();
-                compileAll(&fixed_buffer_allocator);
+                compileAll(memory);
                 return;
             } else {
                 std.io.getStdErr().writer().print("invalid cli arg: {s}\n", .{arg}) catch {};
@@ -41,11 +41,10 @@ pub fn main() void {
 
     const stdin = std.io.getStdIn();
     const stdout = std.io.getStdOut();
-    fixed_buffer_allocator.reset();
-    compile(fixed_buffer_allocator.allocator(), stdin, stdout);
+    compile(memory, stdin, stdout);
 }
 
-fn compileAll(fixed_buffer_allocator: *std.heap.FixedBufferAllocator) void {
+fn compileAll(memory: []u8) void {
     const stdout = std.io.getStdOut();
     const writer = stdout.writer();
 
@@ -76,7 +75,7 @@ fn compileAll(fixed_buffer_allocator: *std.heap.FixedBufferAllocator) void {
             const src_path = file_entry.name;
             const src_path_without_extension = src_path[0 .. src_path.len - src_extension.len];
 
-            fixed_buffer_allocator.reset();
+            var fixed_buffer_allocator = std.heap.FixedBufferAllocator.init(memory);
             const allocator = fixed_buffer_allocator.allocator();
 
             const dst_path = std.mem.concat(allocator, u8, &.{
@@ -90,22 +89,28 @@ fn compileAll(fixed_buffer_allocator: *std.heap.FixedBufferAllocator) void {
             const src = dir.openFile(src_path, .{}) catch continue;
             const dst = dir.createFile(dst_path, .{}) catch continue;
 
-            compile(allocator, src, dst);
-            writer.print("compiled {s}/{s} into {s}/{s}\n", .{
+            writer.print("compiling {s}/{s} into {s}/{s}\n", .{
                 dir_entry.name,
                 src_path,
                 dir_entry.name,
                 dst_path,
             }) catch {};
+
+            compile(memory, src, dst);
         }
     }
 }
 
-fn compile(allocator: std.mem.Allocator, input: std.fs.File, output: std.fs.File) void {
-    const src = input.reader().readAllAlloc(allocator, std.math.maxInt(usize)) catch {
+fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
+    const src_len = input.reader().readAll(memory) catch {
         output.writer().writeAll("could read src\n") catch {};
         return;
     };
+    if (src_len == memory.len) {
+        output.writer().writeAll("input is too big\n") catch {};
+        return;
+    }
+    const src = memory[0..src_len];
 
     var buffered_writer = BufferedWriter{ .unbuffered_writer = output.writer() };
     defer buffered_writer.flush() catch {};
