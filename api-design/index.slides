@@ -9,8 +9,17 @@ footer:por @ahvamolessa
 background:thinker.jpg
 ---
 
+# ======================
+===
+o que influencia api:
+- o que: abstracoes
+- quem usa: comunicação
+- intenção de uso: interface
+- restricoes: linguagem, plataforma, resto do software, etc
+---
+
 # abstrações
-background: imagination.jpg
+background:imagination.jpg
 ===
 intrinsicamente relacionada a abstrações
 fundamental ao gerenciamento de complexidade
@@ -18,7 +27,7 @@ fundamental ao gerenciamento de complexidade
 
 # é um modelo com o propósito de interpretar uma realidade rica em detalhes
 ## alcançado por introduzir conceitos pertinentes ao domínio
-background: complexity.jpg
+background:complexity.jpg
 ===
 nossa maior ferramenta para lidar com complexidade
 a base inteira de computação é feita por cima de camadas que abstraem detalhes cada vez mais baixo nível
@@ -154,6 +163,30 @@ footer:[a philosophy of software design](https://www.youtube.com/watch?v=bmSAYlu
 ===
 esse é o âmago da ideia
 criar abstrações que adicionam valor ao software em questão porém que contribuem minimamente ao aumento de sua complexidade
+---
+
+# ======================
+===
+TODO:
+
+abstrações acontecem em varios niveis, mas api precisa ser profunda.
+
+granularidade:
+apenas modulos têm granularidade suficiente para serem profundos
+classes já são muito granulares
+
+pra refletir:
+por que acreditamos no que acreditamos?
+
+por que abordamos software da maneira que fazemos?
+onde aprendemos isso?
+
+apenas classes, uma classe por arquivo
+segundo periodo faculdade!
+ide java fazem isso
+
+modulos sao uma unidade de anstraçao onde apis sao definidas
+nao ganhamos nada espalhando seu codigo
 ---
 
 # profunda
