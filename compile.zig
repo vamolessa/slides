@@ -1,18 +1,84 @@
 const std = @import("std");
 
+const src_extension = ".slides";
+const dst_extension = ".html";
+
 pub fn main() void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    var allocator = arena.allocator();
-
-    const stdin = std.io.getStdIn();
-    const src = stdin.reader().readAllAlloc(allocator, std.math.maxInt(usize)) catch unreachable;
     defer arena.deinit();
 
+    {
+        var args = std.process.args();
+        defer args.deinit();
+        _ = args.skip();
+        if (args.next(arena.allocator())) |maybe_arg| {
+            const arg = maybe_arg catch {
+                std.log.err("could not parse cli arg", .{});
+                return;
+            };
+    
+            if (std.mem.eql(u8, arg, "--help") or std.mem.eql(u8, arg, "-h")) {
+                std.log.info("--all : recursively compile all " ++ src_extension ++ " sources into " ++ dst_extension, .{});
+                std.log.info("with no option, will compile stdin into stdout", .{});
+                return;
+            } else if (std.mem.eql(u8, arg, "--all")) {
+                compileAll(&arena);
+                return;
+            } else {
+                std.log.err("invalid cli arg: {s}", .{arg});
+                return;
+            }
+        }
+    }
+
+    const stdin = std.io.getStdIn();
     const stdout = std.io.getStdOut();
-    var buffered_writer = BufferedWriter { .unbuffered_writer = stdout.writer() };
-    defer buffered_writer.flush() catch |err| {
-        std.debug.panic("could not flush output: {}", .{err});
-    };
+
+    compile(arena.allocator(), stdin, stdout);
+}
+
+fn compileAll(arena: *std.heap.ArenaAllocator) void {
+    const cwd = std.fs.cwd().openDir(".", .{.iterate = true, .no_follow = true}) catch unreachable;
+    var dirs = cwd.iterate();
+    while(dirs.next() catch unreachable) |dir_entry| {
+        if (dir_entry.kind != .Directory) {
+            continue;
+        }
+        if (std.mem.startsWith(u8, dir_entry.name, ".")) {
+            continue;
+        }
+
+        const dir = cwd.openDir(dir_entry.name, .{ .iterate = true, .no_follow = true}) catch unreachable;
+        var files = dir.iterate();
+        while (files.next() catch unreachable) |file_entry| {
+            if (file_entry.kind != .File) {
+                continue;
+            }
+            if (!std.mem.endsWith(u8, file_entry.name, src_extension)) {
+                continue;
+            }
+
+            const src_path = file_entry.name;
+            const src_path_without_extension = src_path[0..src_path.len - src_extension.len];
+            const dst_path = std.mem.concat(arena.allocator(), u8, &.{
+                src_path_without_extension,
+                dst_extension,
+            }) catch unreachable;
+
+            const src = dir.openFile(src_path, .{}) catch unreachable;
+            const dst = dir.createFile(dst_path, .{}) catch unreachable;
+
+            compile(arena.allocator(), src, dst);
+            std.log.info("compiled {s} into {s}", .{src_path, dst_path});
+        }
+    }
+}
+
+fn compile(allocator: std.mem.Allocator, input: std.fs.File, output: std.fs.File) void {
+    const src = input.reader().readAllAlloc(allocator, std.math.maxInt(usize)) catch unreachable;
+
+    var buffered_writer = BufferedWriter { .unbuffered_writer = output.writer() };
+    defer buffered_writer.flush() catch unreachable;
     var writer = buffered_writer.writer();
     defer endDocument(writer);
 

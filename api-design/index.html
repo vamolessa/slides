@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="../style.css">
+<title>design de apis</title>
+</head>
+<body>
+
+<section class="main">
+    <h1>design de apis</h1>
+    <h2>workshop bitcake 2022</h2>
+
+    <footer>
+        <p>por @ahvamolessa</p>
+    </footer>
+</section>
+
+<section style="background-image: url(thinker.jpg)">
+    <h1><em>api</em> é apresentar <em>abstrações</em> através de uma <em>interface</em></h1>
+</section>
+
+<section style="background-image: url(imagination.jpg)">
+    <h1>abstrações</h1>
+</section>
+
+<section style="background-image: url(complexity.jpg)">
+    <h1>é um modelo com o propósito de interpretar uma realidade rica em detalhes</h1>
+    <h2>alcançado por introduzir conceitos pertinentes ao domínio</h2>
+</section>
+
+<section>
+    <h1>todo novo conceito adicionado ao sistema o torna mais complexo</h1>
+</section>
+
+<section>
+    <h1>complexidade inerente vs complexidade acidental</h1>
+    <ul>
+    <li>limitações da linguagem</li>
+    <li>limitações da plataforma</li>
+    <li>ou pior: limitações de nosso próprio design</li>
+    </ul>
+</section>
+
+<section>
+    <h1>como saber qual complexidade estamos introduzindo?</h1>
+    <ul>
+    <li>entender o problema</li>
+    <li>prototipação</li>
+    <li>testar soluções diferentes. refatorar</li>
+    <li>evitar future proofing ("fool's errand")</li>
+    <li>erros e limitações serão encontrados independente da quantidade de design investido a priori. aceite-os e planeje-se</li>
+    </ul>
+
+    <footer>
+        <p><a href="https://ourmachinery.com/post/dig-shallow-graves/">dig shallow graves</a></p>
+    </footer>
+</section>
+
+<section>
+    <h1>código reutilizável vs código fácil de deletar</h1></h1>
+    <h2>a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h2></h2>
+
+    <footer>
+        <p><a href="https://caseymuratori.com/blog_0015">semantic compression</a></p>
+        <p><a href="https://programmingisterrible.com/post/139222674273/how-to-write-disposable-code-in-large-systems">how to write disposable code in large systems</a></p>
+    </footer>
+</section>
+
+<section>
+    <h1>problemas complexos são complexos</h1>
+    <p>a única maneira de simplificar um problema inerenentemente complexo é resolvendo outro problema (que seja mais simples)</p>
+
+    <footer>
+        <p><a href="http://number-none.com/blow/john_carmack_on_inlined_code.html">john carmack on inlined code</a></p>
+    </footer>
+</section>
+
+<section>
+    <h1>abstrações vazam</h1>
+    <h2>sem exceção</h2>
+
+    <footer>
+        <p><a href="https://www.youtube.com/watch?v=5l2wMgm7ZOk">why black boxes are so hard to reuse</a></p>
+    </footer>
+</section>
+
+<section>
+    <h1>abstrações apenas têm valor quando levantam seu próprio peso</h1>
+    <h2>"programmers know the benefits of everything and the tradeoffs of nothing"</h2>
+
+    <footer>
+        <p><a href="https://www.youtube.com/watch?v=rI8tNMsozo0">simplicity matters</a></p>
+    </footer>
+</section>
+
+<section>
+    <h1>"everything should be made as simple as possible, but not simpler."</h1>
+    <p>-- einstein, albert (supostamente)</p>
+</section>
+
+<section>
+    <h1>apis e abstrações <em>não</em> existem no vácuo</h1>
+    <p>intenção de uso influencia design</p>
+    <p>restrições influenciam design</p>
+
+    <footer>
+        <p><a href="https://cellperformance.beyond3d.com/articles/2006/04/performance-and-good-data-design.html">performance and good data design</a></p>
+        <p><a href="https://docs.godotengine.org/en/stable/community/contributing/best_practices_for_engine_contributors.html">best practices for godot engine contributors</a></p>
+    </footer>
+</section>
+
+<section class="main">
+    <h1>uma api é boa se ela é <em>profunda</em> e possui <em>interface enxuta</em></h1>
+
+    <footer>
+        <p><a href="https://www.youtube.com/watch?v=bmSAYlu0NcY">a philosophy of software design</a></p>
+    </footer>
+</section>
+
+<section>
+    <h1>profunda</h1>
+    <ul>
+    <li>ortogonal</li>
+    <li>composível</li>
+    <li>complexidade adicionada < complexidade abstraída</li>
+    <li>vazamento mínimo</li>
+    </ul>
+    <h1>interface enxuta</h1>
+    <ul>
+    <li>padrões razoáveis</li>
+    <li>estado mínimo e explícito</li>
+    <li>pré-condições + invariantes + pós-condições</li>
+    <li>intui sua implementação</li>
+    </ul>
+</section>
+
+<section style="background-image: url(design.jpg)">
+    <h1>às vezes não precisa de api ou abstração</h1>
+    <h2>código vai mas o design fica</h2>
+</section>
+
+<section class="main">
+    <h1>3 big lies</h1>
+    <ul>
+    <li>software is a platform</li>
+    <li>code should be designed around a model of the world</li>
+    <li>code is more important than data</li>
+    </ul>
+
+    <footer>
+        <p><a href="https://cellperformance.beyond3d.com/articles/2008/03/three-big-lies.html">three big lies</a></p>
+    </footer>
+</section>
+
+<section class="main">
+    <h1>extras práticos</h1>
+</section>
+
+<section>
+    <h1>late binding x early binding</h1>
+    <p>no início, queremos simplicidade</p>
+    <p>no final, queremos controle total</p>
+</section>
+
+<section>
+    <h1>debugabilidade</h1>
+    <p>onde estão os dados?</p>
+    <p>são fáceis de inspecionar?</p>
+    <p>é fácil acompanhar o que está acontecendo pelo debugger?</p>
+</section>
+
+<section>
+    <h1>estruturas de dados</h1>
+    <p>arrays <em>muito</em> provavelmente são suficientes</p>
+    <p>processadores adoram memória linear</p>
+    <p>*olha feio praquela lista encadeada*</p>
+</section>
+
+<section>
+    <h1>recursos e posse</h1>
+    <p>quem é o responsável pelo recurso?</p>
+    <p>posse vs emprestimo</p>
+    <p>onde há alocação de memória? da pra evitá-la?</p>
+    <p>C# = preferir structs e arrays; reusar coleções</p>
+    <p>C++ = arrays; inline allocator;</p>
+
+    <footer>
+        <p><a href="https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25">List.cs</a></p>
+        <p><a href="https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/">TInlineAllocator</a></p>
+    </footer>
+</section>
+
+<section>
+    <h1>desempenho</h1>
+    <p>é um sistema pervasivo? muitas entidades?</p>
+    <p>onde há um, há muitos! qual o caso comum? operar em lotes!</p>
+    <p>agrupar por tipos ao invés de coleções heterogêneas</p>
+    <p>particionar ao invés de branch</p>
+    <p>multithread? job system?</p>
+</section>
+
+</body>
+</html>
