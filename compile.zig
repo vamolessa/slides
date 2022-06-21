@@ -1,9 +1,12 @@
 const std = @import("std");
 
-pub fn build(b: *std.build.Builder) void {
+pub fn main() void {
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    var allocator = arena.allocator();
+
     const stdin = std.io.getStdIn();
-    const src = stdin.reader().readAllAlloc(b.allocator, std.math.maxInt(usize)) catch unreachable;
-    defer b.allocator.free(src);
+    const src = stdin.reader().readAllAlloc(allocator, std.math.maxInt(usize)) catch unreachable;
+    defer arena.deinit();
 
     const stdout = std.io.getStdOut();
     var buffered_writer = BufferedWriter { .unbuffered_writer = stdout.writer() };
