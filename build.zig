@@ -13,104 +13,111 @@ pub fn build(b: *std.build.Builder) void {
     var writer = buffered_writer.writer();
     defer endDocument(writer);
 
-    var bytes: []const u8 = src;
-
     var begun_document = false;
-    var is_inside_list = false;
 
-    while(bytes.len > 0) {
+    var slide_srcs = std.mem.split(u8, src, "\n---\n");
+    while(slide_srcs.next()) |slide_src| {
         var title: []const u8 = "";
         var maybe_background: ?[]const u8 = null;
-        var maybe_header: ?[]const u8 = null;
-        var maybe_footer: ?[]const u8 = null;
 
-        is_inside_list = false;
+        var header_count: u32 = 0;
+        var headers: [32][]const u8 = undefined;
+        var footer_count: u32 = 0;
+        var footers: [32][]const u8 = undefined;
 
-        var lines = std.mem.split(u8, bytes, "\n");
-        while (lines.next()) |line| {
-            if (std.mem.startsWith(u8, line, "---")) {
-                // TODO: not here
-                bytes = lines.rest();
-                break;
-            } else if (consumePrefix(line, "background:")) |background| {
-                maybe_background = std.mem.trimLeft(u8, background, " ");
+        const data_len = std.mem.indexOf(u8, slide_src, "\n###") orelse slide_src.len;
+        const data = slide_src[0..data_len];
+
+        var first_metadata_offset: ?usize = null;
+
+        var data_lines = std.mem.split(u8, data, "\n");
+        while (data_lines.next()) |line| {
+            var is_metadata_line = false;
+
+            if (consumePrefix(line, "background:")) |background| {
+                maybe_background = std.mem.trim(u8, background, " ");
+                is_metadata_line = true;
             } else if (consumePrefix(line, "header:")) |header| {
-                maybe_header = std.mem.trimLeft(u8, header, " ");
+                if (header_count < headers.len) {
+                    headers[header_count] = std.mem.trim(u8, header, " ");
+                    header_count += 1;
+                }
+                is_metadata_line = true;
             } else if (consumePrefix(line, "footer:")) |footer| {
-                maybe_footer = std.mem.trimLeft(u8, footer, " ");
+                if (footer_count < footers.len) {
+                    footers[footer_count] = std.mem.trim(u8, footer, " ");
+                    footer_count += 1;
+                }
+                is_metadata_line = true;
             } else if (consumePrefix(line, "#")) |heading| {
-                title = std.mem.trimLeft(u8, heading, " ");
+                title = std.mem.trim(u8, heading, " ");
             }
-        } else {
-            bytes = "";
+
+            if (is_metadata_line and first_metadata_offset == null) {
+                first_metadata_offset = @ptrToInt(line.ptr) - @ptrToInt(data.ptr);
+            }
         }
 
         if (!begun_document) {
+            begun_document = true;
             beginDocument(writer, title);
         }
 
-        writer.writeAll("<section") catch unreachable;
-        if (maybe_background) |background| {
-            writer.print("style=\"background-image: url({s})\"", .{background}) catch unreachable;
-        }
-        writer.writeAll(">") catch unreachable;
-        defer writer.writeAll("</section>") catch unreachable;
+        beginSection(writer, maybe_background, headers[0..header_count]);
+        defer endSection(writer, footers[0..footer_count]);
 
-//        switch (nextByte(&line)) {
-//            '#' => {
-//                if (consumeByte(&line, '#')) {
-//                    if (consumeByte(&line, '#')) {
-//                        // speaker notes
-//                    } else {
-//                        // h2
-//                    }
-//                } else {
-//                    // h1
-//                }
-//            }
-//            '-' => {
-//                // ul
-//            }
-//            else => {
-//                // p
-//            }
-//        }
+        const content_len = first_metadata_offset orelse data.len;
+        const content = data[0..content_len];
+
+        var was_inside_list = false;
+        var content_lines = std.mem.split(u8, content, "\n");
+        while (content_lines.next()) |line| {
+            var is_inside_list = false;
+
+            if (consumePrefix(line, "#")) |heading| {
+                if (consumePrefix(heading, "#")) |heading2| {
+                    beginTag(writer, "h2");
+                    writeLineContent(writer, heading2);
+                    endTag(writer, "h2");
+                } else {
+                    beginTag(writer, "h1");
+                    writeLineContent(writer, heading);
+                    endTag(writer, "h1");
+                }
+            } else if (consumePrefix(line, "-")) |list_entry| {
+                is_inside_list = true;
+                if (!was_inside_list) {
+                    beginTag(writer, "ul");
+                }
+
+                beginTag(writer, "li");
+                writeLineContent(writer, list_entry);
+                endTag(writer, "li");
+            } else if (consumePrefix(line, "")) |paragraph| {
+                beginTag(writer, "p");
+                writeLineContent(writer, paragraph);
+                endTag(writer, "p");
+            }
+
+            if (was_inside_list and !is_inside_list) {
+                endTag(writer, "ul");
+            }
+            was_inside_list = is_inside_list;
+        }
+        if (was_inside_list) {
+            endTag(writer, "ul");
+        }
     }
 }
 
 const BufferedWriter = std.io.BufferedWriter(4 * 1024, std.fs.File.Writer);
 const Writer = BufferedWriter.Writer;
 
-fn peekByte(bytes: *[]const u8) ?u8 {
-    if (bytes.len == 0) {
-        return null;
-    } else {
-        return bytes[0];
-    }
-}
-
-fn nextByte(bytes: *[]const u8) ?u8 {
-    if (bytes.len == 0) {
-        return null;
-    } else {
-        const b = bytes[0];
-        bytes.* = bytes[1..];
-        return b;
-    }
-}
-
-fn consumeByte(bytes: *[]const u8, byte: u8) bool {
-    if (bytes.len > 0 and bytes[0] == byte) {
-        bytes.* = bytes[1..];
-        return true;
-    } else {
-        return false;
-    }
-}
-
 fn consumePrefix(bytes: []const u8, prefix: []const u8) ?[]const u8 {
     if (std.mem.startsWith(u8, bytes, prefix)) {
-        return bytes[prefix.len..];
+        const rest = bytes[prefix.len..];
+        const trimmed = std.mem.trim(u8, rest, " ");
+        return if (trimmed.len > 0) trimmed else null;
     } else {
         return null;
     }
@@ -133,35 +140,65 @@ fn beginDocument(writer: Writer, title: []const u8) void {
 
 fn endDocument(writer: Writer) void {
     const postfix =
-        \\
-        \\
         \\</body>
         \\
         ;
     writer.writeAll(postfix) catch unreachable;
 }
 
-fn beginSection(writer: Writer, maybe_background: ?[]const u8, maybe_header: ?[]const u8) void {
+const indentation = " " ** 4;
+
+fn beginSection(writer: Writer, maybe_background: ?[]const u8, headers: []const []const u8) void {
     writer.writeAll("<section") catch unreachable;
     if (maybe_background) |background| {
-        writer.print("style=\"background-image: url({s})\"", .{background}) catch unreachable;
+        if (std.mem.eql(u8, background, "main")) {
+            writer.writeAll(" class=\"main\"") catch unreachable;
+        } else {
+            writer.print(" style=\"background-image: url({s})\"", .{background}) catch unreachable;
+        }
     }
     writer.writeAll(">\n") catch unreachable;
 
-    if (maybe_header) |header| {
-        writer.writeAll("\t<header>\n") catch unreachable;
-        writer.writeAll("\t\t") catch unreachable;
-        writer.writeAll(header);
-        writer.writeAll("\t</header>\n") catch unreachable;
+    if (headers.len > 0) {
+        writer.writeAll(indentation ++ "<header>\n") catch unreachable;
+        for (headers) |header| {
+            writer.writeAll(indentation) catch unreachable;
+            beginTag(writer, "p");
+            writeLineContent(writer, header);
+            endTag(writer, "p");
+        }
+        writer.writeAll(indentation ++ "</header>\n") catch unreachable;
     }
 }
 
-fn endSection(writer: Writer, maybe_footer: ?[]const u8) void {
-    if (maybe_footer) |footer| {
-        writer.writeAll("\t<footer>\n") catch unreachable;
-        writer.writeAll("\t\t") catch unreachable;
-        writer.writeAll(footer);
-        writer.writeAll("\t</footer>\n") catch unreachable;
+fn endSection(writer: Writer, footers: []const []const u8) void {
+    if (footers.len > 0) {
+        writer.writeAll(indentation ++ "<footer>\n") catch unreachable;
+        for (footers) |footer| {
+            writer.writeAll(indentation) catch unreachable;
+            beginTag(writer, "p");
+            writeLineContent(writer, footer);
+            endTag(writer, "p");
+        }
+        writer.writeAll(indentation ++ "</header>\n") catch unreachable;
     }
+
+    writer.writeAll("</section>\n\n") catch unreachable;
+}
+
+fn beginTag(writer: Writer, tag: []const u8) void {
+    writer.writeAll(indentation ++ "<") catch unreachable;
+    writer.writeAll(tag) catch unreachable;
+    writer.writeAll(">") catch unreachable;
+}
+
+fn endTag(writer: Writer, tag: []const u8) void {
+    writer.writeAll("</") catch unreachable;
+    writer.writeAll(tag) catch unreachable;
+    writer.writeAll(">\n") catch unreachable;
+}
+
+fn writeLineContent(writer: Writer, line: []const u8) void {
+    writer.writeAll(line) catch unreachable;
 }
 

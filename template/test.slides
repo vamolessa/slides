@@ -1,10 +1,12 @@
 # title
 
-:background image.jpg
-:footer alsjdhasd
-:notes
+background:image.jpg
+footer:[alsjdhasd](asdas)
+footer:sadasd
+###
 asdljashd
 lasjdhas
+
 ---
 
 # another slide
