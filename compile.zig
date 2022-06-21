@@ -3,12 +3,10 @@ const std = @import("std");
 const src_extension = ".slides";
 const dst_extension = ".html";
 
+var program_memory: [8 * 1024 * 1024]u8 = undefined;
+
 pub fn main() void {
-    var memory = std.heap.page_allocator.alloc(u8, 8 * 1024 * 1024) catch {
-        std.io.getStdErr().writer().writeAll("could not allocate program memory\n") catch {};
-        return;
-    };
-    defer std.heap.page_allocator.free(memory);
+    const memory = &program_memory;
 
     {
         var fixed_buffer_allocator = std.heap.FixedBufferAllocator.init(memory);
