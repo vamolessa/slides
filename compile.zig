@@ -16,7 +16,7 @@ pub fn main() void {
                 std.log.err("could not parse cli arg", .{});
                 return;
             };
-    
+
             if (std.mem.eql(u8, arg, "--help") or std.mem.eql(u8, arg, "-h")) {
                 std.log.info("--all : recursively compile all " ++ src_extension ++ " sources into " ++ dst_extension, .{});
                 std.log.info("with no option, will compile stdin into stdout", .{});
@@ -38,9 +38,9 @@ pub fn main() void {
 }
 
 fn compileAll(arena: *std.heap.ArenaAllocator) void {
-    const cwd = std.fs.cwd().openDir(".", .{.iterate = true, .no_follow = true}) catch unreachable;
+    const cwd = std.fs.cwd().openDir(".", .{ .iterate = true, .no_follow = true }) catch unreachable;
     var dirs = cwd.iterate();
-    while(dirs.next() catch unreachable) |dir_entry| {
+    while (dirs.next() catch unreachable) |dir_entry| {
         if (dir_entry.kind != .Directory) {
             continue;
         }
@@ -48,7 +48,7 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
             continue;
         }
 
-        const dir = cwd.openDir(dir_entry.name, .{ .iterate = true, .no_follow = true}) catch unreachable;
+        const dir = cwd.openDir(dir_entry.name, .{ .iterate = true, .no_follow = true }) catch unreachable;
         var files = dir.iterate();
         while (files.next() catch unreachable) |file_entry| {
             if (file_entry.kind != .File) {
@@ -59,7 +59,7 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
             }
 
             const src_path = file_entry.name;
-            const src_path_without_extension = src_path[0..src_path.len - src_extension.len];
+            const src_path_without_extension = src_path[0 .. src_path.len - src_extension.len];
             const dst_path = std.mem.concat(arena.allocator(), u8, &.{
                 src_path_without_extension,
                 dst_extension,
@@ -69,7 +69,7 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
             const dst = dir.createFile(dst_path, .{}) catch unreachable;
 
             compile(arena.allocator(), src, dst);
-            std.log.info("compiled {s} into {s}", .{src_path, dst_path});
+            std.log.info("compiled {s} into {s}", .{ src_path, dst_path });
         }
     }
 }
@@ -77,7 +77,7 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
 fn compile(allocator: std.mem.Allocator, input: std.fs.File, output: std.fs.File) void {
     const src = input.reader().readAllAlloc(allocator, std.math.maxInt(usize)) catch unreachable;
 
-    var buffered_writer = BufferedWriter { .unbuffered_writer = output.writer() };
+    var buffered_writer = BufferedWriter{ .unbuffered_writer = output.writer() };
     defer buffered_writer.flush() catch unreachable;
     var writer = buffered_writer.writer();
     defer endDocument(writer);
@@ -86,7 +86,7 @@ fn compile(allocator: std.mem.Allocator, input: std.fs.File, output: std.fs.File
 
     const slide_separator = "---";
     var slide_srcs = std.mem.split(u8, src, "\n" ++ slide_separator ++ "\n");
-    while(slide_srcs.next()) |slide_src| {
+    while (slide_srcs.next()) |slide_src| {
         var title: []const u8 = "";
         var maybe_background: ?[]const u8 = null;
 
@@ -210,14 +210,14 @@ fn beginDocument(writer: Writer, title: []const u8) void {
         \\<meta charset="utf-8">
         \\<link rel="stylesheet" type="text/css" href="../style.css">
         \\<title>
-        ;
+    ;
     const after_title =
         \\</title>
         \\</head>
         \\<body>
         \\
         \\
-        ;
+    ;
     write(writer, before_title);
     write(writer, title);
     write(writer, after_title);
@@ -228,7 +228,7 @@ fn endDocument(writer: Writer) void {
         \\</body>
         \\</html>
         \\
-        ;
+    ;
     write(writer, postfix);
 }
 
@@ -358,7 +358,7 @@ fn writeLineContent(writer: Writer, line: []const u8) void {
                         write(writer, label);
                         endTag(writer, "a");
 
-                        bytes = bytes[link_end + 1..];
+                        bytes = bytes[link_end + 1 ..];
                         continue;
                     }
                 }
@@ -369,7 +369,7 @@ fn writeLineContent(writer: Writer, line: []const u8) void {
                     write(writer, bytes[0..len]);
                     endTag(writer, "em");
 
-                    bytes = bytes[len + 1..];
+                    bytes = bytes[len + 1 ..];
                     continue;
                 }
             },
@@ -379,4 +379,3 @@ fn writeLineContent(writer: Writer, line: []const u8) void {
         writeByte(writer, byte);
     }
 }
-
