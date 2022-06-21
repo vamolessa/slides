@@ -4,13 +4,17 @@ const src_extension = ".slides";
 const dst_extension = ".html";
 
 pub fn main() void {
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer arena.deinit();
+    var memory = std.heap.page_allocator.alloc(u8, 8 * 1024 * 1024) catch {
+        std.io.getStdErr().writer().writeAll("could not allocate program memory\n") catch {};
+        return;
+    };
+    defer std.heap.page_allocator.free(memory);
+    var fixed_buffer_allocator = std.heap.FixedBufferAllocator.init(memory);
 
     {
         var args = std.process.args();
         _ = args.skip();
-        if (args.next(arena.allocator())) |maybe_arg| {
+        if (args.next(fixed_buffer_allocator.allocator())) |maybe_arg| {
             const arg = maybe_arg catch {
                 std.io.getStdErr().writer().writeAll("could not parse cli arg\n") catch {};
                 return;
@@ -25,7 +29,8 @@ pub fn main() void {
                 writer.writeAll("  with no option, will compile stdin into stdout\n") catch {};
                 return;
             } else if (std.mem.eql(u8, arg, "--all")) {
-                compileAll(&arena);
+                fixed_buffer_allocator.reset();
+                compileAll(&fixed_buffer_allocator);
                 return;
             } else {
                 std.io.getStdErr().writer().print("invalid cli arg: {s}\n", .{arg}) catch {};
@@ -36,11 +41,11 @@ pub fn main() void {
 
     const stdin = std.io.getStdIn();
     const stdout = std.io.getStdOut();
-    arena.deinit();
-    compile(arena.allocator(), stdin, stdout);
+    fixed_buffer_allocator.reset();
+    compile(fixed_buffer_allocator.allocator(), stdin, stdout);
 }
 
-fn compileAll(arena: *std.heap.ArenaAllocator) void {
+fn compileAll(fixed_buffer_allocator: *std.heap.FixedBufferAllocator) void {
     const stdout = std.io.getStdOut();
     const writer = stdout.writer();
 
@@ -71,8 +76,8 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
             const src_path = file_entry.name;
             const src_path_without_extension = src_path[0 .. src_path.len - src_extension.len];
 
-            //arena.deinit();
-            const allocator = arena.allocator();
+            fixed_buffer_allocator.reset();
+            const allocator = fixed_buffer_allocator.allocator();
 
             const dst_path = std.mem.concat(allocator, u8, &.{
                 src_path_without_extension,
@@ -98,7 +103,7 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
 
 fn compile(allocator: std.mem.Allocator, input: std.fs.File, output: std.fs.File) void {
     const src = input.reader().readAllAlloc(allocator, std.math.maxInt(usize)) catch {
-        output.writer().writeAll("could read input\n") catch {};
+        output.writer().writeAll("could read src\n") catch {};
         return;
     };
 
