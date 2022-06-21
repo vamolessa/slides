@@ -1,0 +1,29 @@
+# title
+## sub title
+
+background:main
+footer:[some link](ddg.gg)
+---
+
+# another title
+## another sub title
+
+paragraph1
+paragraph2
+
+- thing 1
+- thing 2
+- thing 3
+
+header:a header
+===
+speaker notes
+---
+
+# a slide with some cool covering background
+\*eeemmm\*
+
+background:image.jpg
+===
+more speaker notes
+

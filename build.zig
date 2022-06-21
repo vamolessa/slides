@@ -15,7 +15,8 @@ pub fn build(b: *std.build.Builder) void {
 
     var begun_document = false;
 
-    var slide_srcs = std.mem.split(u8, src, "\n---\n");
+    const slide_separator = "---";
+    var slide_srcs = std.mem.split(u8, src, "\n" ++ slide_separator ++ "\n");
     while(slide_srcs.next()) |slide_src| {
         var title: []const u8 = "";
         var maybe_background: ?[]const u8 = null;
@@ -25,7 +26,8 @@ pub fn build(b: *std.build.Builder) void {
         var footer_count: u32 = 0;
         var footers: [32][]const u8 = undefined;
 
-        const data_len = std.mem.indexOf(u8, slide_src, "\n###") orelse slide_src.len;
+        const notes_separator = "===";
+        const data_len = std.mem.indexOf(u8, slide_src, "\n" ++ notes_separator) orelse slide_src.len;
         const data = slide_src[0..data_len];
 
         var first_metadata_offset: ?usize = null;
@@ -49,7 +51,7 @@ pub fn build(b: *std.build.Builder) void {
                     footer_count += 1;
                 }
                 is_metadata_line = true;
-            } else if (consumePrefix(line, "#")) |heading| {
+            } else if (consumePrefix(line, "# ")) |heading| {
                 title = std.mem.trim(u8, heading, " ");
             }
 
@@ -63,8 +65,8 @@ pub fn build(b: *std.build.Builder) void {
             beginDocument(writer, title);
         }
 
-        beginSection(writer, maybe_background);
-        defer endSection(writer, headers[0..header_count], footers[0..footer_count]);
+        beginSection(writer, maybe_background, headers[0..header_count]);
+        defer endSection(writer, footers[0..footer_count]);
 
         const content_len = first_metadata_offset orelse data.len;
         const content = data[0..content_len];
@@ -74,31 +76,37 @@ pub fn build(b: *std.build.Builder) void {
         while (content_lines.next()) |line| {
             var is_inside_list = false;
 
-            if (consumePrefix(line, "#")) |heading| {
-                if (consumePrefix(heading, "#")) |heading2| {
-                    beginTag(writer, "h2");
-                    writeLineContent(writer, heading2);
-                    endTag(writer, "h2");
-                } else {
-                    beginTag(writer, "h1");
-                    writeLineContent(writer, heading);
-                    endTag(writer, "h1");
-                }
-            } else if (consumePrefix(line, "-")) |list_entry| {
+            if (consumePrefix(line, "# ")) |heading| {
+                write(writer, indentation);
+                beginTag(writer, "h1");
+                writeLineContent(writer, heading);
+                endTag(writer, "h1");
+                write(writer, "\n");
+            } else if (consumePrefix(line, "## ")) |heading| {
+                write(writer, indentation);
+                beginTag(writer, "h2");
+                writeLineContent(writer, heading);
+                endTag(writer, "h2");
+                write(writer, "\n");
+            } else if (consumePrefix(line, "- ")) |list_entry| {
                 is_inside_list = true;
                 if (!was_inside_list) {
                     beginListing(writer);
                 }
 
+                write(writer, indentation);
                 beginTag(writer, "li");
                 writeLineContent(writer, list_entry);
                 endTag(writer, "li");
+                write(writer, "\n");
             } else if (consumePrefix(line, "!")) |image_src| {
                 writeImageTag(writer, image_src);
             } else if (consumePrefix(line, "")) |paragraph| {
+                write(writer, indentation);
                 beginTag(writer, "p");
                 writeLineContent(writer, paragraph);
                 endTag(writer, "p");
+                write(writer, "\n");
             }
 
             if (was_inside_list and !is_inside_list) {
@@ -126,19 +134,24 @@ fn consumePrefix(bytes: []const u8, prefix: []const u8) ?[]const u8 {
 }
 
 fn beginDocument(writer: Writer, title: []const u8) void {
-    const prefix =
+    const before_title =
         \\<!DOCTYPE html>
         \\<html>
         \\<head>
         \\<meta charset="utf-8">
         \\<link rel="stylesheet" type="text/css" href="../style.css">
-        \\<title>{s}</title>
+        \\<title>
+        ;
+    const after_title =
+        \\</title>
         \\</head>
         \\<body>
         \\
         \\
         ;
-    writer.print(prefix, .{title}) catch unreachable;
+    write(writer, before_title);
+    write(writer, title);
+    write(writer, after_title);
 }
 
 fn endDocument(writer: Writer) void {
@@ -147,82 +160,154 @@ fn endDocument(writer: Writer) void {
         \\</html>
         \\
         ;
-    writer.writeAll(postfix) catch unreachable;
+    write(writer, postfix);
 }
 
 const indentation = " " ** 4;
 
-fn beginSection(writer: Writer, maybe_background: ?[]const u8) void {
-    writer.writeAll("<section") catch unreachable;
+fn beginSection(writer: Writer, maybe_background: ?[]const u8, headers: []const []const u8) void {
+    write(writer, "<section");
     if (maybe_background) |background| {
         if (std.mem.eql(u8, background, "main")) {
-            writer.writeAll(" class=\"main\"") catch unreachable;
+            write(writer, " class=\"main\"");
         } else {
-            writer.print(" style=\"background-image: url({s})\"", .{background}) catch unreachable;
+            write(writer, " style=\"background-image: url(");
+            write(writer, background);
+            write(writer, ")\"");
         }
     }
-    writer.writeAll(">\n") catch unreachable;
-}
-
-fn endSection(writer: Writer, headers: []const []const u8, footers: []const []const u8) void {
-    if (headers.len > 0 or footers.len > 0 ) {
-        writer.writeAll("\n") catch unreachable;
-    }
+    write(writer, ">\n");
 
     if (headers.len > 0) {
-        writer.writeAll(indentation ++ "<header>\n") catch unreachable;
+        write(writer, indentation);
+        beginTag(writer, "header");
+        write(writer, "\n");
         for (headers) |header| {
-            writer.writeAll(indentation) catch unreachable;
+            write(writer, indentation ** 2);
             beginTag(writer, "p");
             writeLineContent(writer, header);
             endTag(writer, "p");
+            write(writer, "\n");
         }
-        writer.writeAll(indentation ++ "</header>\n") catch unreachable;
+        write(writer, indentation);
+        endTag(writer, "header");
+        write(writer, "\n\n");
     }
+}
 
+fn endSection(writer: Writer, footers: []const []const u8) void {
     if (footers.len > 0) {
-        writer.writeAll(indentation ++ "<footer>\n") catch unreachable;
+        write(writer, "\n" ++ indentation);
+        beginTag(writer, "footer");
+        write(writer, "\n");
         for (footers) |footer| {
-            writer.writeAll(indentation) catch unreachable;
+            write(writer, indentation ** 2);
             beginTag(writer, "p");
             writeLineContent(writer, footer);
             endTag(writer, "p");
+            write(writer, "\n");
         }
-        writer.writeAll(indentation ++ "</header>\n") catch unreachable;
+        write(writer, indentation);
+        endTag(writer, "footer");
+        write(writer, "\n");
     }
 
-    writer.writeAll("</section>\n\n") catch unreachable;
+    endTag(writer, "section");
+    write(writer, "\n\n");
+}
+
+fn write(writer: Writer, bytes: []const u8) void {
+    writer.writeAll(bytes) catch unreachable;
+}
+
+fn writeByte(writer: Writer, byte: u8) void {
+    writer.writeByte(byte) catch unreachable;
 }
 
 fn beginListing(writer: Writer) void {
+    write(writer, indentation);
     beginTag(writer, "ul");
-    writer.writeAll("\n") catch unreachable;
+    write(writer, "\n");
 }
 
 fn endListing(writer: Writer) void {
-    writer.writeAll(indentation) catch unreachable;
+    write(writer, indentation);
     endTag(writer, "ul");
+    write(writer, "\n");
 }
 
 fn beginTag(writer: Writer, tag: []const u8) void {
-    writer.writeAll(indentation ++ "<") catch unreachable;
-    writer.writeAll(tag) catch unreachable;
-    writer.writeAll(">") catch unreachable;
+    write(writer, "<");
+    write(writer, tag);
+    write(writer, ">");
 }
 
 fn endTag(writer: Writer, tag: []const u8) void {
-    writer.writeAll("</") catch unreachable;
-    writer.writeAll(tag) catch unreachable;
-    writer.writeAll(">\n") catch unreachable;
+    write(writer, "</");
+    write(writer, tag);
+    write(writer, ">");
 }
 
 fn writeImageTag(writer: Writer, src: []const u8) void {
-    writer.writeAll(indentation ++ "<img src=\"") catch unreachable;
-    writer.writeAll(src) catch unreachable;
-    writer.writeAll("\" />\n") catch unreachable;
+    write(writer, indentation ++ "<img src=\"");
+    write(writer, src);
+    write(writer, "\" />\n");
+}
+
+fn nextByte(line: *[]const u8) ?u8 {
+    if (line.len > 0) {
+        const byte = line.*[0];
+        line.* = line.*[1..];
+        return byte;
+    } else {
+        return null;
+    }
 }
 
 fn writeLineContent(writer: Writer, line: []const u8) void {
-    writer.writeAll(line) catch unreachable;
+    var bytes = line;
+    while (nextByte(&bytes)) |byte| {
+        switch (byte) {
+            '\\' => {
+                if (nextByte(&bytes)) |b| {
+                    _ = b;
+                    writeByte(writer, b);
+                }
+                continue;
+            },
+            '[' => {
+                const separator = "](";
+                if (std.mem.indexOf(u8, bytes, separator)) |label_end| {
+                    const label = bytes[0..label_end];
+                    const link_start = label_end + separator.len;
+                    if (std.mem.indexOfScalarPos(u8, bytes, link_start, ')')) |link_end| {
+                        const link = bytes[link_start..link_end];
+
+                        write(writer, "<a href=\"");
+                        write(writer, link);
+                        write(writer, "\">");
+                        write(writer, label);
+                        endTag(writer, "a");
+
+                        bytes = bytes[link_end + 1..];
+                        continue;
+                    }
+                }
+            },
+            '*' => {
+                if (std.mem.indexOfScalar(u8, bytes, '*')) |len| {
+                    beginTag(writer, "em");
+                    write(writer, bytes[0..len]);
+                    endTag(writer, "em");
+
+                    bytes = bytes[len + 1..];
+                    continue;
+                }
+            },
+            else => {},
+        }
+
+        writeByte(writer, byte);
+    }
 }
 

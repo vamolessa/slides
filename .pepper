@@ -1,14 +1,14 @@
 config indent_with_tabs false
 lsp-start "zls"
 
-map normal <space>b @": build @buffer-path()<enter>"
+map normal <space>b @": build-all<enter>"
 map normal <space>zo :<space>-find-zig-file<enter>
 map normal <space>zf :<space>-find-zig-pattern<enter>
 
-command build @{
-    open scratch "build.log"
+command build-all @{
+    open scratch "build-all.log"
     enqueue-keys aad
-    replace-with-output "cmd /c zig build < @arg(0)"
+    replace-with-output "cmd /c build-all.bar"
 }
 command -find-zig-file @{
     picker-entries-from-lines "fd -tf --path-separator / . @env(HOME)/scoop/apps/zig/current/lib/std"
@@ -23,4 +23,12 @@ command -find-zig-pattern @{
         replace-with-output 'rg --no-ignore-global --path-separator / --line-number "@readline-input()" @env(HOME)/scoop/apps/zig/current/lib/std'
     }
 }
+
+syntax "**/*.slides"
+syntax keywords "^#{.}"
+syntax types "background:|header:|footer:"
+syntax symbols "%!|---|-"
+syntax literals "%[{!%].}%({!%).}"
+syntax comments "^==={!(^---)$.}"
+syntax texts "{%w_-}"
 

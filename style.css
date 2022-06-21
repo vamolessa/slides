@@ -30,11 +30,11 @@ body {
 
 /* styles */
 
-main {
+section.main {
 	background-image: linear-gradient(0deg, rgb(45, 150, 191) 0%, rgb(47, 171, 168) 100%);
 }
 
-main *, section * {
+section * {
 	margin: 0;
 	padding: 0;
 
@@ -56,7 +56,7 @@ h1 {
 	font-weight: 900;
 	font-size: 7vh;
 }
-main h1, h1:only-child {
+section.main h1, h1:only-child {
 	font-size: 8vh;
 }
 h2 {
@@ -73,7 +73,7 @@ section * {
 h1 {
 	color: rgb(47, 167, 174);
 }
-main * {
+section.main * {
 	color: white;
 }
 section[style*="background-image:"] * {
@@ -93,7 +93,7 @@ img {
 	align-self: center;
 }
 
-main, section, header, footer {
+section, header, footer {
 	margin: 0;
 	padding-left: calc(40vw - ((100vh - 8vh) * 4 / 9));
 	padding-right: calc(50vw - ((100vh - 8vh) * 4 / 9));
@@ -107,7 +107,7 @@ main, section, header, footer {
 	row-gap: min(1vh, 10px);
 }
 
-main, section {
+section {
 	position: relative;
 	padding-top: 15vh;
 	padding-bottom: 5vh;
