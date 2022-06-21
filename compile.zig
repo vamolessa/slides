@@ -13,19 +13,23 @@ pub fn main() void {
         _ = args.skip();
         if (args.next(arena.allocator())) |maybe_arg| {
             const arg = maybe_arg catch {
-                std.log.err("could not parse cli arg", .{});
+                std.io.getStdErr().writer().writeAll("could not parse cli arg\n") catch {};
                 return;
             };
 
             if (std.mem.eql(u8, arg, "--help") or std.mem.eql(u8, arg, "-h")) {
-                std.log.info("--all : recursively compile all " ++ src_extension ++ " sources into " ++ dst_extension, .{});
-                std.log.info("with no option, will compile stdin into stdout", .{});
+                const stdout = std.io.getStdOut();
+                const writer = stdout.writer();
+                writer.writeAll(
+                    "  --all : recursively compile all " ++ src_extension ++ " sources into " ++ dst_extension ++ "\n",
+                ) catch {};
+                writer.writeAll("  with no option, will compile stdin into stdout\n") catch {};
                 return;
             } else if (std.mem.eql(u8, arg, "--all")) {
                 compileAll(&arena);
                 return;
             } else {
-                std.log.err("invalid cli arg: {s}", .{arg});
+                std.io.getStdErr().writer().print("invalid cli arg: {s}\n", .{arg}) catch {};
                 return;
             }
         }
@@ -33,14 +37,20 @@ pub fn main() void {
 
     const stdin = std.io.getStdIn();
     const stdout = std.io.getStdOut();
-
     compile(arena.allocator(), stdin, stdout);
 }
 
 fn compileAll(arena: *std.heap.ArenaAllocator) void {
-    const cwd = std.fs.cwd().openDir(".", .{ .iterate = true, .no_follow = true }) catch unreachable;
+    const stdout = std.io.getStdOut();
+    const writer = stdout.writer();
+
+    const cwd = std.fs.cwd().openDir(".", .{ .iterate = true, .no_follow = true }) catch {
+        writer.writeAll("could not open current directory for iteration\n") catch {};
+        return;
+    };
+
     var dirs = cwd.iterate();
-    while (dirs.next() catch unreachable) |dir_entry| {
+    while (dirs.next() catch null) |dir_entry| {
         if (dir_entry.kind != .Directory) {
             continue;
         }
@@ -48,9 +58,9 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
             continue;
         }
 
-        const dir = cwd.openDir(dir_entry.name, .{ .iterate = true, .no_follow = true }) catch unreachable;
+        const dir = cwd.openDir(dir_entry.name, .{ .iterate = true, .no_follow = true }) catch continue;
         var files = dir.iterate();
-        while (files.next() catch unreachable) |file_entry| {
+        while (files.next() catch null) |file_entry| {
             if (file_entry.kind != .File) {
                 continue;
             }
@@ -63,22 +73,33 @@ fn compileAll(arena: *std.heap.ArenaAllocator) void {
             const dst_path = std.mem.concat(arena.allocator(), u8, &.{
                 src_path_without_extension,
                 dst_extension,
-            }) catch unreachable;
+            }) catch {
+                writer.writeAll("could not allocate memory for dst path\n") catch {};
+                continue;
+            };
 
-            const src = dir.openFile(src_path, .{}) catch unreachable;
-            const dst = dir.createFile(dst_path, .{}) catch unreachable;
+            const src = dir.openFile(src_path, .{}) catch continue;
+            const dst = dir.createFile(dst_path, .{}) catch continue;
 
             compile(arena.allocator(), src, dst);
-            std.log.info("compiled {s} into {s}", .{ src_path, dst_path });
+            writer.print("compiled {s}/{s} into {s}/{s}\n", .{
+                dir_entry.name,
+                src_path,
+                dir_entry.name,
+                dst_path,
+            }) catch {};
         }
     }
 }
 
 fn compile(allocator: std.mem.Allocator, input: std.fs.File, output: std.fs.File) void {
-    const src = input.reader().readAllAlloc(allocator, std.math.maxInt(usize)) catch unreachable;
+    const src = input.reader().readAllAlloc(allocator, std.math.maxInt(usize)) catch {
+        output.writer().writeAll("could read input\n") catch {};
+        return;
+    };
 
     var buffered_writer = BufferedWriter{ .unbuffered_writer = output.writer() };
-    defer buffered_writer.flush() catch unreachable;
+    defer buffered_writer.flush() catch {};
     var writer = buffered_writer.writer();
     defer endDocument(writer);
 
@@ -286,11 +307,11 @@ fn endSection(writer: Writer, footers: []const []const u8) void {
 }
 
 fn write(writer: Writer, bytes: []const u8) void {
-    writer.writeAll(bytes) catch unreachable;
+    writer.writeAll(bytes) catch std.debug.panic("could not write bytes\n", .{});
 }
 
 fn writeByte(writer: Writer, byte: u8) void {
-    writer.writeByte(byte) catch unreachable;
+    writer.writeByte(byte) catch std.debug.panic("could not write bytes\n", .{});
 }
 
 fn beginListing(writer: Writer) void {
@@ -379,3 +400,4 @@ fn writeLineContent(writer: Writer, line: []const u8) void {
         writeByte(writer, byte);
     }
 }
+

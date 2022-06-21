@@ -8,7 +8,7 @@ map normal <space>zf :<space>-find-zig-pattern<enter>
 command build-all @{
     open scratch "build-all.log"
     enqueue-keys aad
-    replace-with-output "cmd /c build-all.bar"
+    replace-with-output "zig run compile.zig -- --all"
 }
 command -find-zig-file @{
     picker-entries-from-lines "fd -tf --path-separator / . @env(HOME)/scoop/apps/zig/current/lib/std"
