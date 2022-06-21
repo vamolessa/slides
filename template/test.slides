@@ -1,4 +1,4 @@
-# title
+# my title
 
 background:image.jpg
 footer:[alsjdhasd](asdas)
@@ -8,6 +8,20 @@ asdljashd
 lasjdhas
 
 ---
+# more slide
+
+- aa
+- bb
+- asdasd
+
+!image.png
+asjdahsld
+---
 
 # another slide
+
+background:main
+header: some header
+###
+notes
 

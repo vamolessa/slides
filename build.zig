@@ -63,8 +63,8 @@ pub fn build(b: *std.build.Builder) void {
             beginDocument(writer, title);
         }
 
-        beginSection(writer, maybe_background, headers[0..header_count]);
-        defer endSection(writer, footers[0..footer_count]);
+        beginSection(writer, maybe_background);
+        defer endSection(writer, headers[0..header_count], footers[0..footer_count]);
 
         const content_len = first_metadata_offset orelse data.len;
         const content = data[0..content_len];
@@ -87,12 +87,14 @@ pub fn build(b: *std.build.Builder) void {
             } else if (consumePrefix(line, "-")) |list_entry| {
                 is_inside_list = true;
                 if (!was_inside_list) {
-                    beginTag(writer, "ul");
+                    beginListing(writer);
                 }
 
                 beginTag(writer, "li");
                 writeLineContent(writer, list_entry);
                 endTag(writer, "li");
+            } else if (consumePrefix(line, "!")) |image_src| {
+                writeImageTag(writer, image_src);
             } else if (consumePrefix(line, "")) |paragraph| {
                 beginTag(writer, "p");
                 writeLineContent(writer, paragraph);
@@ -100,12 +102,12 @@ pub fn build(b: *std.build.Builder) void {
             }
 
             if (was_inside_list and !is_inside_list) {
-                endTag(writer, "ul");
+                endListing(writer);
             }
             was_inside_list = is_inside_list;
         }
         if (was_inside_list) {
-            endTag(writer, "ul");
+            endListing(writer);
         }
     }
 }
@@ -126,6 +128,7 @@ fn consumePrefix(bytes: []const u8, prefix: []const u8) ?[]const u8 {
 fn beginDocument(writer: Writer, title: []const u8) void {
     const prefix =
         \\<!DOCTYPE html>
+        \\<html>
         \\<head>
         \\<meta charset="utf-8">
         \\<link rel="stylesheet" type="text/css" href="../style.css">
@@ -141,6 +144,7 @@ fn beginDocument(writer: Writer, title: []const u8) void {
 fn endDocument(writer: Writer) void {
     const postfix =
         \\</body>
+        \\</html>
         \\
         ;
     writer.writeAll(postfix) catch unreachable;
@@ -148,7 +152,7 @@ fn endDocument(writer: Writer) void {
 
 const indentation = " " ** 4;
 
-fn beginSection(writer: Writer, maybe_background: ?[]const u8, headers: []const []const u8) void {
+fn beginSection(writer: Writer, maybe_background: ?[]const u8) void {
     writer.writeAll("<section") catch unreachable;
     if (maybe_background) |background| {
         if (std.mem.eql(u8, background, "main")) {
@@ -158,6 +162,12 @@ fn beginSection(writer: Writer, maybe_background: ?[]const u8, headers: []const 
         }
     }
     writer.writeAll(">\n") catch unreachable;
+}
+
+fn endSection(writer: Writer, headers: []const []const u8, footers: []const []const u8) void {
+    if (headers.len > 0 or footers.len > 0 ) {
+        writer.writeAll("\n") catch unreachable;
+    }
 
     if (headers.len > 0) {
         writer.writeAll(indentation ++ "<header>\n") catch unreachable;
@@ -169,9 +179,7 @@ fn beginSection(writer: Writer, maybe_background: ?[]const u8, headers: []const 
         }
         writer.writeAll(indentation ++ "</header>\n") catch unreachable;
     }
-}
 
-fn endSection(writer: Writer, footers: []const []const u8) void {
     if (footers.len > 0) {
         writer.writeAll(indentation ++ "<footer>\n") catch unreachable;
         for (footers) |footer| {
@@ -186,6 +194,16 @@ fn endSection(writer: Writer, footers: []const []const u8) void {
     writer.writeAll("</section>\n\n") catch unreachable;
 }
 
+fn beginListing(writer: Writer) void {
+    beginTag(writer, "ul");
+    writer.writeAll("\n") catch unreachable;
+}
+
+fn endListing(writer: Writer) void {
+    writer.writeAll(indentation) catch unreachable;
+    endTag(writer, "ul");
+}
+
 fn beginTag(writer: Writer, tag: []const u8) void {
     writer.writeAll(indentation ++ "<") catch unreachable;
     writer.writeAll(tag) catch unreachable;
@@ -196,6 +214,12 @@ fn endTag(writer: Writer, tag: []const u8) void {
     writer.writeAll("</") catch unreachable;
     writer.writeAll(tag) catch unreachable;
     writer.writeAll(">\n") catch unreachable;
+}
+
+fn writeImageTag(writer: Writer, src: []const u8) void {
+    writer.writeAll(indentation ++ "<img src=\"") catch unreachable;
+    writer.writeAll(src) catch unreachable;
+    writer.writeAll("\" />\n") catch unreachable;
 }
 
 fn writeLineContent(writer: Writer, line: []const u8) void {
