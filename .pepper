@@ -2,9 +2,15 @@ config indent_with_tabs false
 lsp-start "zls"
 
 map normal <space>b @": build-all<enter>"
+map normal <space>s @": show<enter>"
 map normal <space>zo :<space>-find-zig-file<enter>
 map normal <space>zf :<space>-find-zig-pattern<enter>
 
+if @platform() == windows @{
+    command show @{
+        spawn 'cmd /v /c set "slidepath=@buffer-path()" && start "!slidepath:~0,-8!.html"'
+    }
+}
 command build-all @{
     open scratch "build-all.log"
     enqueue-keys aad
