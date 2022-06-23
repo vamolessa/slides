@@ -8,7 +8,7 @@ map normal <space>zf :<space>-find-zig-pattern<enter>
 
 if @platform() == windows @{
     command show @{
-        spawn 'cmd /v /c set "slidepath=@buffer-path()" && start "!slidepath:~0,-8!.html"'
+        spawn 'cmd /c for %f in (@buffer-path()) do start "%~dpf%~nf.html"'
     }
 }
 command build-all @{
