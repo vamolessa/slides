@@ -1,6 +1,5 @@
 # design de apis
 ## workshop bitcake 2022
-
 background:main
 footer:por @ahvamolessa
 ---
@@ -12,11 +11,12 @@ background:thinker.jpg
 # ======================
 ===
 TODO:
+estabelece os 4 topicos e depois os destrincha separadamente:
 
 o que influencia api:
 - o que: abstracoes
-- quem usa: comunicação
 - intenção de uso: interface
+- quem usa: comunicação
 - restricoes: linguagem, plataforma, resto do software, etc
 ---
 
@@ -89,8 +89,8 @@ comunicação! comunicação com quem deve usar o sistema
 a única maneira de acertar um bom design de primeira é com muita sorte ou ter experiência prévia resolvendo tal problema
 ---
 
-# código reutilizável vs código fácil de deletar</h1>
-## a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h2>
+# código reutilizável vs código fácil de deletar
+## a única forma de criar código reutilizável é extraindo-o de código fácil de deletar
 
 footer:[semantic compression](https://caseymuratori.com/blog_0015)
 footer:[how to write disposable code in large systems](https://programmingisterrible.com/post/139222674273/how-to-write-disposable-code-in-large-systems)
@@ -155,6 +155,8 @@ restrições influenciam design
 footer:[performance and good data design](https://cellperformance.beyond3d.com/articles/2006/04/performance-and-good-data-design.html)
 footer:[best practices for godot engine contributors](https://docs.godotengine.org/en/stable/community/contributing/best_practices_for_engine_contributors.html)
 ===
+TODO: atualmente redundante com "o que influencia api" lá em cima
+
 é necessário sempre considerar ambos os lados: implementação x uso
 é preciso contexto para tomar decisão informada quanto a onde melhor traçar a linha da abstração
 ---
@@ -203,6 +205,8 @@ nao ganhamos nada espalhando seu codigo
 - pré-condições + invariantes + pós-condições
 - intui sua implementação
 ===
+TODO: expandir slides
+
 ortogonal = conceitos são independentes e não se influenciam
 composível = é permitido e talvez até fácil de interagir com outras abstrações
 adicionada < abstraída = puxar mais que seu próprio peso
@@ -225,8 +229,6 @@ condições + invariantes = explicidade. também gerenciamento de erros
 intui implementação = faz parte da interface saber (pelo menos) superficialmente sobre sua implementação!
 
 TODO: https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-
-
-TODO: expandir slides
 ---
 
 # às vezes não precisa de api ou abstração
