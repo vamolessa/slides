@@ -191,29 +191,60 @@ e deixar pra implementar interfaces formais e impenetráveis de api a nível de 
 na prática: encapsulamento (getter/setter, variáveis e funções privadas/protegidas, arquivos super fragmentados, etc)
 não são importantes enquanto estamos no mesmo módulo.
 é tudo parte de uma mesma implementação: a abstração principal do sistema.
+
+TODO: paramo aqui
 ---
 
 # profunda
 - ortogonal
 - composível
 - complexidade adicionada < complexidade abstraída
-- vazamento mínimo
 # interface enxuta
 - padrões razoáveis
 - estado mínimo e explícito
 - pré-condições + invariantes + pós-condições
 - intui sua implementação
 ===
-TODO: expandir slides
+TODO: paramo logo depois daqui
+---
 
-ortogonal = conceitos são independentes e não se influenciam
-composível = é permitido e talvez até fácil de interagir com outras abstrações
-adicionada < abstraída = puxar mais que seu próprio peso
-vazamento mínimo
+# ortogonal
+header:profunda
+===
+conceitos são independentes e não se influenciam
+---
 
-padrões razoáveis = criar um "pit of success" pra quem for usar
-estado mínimo = é implementação porém vaza facilmente. ex: ordem de execução
-condições + invariantes = explicidade. também gerenciamento de erros
+# composível
+header:profunda
+===
+é permitido e talvez até fácil de interagir com outras abstrações
+---
+
+# complexidade adicionada < complexidade abstraída
+header:profunda
+===
+puxar mais que seu próprio peso
+---
+
+# padrões razoáveis
+header:interface enxuta
+===
+criar um "pit of success" pra quem for usar
+---
+
+# estado mínimo e explícito
+header:interface enxuta
+footer:[in detph: functional programming in c++](https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-)
+===
+facilitar entendimento e reflexão por diminuir "partes móveis".
+ex: ordem de execução
+ex: maquina de estados opengl
+---
+
+# pré-condições + invariantes + pós-condições
+header:interface enxuta
+===
+explicidade. também gerenciamento de erros
 	Const correctness.
 	Sempre preferir funções puras quando possível.
 	É um espectro, tentar sempre empurrar funções pro lado mais puro.
@@ -225,15 +256,17 @@ condições + invariantes = explicidade. também gerenciamento de erros
 		- BitStrap: `Option<T>`
 	- range de valores
 	- ordem de execução
-intui implementação = faz parte da interface saber (pelo menos) superficialmente sobre sua implementação!
+---
 
-TODO: https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-
+# intui sua implementação
+header:interface enxuta
+===
+faz parte da interface saber (pelo menos) superficialmente sobre sua implementação.
 ---
 
 # às vezes não precisa de api ou abstração
-## código vai mas o design fica
-
-background:design.jpg
+## código vai, design fica
+background:galaxy-brain.png
 ===
 nosso trabalho é resolver problema. escrever código é consequência.
 
