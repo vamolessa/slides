@@ -1,151 +1,168 @@
 /* assets */
 @font-face {
-	font-family: Montserrat;
-	font-style: normal;
-	src: url(Montserrat.ttf);
+    font-family: Montserrat;
+    font-style: normal;
+    src: url(Montserrat.ttf);
 }
 
 * {
-	font-family: Montserrat;
+    font-family: Montserrat;
 }
 
 /* reset */
 html {
-	margin: 0;
-	padding: 0;
-	width: auto;
-	height: 100%;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: 100%;
 
-	scroll-snap-type: y mandatory;
-	overflow-x: hidden;
-	overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 body {
-	margin: 0;
-	padding: 0;
-	width: auto;
-	height: 100%;
-	background: rgb(50, 50, 50);
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: 100%;
+    background: rgb(50, 50, 50);
 }
 
 /* styles */
 
 section.main {
-	background-image: linear-gradient(0deg, rgb(45, 150, 191) 0%, rgb(47, 171, 168) 100%);
+    background-image: linear-gradient(0deg, rgb(45, 150, 191) 0%, rgb(47, 171, 168) 100%);
 }
 
 section * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 
-	font-weight: 300;
-	font-size: 4vh;
+    font-weight: 300;
+    font-size: 3.5vh;
 }
 
 header, header * {
-	font-weight: 300;
-	font-size: 2vh;
+    font-weight: 300;
+    font-size: 2vh;
 }
 
 footer, footer * {
-	font-weight: 300;
-	font-size: 2.3vh;
+    font-weight: 300;
+    font-size: 2.3vh;
 }
 
 h1 {
-	font-weight: 900;
-	font-size: 7vh;
+    font-weight: 900;
+    font-size: 7vh;
 }
 section.main h1, h1:only-child {
-	font-size: 8vh;
+    font-size: 8vh;
 }
 h2 {
-	font-size: 5vh;
-	font-style: italic;
+    font-size: 5vh;
+    font-style: italic;
 }
 h1, h2 {
-	margin-bottom: min(1vh, 10px);
+    margin-bottom: min(1vh, 10px);
 }
 
 section * {
-	color: rgb(83, 88, 95);
+    color: rgb(83, 88, 95);
 }
 h1 {
-	color: rgb(47, 167, 174);
+    color: rgb(47, 167, 174);
 }
 section.main * {
-	color: white;
+    color: white;
 }
 section[style*="background-image:"] * {
-	text-shadow: 0 0 0.7vh rgb(0, 0, 0);
-	color: white;
+    text-shadow: 0 0 0.7vh rgb(0, 0, 0);
+    color: white;
 }
 
 em {
-	font-weight: inherit;
-	font-size: inherit;
-	color: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    color: inherit;
 }
 
 img {
-	max-width: 80%;
-	max-height: 60%;
-	align-self: center;
+    max-width: 80%;
+    max-height: 60%;
+    align-self: center;
 }
 
 section, header, footer {
-	margin: 0;
-	padding-left: calc(40vw - ((100vh - 8vh) * 4 / 9));
-	padding-right: calc(50vw - ((100vh - 8vh) * 4 / 9));
+    margin: 0;
+    padding-left: calc(40vw - ((100vh - 8vh) * 4 / 9));
+    padding-right: calc(50vw - ((100vh - 8vh) * 4 / 9));
 
-	display: flex;
-	flex-direction: column;
-	flex-wrap: nowrap;
-	justify-content: center;
-	align-items: flex-start;
-	align-content: center;
-	row-gap: min(1vh, 10px);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: center;
+    row-gap: min(1vh, 10px);
 }
 
 section {
-	position: relative;
-	padding-top: 15vh;
-	padding-bottom: 5vh;
-	width: auto;
-	height: 100%;
-	box-sizing: border-box;
+    position: relative;
+    padding-top: 15vh;
+    padding-bottom: 5vh;
+    width: auto;
+    height: 100%;
+    box-sizing: border-box;
 
-	scroll-snap-align: start;
+    scroll-snap-align: start;
 
-	background-color: white;
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center;
+    background-color: white;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 header, footer {
-	width: 100%;
-	left: 0;
-	background-color: rgba(0, 0, 0, 0.07);
+    width: 100%;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.05);
 }
 section[style*="background-image:"] header, section[style*="background-image:"] footer {
-	text-shadow: none;
-	background-color: rgba(0, 0, 0, 0.3);
+    text-shadow: none;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 header {
-	position: absolute;
-	top: 0;
-	padding-top: 0.2vh;
-	padding-bottom: 0.2vh;
+    position: absolute;
+    top: 0;
+    padding-top: 0.2vh;
+    padding-bottom: 0.2vh;
 }
 footer {
-	position: absolute;
-	bottom: 0;
-	padding-top: 0.8vh;
-	padding-bottom: 1.2vh;
+    position: absolute;
+    bottom: 0;
+    padding-top: 0.8vh;
+    padding-bottom: 1.2vh;
 }
 
-h1 *:not(em), h2 *:not(em) {
-	background-color: red;
+pre {
+    padding: 0.5vh;
+    font-size: unset;
+}
+pre, code {
+    background-color: rgba(200, 200, 200, 0.2);
+    border-color: rgba(200, 200, 200, 0.6);
+    border-radius: 1vh;
+    border-width: 0.4vh;
+    border-style: solid;
+}
+code {
+    font-family: monospace;
+    font-size: 3vh;
+}
+pre > code {
+    background-color: unset;
+    border: unset;
+    font-size: 2.5vh;
 }
 

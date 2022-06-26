@@ -203,6 +203,29 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
                 write(writer, "\n");
             } else if (consumePrefix(line, "!")) |image_src| {
                 writeImageTag(writer, image_src);
+            } else if (std.mem.eql(u8, line, "```")) {
+                write(writer, indentation);
+                beginTag(writer, "pre");
+                beginTag(writer, "code");
+
+                const code_start = content_lines.rest();
+                var code_len: usize = 0;
+
+                while(content_lines.next()) |code_line| {
+                    if (std.mem.eql(u8, code_line, "```")) {
+                        break;
+                    } else {
+                        code_len += code_line.len + 1;
+                    }
+                }
+                if (code_len > 0) {
+                    code_len -= 1;
+                }
+
+                write(writer, code_start[0..code_len]);
+                endTag(writer, "code");
+                endTag(writer, "pre");
+                write(writer, "\n");
             } else if (consumePrefix(line, "")) |paragraph| {
                 write(writer, indentation);
                 beginTag(writer, "p");
@@ -401,6 +424,16 @@ fn writeLineContent(writer: Writer, line: []const u8) void {
                     beginTag(writer, "em");
                     write(writer, bytes[0..len]);
                     endTag(writer, "em");
+
+                    bytes = bytes[len + 1 ..];
+                    continue;
+                }
+            },
+            '`' => {
+                if (std.mem.indexOfScalar(u8, bytes, '`')) |len| {
+                    beginTag(writer, "code");
+                    write(writer, bytes[0..len]);
+                    endTag(writer, "code");
 
                     bytes = bytes[len + 1 ..];
                     continue;

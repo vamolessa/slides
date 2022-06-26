@@ -26,4 +26,16 @@ speaker notes
 background:image.jpg
 ===
 more speaker notes
+---
+
+# slide with code
+here's some `inline code`
+
+```
+if (true) {
+    print("yes");
+}
+```
+===
+don't forget to comment the code!
 

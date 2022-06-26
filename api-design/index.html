@@ -112,6 +112,7 @@
     <h2>"programmers know the benefits of everything and the tradeoffs of nothing"</h2>
 
     <footer>
+        <p><a href="https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ">there are no zero-cost abstractions</a></p>
         <p><a href="https://www.youtube.com/watch?v=rI8tNMsozo0">simplicity matters</a></p>
     </footer>
 </section>
@@ -186,6 +187,21 @@
 
 <section>
     <header>
+        <p>profunda / complexidade adicionada < complexidade abstraída</p>
+    </header>
+
+    <h2>desempenho</h2>
+    <ul>
+    <li>é um sistema pervasivo? muitas entidades?</li>
+    <li>onde há um, há muitos! qual o caso comum? operar em lotes!</li>
+    <li>agrupar por tipos ao invés de coleções heterogêneas</li>
+    <li>particionar ao invés de branch</li>
+    <li>multithread? job system?</li>
+    </ul>
+</section>
+
+<section>
+    <header>
         <p>interface enxuta</p>
     </header>
 
@@ -194,13 +210,70 @@
 
 <section>
     <header>
+        <p>interface enxuta / padrões razoáveis</p>
+    </header>
+
+    <h2>estruturas de dados</h2>
+    <p>arrays <em>muito</em> provavelmente são suficientes</p>
+    <p>processadores adoram memória linear</p>
+    <p>*olha feio praquela lista encadeada*</p>
+</section>
+
+<section>
+    <header>
         <p>interface enxuta</p>
     </header>
 
     <h1>estado mínimo e explícito</h1>
+    <p>sobre quais os dados a api opera?</p>
+    <p>onde eles são alterados?</p>
 
     <footer>
         <p><a href="https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-">in detph: functional programming in c++</a></p>
+    </footer>
+</section>
+
+<section>
+    <header>
+        <p>interface enxuta / estado mínimo e explícito</p>
+    </header>
+
+    <h2>const correctness</h2>
+    <p>preferir estilo funcional sempre que possível</p>
+    <p>facilita compreensão. menos dependente de ordem de execução</p>
+    <pre><code>// evitar
+obj.CheckSomething();
+obj.MaybeDoSomethingInResponse();
+
+// preferir
+var result = obj.CheckSomething();
+if (result) {
+    obj.DoSomethingInResponse(result);
+}</code></pre>
+
+    <footer>
+        <p><a href="https://isocpp.org/wiki/faq/const-correctness">c++ const correctness</a></p>
+    </footer>
+</section>
+
+<section>
+    <header>
+        <p>interface enxuta / estado mínimo e explícito</p>
+    </header>
+
+    <h2>recursos e posse</h2>
+    <p>quem é o responsável pelo recurso?</p>
+    <p>posse vs empréstimo</p>
+    <p>onde há alocação de memória? possível evitá-la?</p>
+    <ul>
+    <li>c# = preferir structs e arrays; reusar coleções</li>
+    <li>c++ = arrays; inline allocator;</li>
+    </ul>
+
+    <footer>
+        <p><a href="https://docs.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines#owners-consumers-and-lifetime-management">c# memory and spans - owners, consumers and lifetime management</a></p>
+        <p><a href="https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25">List.cs</a></p>
+        <p><a href="https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/">TInlineAllocator</a></p>
     </footer>
 </section>
 
@@ -214,10 +287,69 @@
 
 <section>
     <header>
+        <p>interface enxuta / pré-condições + invariantes + pós-condições</p>
+    </header>
+
+    <h2>null</h2>
+    <p>pré-condição: quais funções podem <em>receber</em> null?</p>
+    <p>pós-condição: quais funções podem <em>retornar</em> null?</p>
+    <p>decidir e ser explícito!</p>
+    <p>linguagens mais recentes têm esse conceito embutido (rust, zig, kotlin, c#8)</p>
+    <ul>
+    <li>c# da unity não tem isso</li>
+    <li>bitstrap: <code>Option<T></code></li>
+    </ul>
+
+    <footer>
+        <p><a href="https://github.com/bitcake/bitstrap/blob/master/Assets/Runtime/Functional/Option.cs">Option.cs</a></p>
+    </footer>
+</section>
+
+<section>
+    <header>
+        <p>interface enxuta / pré-condições + invariantes + pós-condições</p>
+    </header>
+
+    <h2>minimizar erros</h2>
+    <p>dois tipos de erros:</p>
+    <ul>
+    <li>entrada/saída => tratar</li>
+    <li>lógica => assert</li>
+    </ul>
+    <p>"define errors out of existence"</p>
+    <p>-- ousterhout, john</p>
+</section>
+
+<section>
+    <h2>intervalo de valores</h2>
+    <p>usar tipos para codificar valores válidos</p>
+    <pre><code>// evitar
+int GetPlayerCount();
+
+// preferir
+uint8 GetPlayerCount();</code></pre>
+</section>
+
+<section>
+    <header>
         <p>interface enxuta</p>
     </header>
 
     <h1>intui sua implementação</h1>
+    <p>a partir de uma transformação conhecida, é possível inferir aproximadamente suas entradas e saídas</p>
+</section>
+
+<section>
+    <header>
+        <p>interface enxuta / intui sua implementação</p>
+    </header>
+
+    <h2>debugabilidade</h2>
+    <ul>
+    <li>onde estão os dados?</li>
+    <li>são fáceis de inspecionar?</li>
+    <li>é fácil acompanhar o que está acontecendo pelo debugger?</li>
+    </ul>
 </section>
 
 <section style="background-image: url(galaxy-brain.png)">
@@ -238,51 +370,10 @@
     </footer>
 </section>
 
-<section class="main">
-    <h1>extras práticos</h1>
-</section>
-
 <section>
     <h1>late binding x early binding</h1>
     <p>no início, queremos simplicidade</p>
     <p>no final, queremos controle total</p>
-</section>
-
-<section>
-    <h1>debugabilidade</h1>
-    <p>onde estão os dados?</p>
-    <p>são fáceis de inspecionar?</p>
-    <p>é fácil acompanhar o que está acontecendo pelo debugger?</p>
-</section>
-
-<section>
-    <h1>estruturas de dados</h1>
-    <p>arrays <em>muito</em> provavelmente são suficientes</p>
-    <p>processadores adoram memória linear</p>
-    <p>*olha feio praquela lista encadeada*</p>
-</section>
-
-<section>
-    <h1>recursos e posse</h1>
-    <p>quem é o responsável pelo recurso?</p>
-    <p>posse vs emprestimo</p>
-    <p>onde há alocação de memória? da pra evitá-la?</p>
-    <p>C# = preferir structs e arrays; reusar coleções</p>
-    <p>C++ = arrays; inline allocator;</p>
-
-    <footer>
-        <p><a href="https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25">List.cs</a></p>
-        <p><a href="https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/">TInlineAllocator</a></p>
-    </footer>
-</section>
-
-<section>
-    <h1>desempenho</h1>
-    <p>é um sistema pervasivo? muitas entidades?</p>
-    <p>onde há um, há muitos! qual o caso comum? operar em lotes!</p>
-    <p>agrupar por tipos ao invés de coleções heterogêneas</p>
-    <p>particionar ao invés de branch</p>
-    <p>multithread? job system?</p>
 </section>
 
 <section>

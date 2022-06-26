@@ -35,6 +35,7 @@ syntax keywords "^#{.}"
 syntax types "background:|header:|footer:"
 syntax symbols "%!|---|-"
 syntax literals "%[{!%].}%({!%).}"
+syntax strings "```{!(```).$}|`{!`.}"
 syntax comments "^==={!(^---)$.}"
 syntax texts "{%w_-}"
 

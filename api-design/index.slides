@@ -139,12 +139,11 @@ ex de abstracao:
 - toda abstração vaza detalhes de implementação!
 	- e tudo bem! isso não invalida suas utilidades
 	- porem, existe um gradiente aí! mesmo sempre existindo vazamento, é de nosso interesse minimizá-lo!!
-
-TODO: citar? https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ&index=11
 ---
 
 # abstrações apenas têm valor quando levantam seu próprio peso
 ## "programmers know the benefits of everything and the tradeoffs of nothing"
+footer:[there are no zero-cost abstractions](https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ)
 footer:[simplicity matters](https://www.youtube.com/watch?v=rI8tNMsozo0)
 ===
 importante pra nos lembrar dos custos de adicionar abstrações a um sistema nos guia a onde traçamos apis.
@@ -191,8 +190,6 @@ e deixar pra implementar interfaces formais e impenetráveis de api a nível de 
 na prática: encapsulamento (getter/setter, variáveis e funções privadas/protegidas, arquivos super fragmentados, etc)
 não são importantes enquanto estamos no mesmo módulo.
 é tudo parte de uma mesma implementação: a abstração principal do sistema.
-
-TODO: paramo aqui
 ---
 
 # profunda
@@ -204,26 +201,34 @@ TODO: paramo aqui
 - estado mínimo e explícito
 - pré-condições + invariantes + pós-condições
 - intui sua implementação
-===
-TODO: paramo logo depois daqui
 ---
 
 # ortogonal
 header:profunda
 ===
-conceitos são independentes e não se influenciam
+conceitos são independentes e não se influenciam.
 ---
 
 # composível
 header:profunda
 ===
-é permitido e talvez até fácil de interagir com outras abstrações
+é permitido e talvez até fácil de interagir com outras abstrações.
 ---
 
 # complexidade adicionada < complexidade abstraída
 header:profunda
 ===
-puxar mais que seu próprio peso
+puxar mais que seu próprio peso.
+conhecer os tradeoffs que estão sendo feitos.
+---
+
+## desempenho
+- é um sistema pervasivo? muitas entidades?
+- onde há um, há muitos! qual o caso comum? operar em lotes!
+- agrupar por tipos ao invés de coleções heterogêneas
+- particionar ao invés de branch
+- multithread? job system?
+header:profunda / complexidade adicionada < complexidade abstraída
 ---
 
 # padrões razoáveis
@@ -232,36 +237,122 @@ header:interface enxuta
 criar um "pit of success" pra quem for usar
 ---
 
+## estruturas de dados
+arrays *muito* provavelmente são suficientes
+processadores adoram memória linear
+\*olha feio praquela lista encadeada\*
+header:interface enxuta / padrões razoáveis
+---
+
 # estado mínimo e explícito
+sobre quais os dados a api opera?
+onde eles são alterados?
+
 header:interface enxuta
 footer:[in detph: functional programming in c++](https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-)
 ===
 facilitar entendimento e reflexão por diminuir "partes móveis".
-ex: ordem de execução
-ex: maquina de estados opengl
+---
+
+## const correctness
+preferir estilo funcional sempre que possível
+facilita compreensão. menos dependente de ordem de execução
+
+```
+// evitar
+obj.CheckSomething();
+obj.MaybeDoSomethingInResponse();
+
+// preferir
+var result = obj.CheckSomething();
+if (result) {
+    obj.DoSomethingInResponse(result);
+}
+```
+
+header:interface enxuta / estado mínimo e explícito
+footer:[c++ const correctness](https://isocpp.org/wiki/faq/const-correctness)
+===
+as linhas serem breves são um falso indicador da complexidade por trás uma vez que
+para realmente entender o que está acontecendo, agora devemos ter em mente o estado interno de `obj`.
+mudar a ordem das linhas ou esquecer uma delas facilmente causará bugs.
+
+aqui `CheckSomething` não modifica o estado interno de obj e apenas retorna o resultado calculado.
+enquanto `DoSomethingInResponse` explicitamente age em cima do resultado obtido.
+também está explícito o `if` que antes estava escondido em `MaybeDoSomethingInResponse`.
+
+ex: maquina de estados opengl.
+---
+
+## recursos e posse
+quem é o responsável pelo recurso?
+posse vs empréstimo
+onde há alocação de memória? possível evitá-la?
+
+- c# = preferir structs e arrays; reusar coleções
+- c++ = arrays; inline allocator;
+
+header:interface enxuta / estado mínimo e explícito
+footer:[c# memory and spans - owners, consumers and lifetime management](https://docs.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines#owners-consumers-and-lifetime-management)
+footer:[List.cs](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25)
+footer:[TInlineAllocator](https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/)
 ---
 
 # pré-condições + invariantes + pós-condições
 header:interface enxuta
-===
-explicidade. também gerenciamento de erros
-	Const correctness.
-	Sempre preferir funções puras quando possível.
-	É um espectro, tentar sempre empurrar funções pro lado mais puro.
+---
 
-	ex:
-	- null
-		- linguagens mais recentes têm esse conceito embutido (rust, zig, kotlin, C#8)
-		- C# da unity não tem isso
-		- BitStrap: `Option<T>`
-	- range de valores
-	- ordem de execução
+## null
+pré-condição: quais funções podem *receber* null?
+pós-condição: quais funções podem *retornar* null?
+decidir e ser explícito!
+
+linguagens mais recentes têm esse conceito embutido (rust, zig, kotlin, c#8)
+- c# da unity não tem isso
+- bitstrap: `Option<T>`
+header:interface enxuta / pré-condições + invariantes + pós-condições
+footer:[Option.cs](https://github.com/bitcake/bitstrap/blob/master/Assets/Runtime/Functional/Option.cs)
+---
+
+## minimizar erros
+dois tipos de erros:
+- entrada/saída => tratar
+- lógica => assert
+
+"define errors out of existence"
+-- ousterhout, john
+
+header:interface enxuta / pré-condições + invariantes + pós-condições
+===
+qualquer outro tipo de erro é desnecessário
+
+TODO: exemplo
+---
+
+## intervalo de valores
+usar tipos para codificar valores válidos
+
+```
+// evitar
+int GetPlayerCount();
+
+// preferir
+uint8 GetPlayerCount();
+```
 ---
 
 # intui sua implementação
+a partir de uma transformação conhecida, é possível inferir aproximadamente suas entradas e saídas
 header:interface enxuta
 ===
-faz parte da interface saber (pelo menos) superficialmente sobre sua implementação.
+faz parte da interface saber pelo menos superficialmente sobre sua implementação.
+---
+
+## debugabilidade
+- onde estão os dados?
+- são fáceis de inspecionar?
+- é fácil acompanhar o que está acontecendo pelo debugger?
+header:interface enxuta / intui sua implementação
 ---
 
 # às vezes não precisa de api ou abstração
@@ -286,7 +377,6 @@ reutilizar design é mais útil que reutilizar código!
 - software is a platform
 - code should be designed around a model of the world
 - code is more important than data
-
 background:main
 footer:[three big lies](https://cellperformance.beyond3d.com/articles/2008/03/three-big-lies.html)
 ===
@@ -304,45 +394,11 @@ footer:[three big lies](https://cellperformance.beyond3d.com/articles/2008/03/th
 		- caso contrario apenas adicionam complexidade acidental ao sistema
 ---
 
-# extras práticos
-background:main
----
-
 # late binding x early binding
 no início, queremos simplicidade
 no final, queremos controle total
----
-
-# debugabilidade
-onde estão os dados?
-são fáceis de inspecionar?
-é fácil acompanhar o que está acontecendo pelo debugger?
----
-
-# estruturas de dados
-arrays *muito* provavelmente são suficientes
-processadores adoram memória linear
-\*olha feio praquela lista encadeada\*
----
-
-# recursos e posse
-quem é o responsável pelo recurso?
-posse vs emprestimo
-onde há alocação de memória? da pra evitá-la?
-
-C# = preferir structs e arrays; reusar coleções
-C++ = arrays; inline allocator;
-
-footer:[List.cs](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25)
-footer:[TInlineAllocator](https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/)
----
-
-# desempenho
-é um sistema pervasivo? muitas entidades?
-onde há um, há muitos! qual o caso comum? operar em lotes!
-agrupar por tipos ao invés de coleções heterogêneas
-particionar ao invés de branch
-multithread? job system?
+===
+TODO: faltam esses
 ---
 
 # design de api = ponderar custo-benefícios
