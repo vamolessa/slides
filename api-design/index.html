@@ -21,7 +21,7 @@
 </section>
 
 <section>
-    <h1>======================</h1>
+    <h1>por que interfaces?</h1>
 </section>
 
 <section style="background-image: url(imagination.jpg)">
@@ -33,16 +33,41 @@
     <h2>alcançado por introduzir conceitos pertinentes ao domínio</h2>
 </section>
 
+<section style="background-image: url(faca-dois-legumes.jpg)">
+    <h1>abstrair = faca de dois legumes</h1>
+    <h2>esconder complexidade <em>adiciona</em> complexidade</h2>
+</section>
+
 <section>
-    <h1>todo novo conceito adicionado ao sistema o torna mais complexo</h1>
+    <h1>abstrair != remover complexidade</h1>
+    <h2>esconder significa que ainda está lá</h2>
+</section>
+
+<section>
+    <h1>problemas complexos são complexos</h1>
+    <p>a única maneira de simplificar um problema inerenentemente complexo é resolvendo outro problema (que seja mais simples)</p>
+</section>
+
+<section>
+    <h2>escrever mais código que o necessário <em>por definição</em> apenas aumenta a complexidade da solução</h2>
+
+    <footer>
+        <p><a href="http://number-none.com/blow/john_carmack_on_inlined_code.html">john carmack on inlined code</a></p>
+    </footer>
 </section>
 
 <section>
     <h1>complexidade inerente vs complexidade acidental</h1>
+    <h2>inerente</h2>
     <ul>
-    <li>limitações da linguagem</li>
-    <li>limitações da plataforma</li>
-    <li>ou pior: limitações de nosso próprio design</li>
+    <li>propriedades fundamentais do problema</li>
+    <li>única maneira de reduzi-la é mudando o problema (e tudo bem!)</li>
+    </ul>
+    <h2>acidental</h2>
+    <ul>
+    <li>adicionada por nós mesmos</li>
+    <li>idealmente zero</li>
+    <li>limitações (linguagem, plataforma, design)</li>
     </ul>
 </section>
 
@@ -52,18 +77,20 @@
     <li>entender o problema</li>
     <li>prototipação</li>
     <li>testar soluções diferentes. refatorar</li>
+    <li>evitar grandes soluções genéricas</li>
     <li>evitar future proofing ("fool's errand")</li>
-    <li>erros e limitações serão encontrados independente da quantidade de design investido a priori. aceite-os e planeje-se</li>
     </ul>
+    <p>erros e limitações serão encontrados independente da quantidade de design investido a priori. aceite-os e planeje-se!</p>
 
     <footer>
         <p><a href="https://ourmachinery.com/post/dig-shallow-graves/">dig shallow graves</a></p>
+        <p><a href="https://docs.godotengine.org/en/stable/community/contributing/best_practices_for_engine_contributors.html">best practices for godot engine contributors</a></p>
     </footer>
 </section>
 
 <section>
-    <h1>código reutilizável vs código fácil de deletar</h1></h1>
-    <h2>a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h2></h2>
+    <h1>código reutilizável vs código fácil de deletar</h1>
+    <h2>a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h2>
 
     <footer>
         <p><a href="https://caseymuratori.com/blog_0015">semantic compression</a></p>
@@ -72,16 +99,7 @@
 </section>
 
 <section>
-    <h1>problemas complexos são complexos</h1>
-    <p>a única maneira de simplificar um problema inerenentemente complexo é resolvendo outro problema (que seja mais simples)</p>
-
-    <footer>
-        <p><a href="http://number-none.com/blow/john_carmack_on_inlined_code.html">john carmack on inlined code</a></p>
-    </footer>
-</section>
-
-<section>
-    <h1>abstrações vazam</h1>
+    <h1>apesar de tudo, abstrações vazam</h1>
     <h2>sem exceção</h2>
 
     <footer>
@@ -99,18 +117,17 @@
 </section>
 
 <section>
-    <h1>"everything should be made as simple as possible, but not simpler."</h1>
-    <p>-- einstein, albert (supostamente)</p>
-</section>
-
-<section>
     <h1>apis e abstrações <em>não</em> existem no vácuo</h1>
-    <p>intenção de uso influencia design</p>
-    <p>restrições influenciam design</p>
+    <ul>
+    <li>o que: abstrações</li>
+    <li>intenção de uso: interface</li>
+    <li>quem usa: comunicação</li>
+    <li>restrições: linguagem, plataforma, inércia dos códigos já existentes</li>
+    </ul>
 
     <footer>
         <p><a href="https://cellperformance.beyond3d.com/articles/2006/04/performance-and-good-data-design.html">performance and good data design</a></p>
-        <p><a href="https://docs.godotengine.org/en/stable/community/contributing/best_practices_for_engine_contributors.html">best practices for godot engine contributors</a></p>
+        <p><a href="https://quuxplusone.github.io/blog/2022/06/23/unordered-multiset-equal-range/">c++: unordered_multiset's api affects its big-o</a></p>
     </footer>
 </section>
 
@@ -122,8 +139,9 @@
     </footer>
 </section>
 
-<section>
-    <h1>======================</h1>
+<section style="background-image: url(granularity.jpg)">
+    <h1>granularidade</h1>
+    <p>abstrações acontecem em vários níveis, mas o potencial é proporcional à escala</p>
 </section>
 
 <section>
@@ -133,8 +151,8 @@
     <li>composível</li>
     <li>complexidade adicionada < complexidade abstraída</li>
     <li>vazamento mínimo</li>
-    </ul>
     <h1>interface enxuta</h1>
+    </ul>
     <ul>
     <li>padrões razoáveis</li>
     <li>estado mínimo e explícito</li>
@@ -206,6 +224,16 @@
     <p>agrupar por tipos ao invés de coleções heterogêneas</p>
     <p>particionar ao invés de branch</p>
     <p>multithread? job system?</p>
+</section>
+
+<section>
+    <h1>design de api = ponderar custo-benefícios</h1>
+    <p>"everything should be made as simple as possible, but not simpler."</p>
+    <p>-- einstein, albert (supostamente)</p>
+
+    <footer>
+        <p>valeu! falou! :)</p>
+    </footer>
 </section>
 
 </body>
