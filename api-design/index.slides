@@ -126,8 +126,14 @@ ex: sistema de dialogos neko
 footer:[semantic compression](https://caseymuratori.com/blog_0015)
 footer:[how to write disposable code in large systems](https://programmingisterrible.com/post/139222674273/how-to-write-disposable-code-in-large-systems)
 ===
+código fácil de deletar é aquele que outros não dependem
+
 ex: bitstrap
 - um bando de código reutilizável extraídos de um bando de código fácil de deletar
+
+ex: scene config demagnete
+- começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
+- teve potencial suficiente pra ser possível implementar outros tipos de nós posteriormente
 ---
 
 # apesar de tudo, abstrações vazam
@@ -227,6 +233,15 @@ header:profunda
 TODO: expandir
 ---
 
+composível
+# late binding x early binding
+no início, queremos simplicidade
+no final, queremos controle total
+header:profunda
+===
+TODO: expandir
+---
+
 # complexidade adicionada < complexidade abstraída
 header:profunda
 ===
@@ -253,6 +268,16 @@ criar um "pit of success" pra quem for usar
 ---
 
 padrões razoáveis
+# "data driven"
+extrair dados estáticos em arquivos separados
+- unity: scriptable objects
+- unreal: data asset
+header:interface enxuta
+===
+separar dado que não muda/config em arquivos separados pra facilitar alteração, organização e controle
+---
+
+padrões razoáveis
 # estruturas de dados
 arrays *muito* provavelmente são suficientes
 processadores adoram memória linear
@@ -263,7 +288,6 @@ header:interface enxuta
 # estado mínimo e explícito
 sobre quais os dados a api opera?
 onde eles são alterados?
-
 header:interface enxuta
 footer:[in detph: functional programming in c++](https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-)
 footer:[twitter - sobre estado](https://mobile.twitter.com/rygorous/status/1507178315886444544)
@@ -275,7 +299,6 @@ estado mínimo e explícito
 # const correctness
 preferir estilo funcional sempre que possível
 facilita compreensão. menos dependente de ordem de execução
-
 ```
 // evitar
 obj.CheckSomething();
@@ -287,7 +310,6 @@ if (result) {
     obj.DoSomethingInResponse(result);
 }
 ```
-
 header:interface enxuta
 footer:[c++ const correctness](https://isocpp.org/wiki/faq/const-correctness)
 ===
@@ -307,10 +329,8 @@ estado mínimo e explícito
 quem é o responsável pelo recurso?
 posse vs empréstimo
 onde há alocação de memória? possível evitá-la?
-
 - c# = preferir structs e arrays; reusar coleções
 - c++ = arrays; inline allocator;
-
 header:interface enxuta
 footer:[c# memory and spans - owners, consumers and lifetime management](https://docs.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines#owners-consumers-and-lifetime-management)
 footer:[List.cs](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25)
@@ -349,7 +369,6 @@ ex: pepper CommandTokenizer
 
 ## intervalo de valores
 usar tipos para codificar valores válidos
-
 ```
 // evitar
 int GetPlayerCount();
@@ -357,6 +376,7 @@ int GetPlayerCount();
 // preferir
 uint8 GetPlayerCount();
 ```
+header:interface enxuta
 ---
 
 # intui sua implementação
@@ -425,13 +445,6 @@ footer:[three big lies](https://cellperformance.beyond3d.com/articles/2008/03/th
         - caso contrario apenas adicionam complexidade acidental ao sistema
 ---
 
-# late binding x early binding
-no início, queremos simplicidade
-no final, queremos controle total
-===
-TODO: falta só esse!
----
-
 # design de api = ponderar custo-benefícios
 "everything should be made as simple as possible, but not simpler."
 -- einstein, albert (supostamente)
@@ -441,14 +454,4 @@ footer:valeu! falou! :)
 
 uma solução que poderia ser mais simples possui desperdício.
 uma solução que é simples demais ignora detalhes importantes.
-
-===
-## exemplos
-- dados estáticos em scriptable objects
-    - já fazemos isso!
-    - moral: separar dado que não muda/config em arquivos separados pra facilitar alteração, organização e controle
-
-- scene config demagnete
-    - começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
-    - teve potencial suficiente pra ser possível implementar outros tipos de nós posteriormente
 
