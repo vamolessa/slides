@@ -115,7 +115,7 @@ comunicação! comunicação com quem vai usar o sistema. quais são suas reais 
 a única maneira de acertar um bom design de primeira é com muita sorte ou ter experiência prévia resolvendo tal problema.
 é sobre a jornada! prototipar, iterar e refatorar!
 
-TODO: botar imagens
+TODO: incluir prints
 ex: sistema de dialogos neko
 - mudou por questão de usabilidade (alan usou de forma diferente)
 - mudou por entender melhor o problema (passar dialogo localmente x apenas o server passa)
@@ -131,6 +131,7 @@ código fácil de deletar é aquele que outros não dependem
 ex: bitstrap
 - um bando de código reutilizável extraídos de um bando de código fácil de deletar
 
+TODO: incluir prints?
 ex: scene config demagnete
 - começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
 - teve potencial suficiente pra ser possível implementar outros tipos de nós posteriormente
@@ -364,6 +365,8 @@ header:interface enxuta
 footer:"define errors out of existence" -- ousterhout, john
 ===
 qualquer outro tipo de erro é desnecessário
+
+TODO: expandir exemplo
 ex: pepper CommandTokenizer
 ---
 
@@ -404,6 +407,8 @@ nosso trabalho é resolver problema. escrever código é consequência.
 
 reutilizar design é mais útil que reutilizar código!
 às vezes forçar reutilização de código apenas adicionar complexidade sem realmente adicionar valor a quem usa
+
+TODO: expandir exemplo?
 - exemplo da `resource collection` genéricas do jogo plataforma em rust que nunca chegou a existir
 - exemplo do `load asset` que recebia um caminho para carregamento e que também funcionava como chave de um cache
     - quebrou rapidamente pois assets de fonte também precisam do parametro do tamanho da fonte
@@ -413,6 +418,7 @@ reutilizar design é mais útil que reutilizar código!
     - parecidas porém não 100%
     - facil de adicionar propriedades exclusivas e realmente aconteceu!
 
+TODO: expandir a evolução do exemplo
 ex: classe Timer (Holodrive e depois BitStrap)
 - começo era classe com timer e duration e callback
 - depois struct e duration vinha de scriptable object
@@ -454,4 +460,6 @@ footer:valeu! falou! :)
 
 uma solução que poderia ser mais simples possui desperdício.
 uma solução que é simples demais ignora detalhes importantes.
+
+é através de simplicidade que atingimos apis balanceadas entre custo e benefício
 
