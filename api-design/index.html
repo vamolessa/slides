@@ -187,10 +187,11 @@
 
 <section>
     <header>
-        <p>profunda / complexidade adicionada < complexidade abstraída</p>
+        <p>profunda</p>
     </header>
 
-    <h2>desempenho</h2>
+    <p>complexidade adicionada < complexidade abstraída</p>
+    <h1>desempenho</h1>
     <ul>
     <li>é um sistema pervasivo? muitas entidades?</li>
     <li>onde há um, há muitos! qual o caso comum? operar em lotes!</li>
@@ -210,13 +211,14 @@
 
 <section>
     <header>
-        <p>interface enxuta / padrões razoáveis</p>
+        <p>interface enxuta</p>
     </header>
 
-    <h2>estruturas de dados</h2>
+    <p>padrões razoáveis</p>
+    <h1>estruturas de dados</h1>
     <p>arrays <em>muito</em> provavelmente são suficientes</p>
     <p>processadores adoram memória linear</p>
-    <p>*olha feio praquela lista encadeada*</p>
+    <p>*olha feio praquela lista encadeada* 😠</p>
 </section>
 
 <section>
@@ -235,10 +237,11 @@
 
 <section>
     <header>
-        <p>interface enxuta / estado mínimo e explícito</p>
+        <p>interface enxuta</p>
     </header>
 
-    <h2>const correctness</h2>
+    <p>estado mínimo e explícito</p>
+    <h1>const correctness</h1>
     <p>preferir estilo funcional sempre que possível</p>
     <p>facilita compreensão. menos dependente de ordem de execução</p>
     <pre><code>// evitar
@@ -258,10 +261,11 @@ if (result) {
 
 <section>
     <header>
-        <p>interface enxuta / estado mínimo e explícito</p>
+        <p>interface enxuta</p>
     </header>
 
-    <h2>recursos e posse</h2>
+    <p>estado mínimo e explícito</p>
+    <h1>recursos e posse</h1>
     <p>quem é o responsável pelo recurso?</p>
     <p>posse vs empréstimo</p>
     <p>onde há alocação de memória? possível evitá-la?</p>
@@ -287,10 +291,11 @@ if (result) {
 
 <section>
     <header>
-        <p>interface enxuta / pré-condições + invariantes + pós-condições</p>
+        <p>interface enxuta</p>
     </header>
 
-    <h2>null</h2>
+    <p>pré-condições + invariantes + pós-condições</p>
+    <h1>null</h1>
     <p>pré-condição: quais funções podem <em>receber</em> null?</p>
     <p>pós-condição: quais funções podem <em>retornar</em> null?</p>
     <p>decidir e ser explícito!</p>
@@ -307,17 +312,20 @@ if (result) {
 
 <section>
     <header>
-        <p>interface enxuta / pré-condições + invariantes + pós-condições</p>
+        <p>interface enxuta</p>
     </header>
 
-    <h2>minimizar erros</h2>
+    <p>pré-condições + invariantes + pós-condições</p>
+    <h1>minimizar erros</h1>
     <p>dois tipos de erros:</p>
     <ul>
     <li>entrada/saída => tratar</li>
     <li>lógica => assert</li>
     </ul>
-    <p>"define errors out of existence"</p>
-    <p>-- ousterhout, john</p>
+
+    <footer>
+        <p>"define errors out of existence" -- ousterhout, john</p>
+    </footer>
 </section>
 
 <section>
@@ -341,10 +349,11 @@ uint8 GetPlayerCount();</code></pre>
 
 <section>
     <header>
-        <p>interface enxuta / intui sua implementação</p>
+        <p>interface enxuta</p>
     </header>
 
-    <h2>debugabilidade</h2>
+    <p>intui sua implementação</p>
+    <h1>debugabilidade</h1>
     <ul>
     <li>onde estão os dados?</li>
     <li>são fáceis de inspecionar?</li>

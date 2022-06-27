@@ -114,12 +114,20 @@ prototipação é como se entende o problema!
 comunicação! comunicação com quem vai usar o sistema. quais são suas reais necessidades?
 a única maneira de acertar um bom design de primeira é com muita sorte ou ter experiência prévia resolvendo tal problema.
 é sobre a jornada! prototipar, iterar e refatorar!
+
+TODO: botar imagens
+ex: sistema de dialogos neko
+- mudou por questão de usabilidade (alan usou de forma diferente)
+- mudou por entender melhor o problema (passar dialogo localmente x apenas o server passa)
 ---
 
 # código reutilizável vs código fácil de deletar
 ## a única forma de criar código reutilizável é extraindo-o de código fácil de deletar
 footer:[semantic compression](https://caseymuratori.com/blog_0015)
 footer:[how to write disposable code in large systems](https://programmingisterrible.com/post/139222674273/how-to-write-disposable-code-in-large-systems)
+===
+ex: bitstrap
+- um bando de código reutilizável extraídos de um bando de código fácil de deletar
 ---
 
 # apesar de tudo, abstrações vazam
@@ -137,8 +145,8 @@ ex de abstracao:
 - carro automatico => não é 100% pois ainda existem `1`, `2`, `P`, além do `D`
 - mesmo que fosse "100%", ainda existe manutenção => precisa entender quando precisa levar ao mecânico, checar agua, oleo, etc
 - toda abstração vaza detalhes de implementação!
-	- e tudo bem! isso não invalida suas utilidades
-	- porem, existe um gradiente aí! mesmo sempre existindo vazamento, é de nosso interesse minimizá-lo!!
+    - e tudo bem! isso não invalida suas utilidades
+    - porem, existe um gradiente aí! mesmo sempre existindo vazamento, é de nosso interesse minimizá-lo!!
 ---
 
 # abstrações apenas têm valor quando levantam seu próprio peso
@@ -207,12 +215,16 @@ não são importantes enquanto estamos no mesmo módulo.
 header:profunda
 ===
 conceitos são independentes e não se influenciam.
+
+TODO: expandir
 ---
 
 # composível
 header:profunda
 ===
 é permitido e talvez até fácil de interagir com outras abstrações.
+
+TODO: expandir
 ---
 
 # complexidade adicionada < complexidade abstraída
@@ -220,15 +232,18 @@ header:profunda
 ===
 puxar mais que seu próprio peso.
 conhecer os tradeoffs que estão sendo feitos.
+
+TODO: expandir
 ---
 
-## desempenho
+complexidade adicionada < complexidade abstraída
+# desempenho
 - é um sistema pervasivo? muitas entidades?
 - onde há um, há muitos! qual o caso comum? operar em lotes!
 - agrupar por tipos ao invés de coleções heterogêneas
 - particionar ao invés de branch
 - multithread? job system?
-header:profunda / complexidade adicionada < complexidade abstraída
+header:profunda
 ---
 
 # padrões razoáveis
@@ -237,11 +252,12 @@ header:interface enxuta
 criar um "pit of success" pra quem for usar
 ---
 
-## estruturas de dados
+padrões razoáveis
+# estruturas de dados
 arrays *muito* provavelmente são suficientes
 processadores adoram memória linear
-\*olha feio praquela lista encadeada\*
-header:interface enxuta / padrões razoáveis
+\*olha feio praquela lista encadeada\* 😠
+header:interface enxuta
 ---
 
 # estado mínimo e explícito
@@ -250,11 +266,13 @@ onde eles são alterados?
 
 header:interface enxuta
 footer:[in detph: functional programming in c++](https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-)
+footer:[twitter - sobre estado](https://mobile.twitter.com/rygorous/status/1507178315886444544)
 ===
 facilitar entendimento e reflexão por diminuir "partes móveis".
 ---
 
-## const correctness
+estado mínimo e explícito
+# const correctness
 preferir estilo funcional sempre que possível
 facilita compreensão. menos dependente de ordem de execução
 
@@ -270,7 +288,7 @@ if (result) {
 }
 ```
 
-header:interface enxuta / estado mínimo e explícito
+header:interface enxuta
 footer:[c++ const correctness](https://isocpp.org/wiki/faq/const-correctness)
 ===
 as linhas serem breves são um falso indicador da complexidade por trás uma vez que
@@ -284,7 +302,8 @@ também está explícito o `if` que antes estava escondido em `MaybeDoSomethingI
 ex: maquina de estados opengl.
 ---
 
-## recursos e posse
+estado mínimo e explícito
+# recursos e posse
 quem é o responsável pelo recurso?
 posse vs empréstimo
 onde há alocação de memória? possível evitá-la?
@@ -292,7 +311,7 @@ onde há alocação de memória? possível evitá-la?
 - c# = preferir structs e arrays; reusar coleções
 - c++ = arrays; inline allocator;
 
-header:interface enxuta / estado mínimo e explícito
+header:interface enxuta
 footer:[c# memory and spans - owners, consumers and lifetime management](https://docs.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines#owners-consumers-and-lifetime-management)
 footer:[List.cs](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25)
 footer:[TInlineAllocator](https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/)
@@ -302,7 +321,8 @@ footer:[TInlineAllocator](https://docs.unrealengine.com/5.0/en-US/API/Runtime/Co
 header:interface enxuta
 ---
 
-## null
+pré-condições + invariantes + pós-condições
+# null
 pré-condição: quais funções podem *receber* null?
 pós-condição: quais funções podem *retornar* null?
 decidir e ser explícito!
@@ -310,23 +330,21 @@ decidir e ser explícito!
 linguagens mais recentes têm esse conceito embutido (rust, zig, kotlin, c#8)
 - c# da unity não tem isso
 - bitstrap: `Option<T>`
-header:interface enxuta / pré-condições + invariantes + pós-condições
+header:interface enxuta
 footer:[Option.cs](https://github.com/bitcake/bitstrap/blob/master/Assets/Runtime/Functional/Option.cs)
 ---
 
-## minimizar erros
+pré-condições + invariantes + pós-condições
+# minimizar erros
 dois tipos de erros:
 - entrada/saída => tratar
 - lógica => assert
 
-"define errors out of existence"
--- ousterhout, john
-
-header:interface enxuta / pré-condições + invariantes + pós-condições
+header:interface enxuta
+footer:"define errors out of existence" -- ousterhout, john
 ===
 qualquer outro tipo de erro é desnecessário
-
-TODO: exemplo
+ex: pepper CommandTokenizer
 ---
 
 ## intervalo de valores
@@ -346,13 +364,16 @@ a partir de uma transformação conhecida, é possível inferir aproximadamente 
 header:interface enxuta
 ===
 faz parte da interface saber pelo menos superficialmente sobre sua implementação.
+
+TODO: expandir
 ---
 
-## debugabilidade
+intui sua implementação
+# debugabilidade
 - onde estão os dados?
 - são fáceis de inspecionar?
 - é fácil acompanhar o que está acontecendo pelo debugger?
-header:interface enxuta / intui sua implementação
+header:interface enxuta
 ---
 
 # às vezes não precisa de api ou abstração
@@ -365,12 +386,22 @@ reutilizar design é mais útil que reutilizar código!
 às vezes forçar reutilização de código apenas adicionar complexidade sem realmente adicionar valor a quem usa
 - exemplo da `resource collection` genéricas do jogo plataforma em rust que nunca chegou a existir
 - exemplo do `load asset` que recebia um caminho para carregamento e que também funcionava como chave de um cache
-	- quebrou rapidamente pois assets de fonte também precisam do parametro do tamanho da fonte
-	- isso levou a um monte de codigo estilo template que distanciava do real problema que deveria ser resolvido:
-		- carregar e cachear assets
+    - quebrou rapidamente pois assets de fonte também precisam do parametro do tamanho da fonte
+    - isso levou a um monte de codigo estilo template que distanciava do real problema que deveria ser resolvido:
+        - carregar e cachear assets
 - comparar com as coleções que existem no pepper
-	- parecidas porém não 100%
-	- facil de adicionar propriedades exclusivas e realmente aconteceu!
+    - parecidas porém não 100%
+    - facil de adicionar propriedades exclusivas e realmente aconteceu!
+
+ex: classe Timer (Holodrive e depois BitStrap)
+- começo era classe com timer e duration e callback
+- depois struct e duration vinha de scriptable object
+- ai reparamo que também não precisava de callback
+- hoje eu colapsaria tudo em apenas uma função tipo o `SmoothDamp` da unity (recebe um `ref float timer` por parâmetro)
+- moral: não juntar dado com comportamento cedo demais
+
+- pergunta: `timer > 0.0f && timer -= delta_time_s` ou `timer < duration && timer += delta_time_s`?
+    - `timer < duration` permite alterar o `duration` enquanto o timer tá rolando e continua funcionando como esperado!
 ---
 
 # 3 big lies
@@ -381,24 +412,24 @@ background:main
 footer:[three big lies](https://cellperformance.beyond3d.com/articles/2008/03/three-big-lies.html)
 ===
 - software is a platform
-	- hardware é a platforma
-	- pra nos lembrar das implicações de desempenho que nossas abstrações implicam
+    - hardware é a platforma
+    - pra nos lembrar das implicações de desempenho que nossas abstrações implicam
 - code should be designed around a model of the world
-	- dados e suas transformações devem guiar o design
-	- pre-mapear relações e conceitos de mundo em uma solução apenas adiciona ruido e restrições desnecessárias
-		- e, portanto, dificulta chegar ao melhor design
+    - dados e suas transformações devem guiar o design
+    - pre-mapear relações e conceitos de mundo em uma solução apenas adiciona ruido e restrições desnecessárias
+        - e, portanto, dificulta chegar ao melhor design
 - code is more important than data
-	- dados são mais importantes
-	- código não existe pra ser bonito. a solução não existe pra ser bonita. ambos existem pra resolver o problema
-	- as apis devem refletir isso. elas *precisam* resolver o problema e nada mais.
-		- caso contrario apenas adicionam complexidade acidental ao sistema
+    - dados são mais importantes
+    - código não existe pra ser bonito. a solução não existe pra ser bonita. ambos existem pra resolver o problema
+    - as apis devem refletir isso. elas *precisam* resolver o problema e nada mais.
+        - caso contrario apenas adicionam complexidade acidental ao sistema
 ---
 
 # late binding x early binding
 no início, queremos simplicidade
 no final, queremos controle total
 ===
-TODO: faltam esses
+TODO: falta só esse!
 ---
 
 # design de api = ponderar custo-benefícios
@@ -413,28 +444,11 @@ uma solução que é simples demais ignora detalhes importantes.
 
 ===
 ## exemplos
-https://mobile.twitter.com/rygorous/status/1507178315886444544
-
 - dados estáticos em scriptable objects
-	- já fazemos isso!
-	- moral: separar dado que não muda/config em arquivos separados pra facilitar alteração, organização e controle
-
-- classe Timer (Holodrive e depois BitStrap)
-	- começo era classe com timer e duration e callback
-	- depois struct e duration vinha de scriptable object
-	- ai reparamo que também não precisava de callback
-	- hoje eu colapsaria tudo em apenas uma função tipo o `SmoothDamp` da unity (recebe um `ref float timer` por parâmetro)
-	- moral: não juntar dado com comportamento cedo demais
-
-	- pergunta: `timer > 0.0f && timer -= delta_time_s` ou `timer < duration && timer += delta_time_s`?
-		- `timer < duration` permite alterar o `duration` enquanto o timer tá rolando e continua funcionando como esperado!
+    - já fazemos isso!
+    - moral: separar dado que não muda/config em arquivos separados pra facilitar alteração, organização e controle
 
 - scene config demagnete
-	- começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
-	- teve potencial suficiente pra ser possível implementar outros tipos de nós posteriormente
-- sistema de dialogos neko
-	- mudou por questão de usabilidade (alan usou de forma diferente)
-	- mudou por entender melhor o problema (passar dialogo localmente x apenas o server passa)
-- BitStrap
-	- um bando de código reutilizável extraídos de um bando de código fácil de deletar
+    - começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
+    - teve potencial suficiente pra ser possível implementar outros tipos de nós posteriormente
 
