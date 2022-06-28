@@ -33,7 +33,7 @@ here's some `inline code`
 
 ```
 if (true) {
-    print("yes");
+    print<string>("yes");
 }
 ```
 ===

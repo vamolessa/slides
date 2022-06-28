@@ -160,11 +160,45 @@
     comunicação! comunicação com quem vai usar o sistema. quais são suas reais necessidades?
     a única maneira de acertar um bom design de primeira é com muita sorte ou ter experiência prévia resolvendo tal problema.
     é sobre a jornada! prototipar, iterar e refatorar!
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>sistema de diálogo neko</h1>
+    <img src="dialog-before.png" />
+    <p>começou super flexível porém laborioso</p>
+
+    <!--
+    foi inclusive latente o problema de usabilidade
+    uma vez que o alan tentou abstrair a flexibilidade do sistema
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>sistema de diálogo neko</h1>
+    <img src="dialog-after.png" />
+    <p>reconhecendo o caso comum, otimizamos o processo</p>
+
+    <!--
+    entendendo melhor a forma como o sistema seria usado,
+    foi possível otimizar a usabilidade
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>sistema de diálogo neko</h1>
+    <img src="dialog-implementation.png" />
+    <p>inclusive, a forma simples é implementada por cima da flexível</p>
+
+    <!--
+    assim a gente ainda tem a opção de ter controle total quando necessário
+    mantendo a facilidade de uso para o caso comum: posicionar camera + sequência de diálogo
     
-    TODO: incluir prints
-    ex: sistema de dialogos neko
-    - mudou por questão de usabilidade (alan usou de forma diferente)
-    - mudou por entender melhor o problema (passar dialogo localmente x apenas o server passa)
+    importante entender que ainda existe tradeoff que é uma carga cognitiva maior
+    por ter mais opções e mais funcionalidades em geral
     -->
 </section>
 
@@ -179,12 +213,19 @@
 
     <!--
     código fácil de deletar é aquele que outros não dependem
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>bitstrap (umake)</h1>
+    <img src="umake.png" />
+    <p>umake v2 vs v3</p>
+
+    <!--
+    bitstrap nada mais é que um bando de código reutilizável extraídos de um bando de código fácil de deletar
     
-    ex: bitstrap
-    - um bando de código reutilizável extraídos de um bando de código fácil de deletar
-    
-    TODO: incluir prints?
-    ex: umake
+    (repara nas referências fixas na v2)
     
     ex: scene config demagnete
     - começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
@@ -308,11 +349,24 @@
     </header>
 
     <h1>ortogonal</h1>
+    <img src="orthogonal.png" />
+    <p>conceitos são independentes e não se influenciam</p>
 
     <!--
-    conceitos são independentes e não se influenciam.
-    
-    TODO: expandir
+    conceitos são ortogonais até não serem mais
+    -->
+</section>
+
+<section>
+    <p>ortogonal</p>
+    <h1>altura do pulo ❌</h1>
+    <img src="jump-config.png" />
+    <img src="gravity-config.png" />
+    <img src="stick-config.png" />
+
+    <!--
+    tanto mudar impulso de pulo quanto gravidade influenciam altura do pulo
+    mais ainda: quando o gato tá grudado a um prop, o peso do prop e os multiplicadores também influenciam
     -->
 </section>
 
@@ -324,7 +378,10 @@
     <h1>composível</h1>
 
     <!--
-    é permitido e talvez até fácil de interagir com outras abstrações.
+    um pouco menos prático para os nossos casos já que costumamos fazer sistemas especializados.
+    mas algo a se levar em conta ao analizar códigos de terceiros.
+    
+    é permitido e, de preferência até, fácil de interagir com outras abstrações?
     
     TODO: expandir
     -->
@@ -341,7 +398,58 @@
     <p>no final, queremos controle total</p>
 
     <!--
-    TODO: expandir
+    "binding" é um conceito que vem de programação funcional. basicamente significa dar um nome a um valor (to bind).
+    "late binding" era uma das propostas de alan kay em sua visão para orientação a objetos realizada em smalltalk.
+    a linguagem deixa pra decidir no último momento qual o valor que um nome tem.
+    temos reflexo disso em funções virtuais + overloading em que o código que será executado só é sabido na hora da chamada.
+    
+    não é bom nem ruim por si só. depende do contexto.
+    
+    late binding dá flexibilidade porém dificulta validação. e vice-versa para early binding.
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>late binding dialogo neko</h1>
+    <pre><code>class UNekoDialogueCharacterDataAsset : public UDataAsset {
+    ENekoDialogueCharacterId Id = ENekoDialogueCharacterId::None;
+
+    TArray&ltTSoftObjectPtr&ltUTexture2D&gt&gt Expressions;
+
+    // implementado com for
+    UTexture2D* GetExpression(ENekoDialogueCharacterExpression Expression);
+};</code></pre>
+
+    <!--
+    todas as expressões ficam no array expressions.
+    teoricamente temos flexibilidade pra configurar as expressões,
+    mas na prática, todos os personagems vão ter as mesmas entradas.
+    fácil esquecer ou duplicar uma expressão por não ter validação.
+    
+    `GetExpression` é um `for` que busca uma entrada em `Expressions` que seja do tipo `Expression`. operação falível.
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>early binding dialogo neko</h1>
+    <pre><code>class UNekoDialogueCharacterDataAsset : public UDataAsset {
+    ENekoDialogueCharacterId Id = ENekoDialogueCharacterId::None;
+
+    TSoftObjectPtr&ltUTexture2D&gt ExpressionDefault;
+    TSoftObjectPtr&ltUTexture2D&gt ExpressionAngry;
+    TSoftObjectPtr&ltUTexture2D&gt ExpressionHappy;
+
+    // implementado com switch
+    UTexture2D* GetExpression(ENekoDialogueCharacterExpression Expression);
+};</code></pre>
+
+    <!--
+    agora listamos todas as expressões explicitamente.
+    impossível duplicar. esquecer uma expressão significa ter um buraco vazio no editor.
+    
+    `GetExpression` agora é um `switch` que é implementado na mão. porém agora é uma operação infalível.
     -->
 </section>
 
@@ -612,17 +720,91 @@ uint8 GetPlayerCount();</code></pre>
     - comparar com as coleções que existem no pepper
         - parecidas porém não 100%
         - facil de adicionar propriedades exclusivas e realmente aconteceu!
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>classe timer v1</h1>
+    <pre><code>public class Timer { // holodrive
+    [SerializeField] private float length = 1.0f; // serializado
+    private float counter = 0.0f;
+    public System.Action OnTimer { get; set; } // callback
+
+    public void OnUpdate() {
+        if( counter &lt 0.0f ) {
+            // Already triggered callback.
+        } else if( counter &lt length ) {
+            counter += Time.deltaTime;
+        } else {
+            counter = -1.0f;
+            if( OnTimer != null )
+                OnTimer();
+        }
+    }
+}</code></pre>
+
+    <!--
+    vários detalhes omitidos
+    clássica implementação orientada a objetos
     
-    TODO: expandir a evolução do exemplo
-    ex: classe Timer (Holodrive e depois BitStrap)
-    - começo era classe com timer e duration e callback
-    - depois struct e duration vinha de scriptable object
-    - ai reparamo que também não precisava de callback
-    - hoje eu colapsaria tudo em apenas uma função tipo o `SmoothDamp` da unity (recebe um `ref float timer` por parâmetro)
-    - moral: não juntar dado com comportamento cedo demais
+    `length` é serializado no MonoBehaviour
+    callbacks são configurados no Start/Awake
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>classe timer v2</h1>
+    <pre><code>public sealed class Timer { // demagnete
+    public float length = 1.0f; // dinamico
+    private float elapsedTime = -1.0f;
+
+    public bool OnUpdate() { // sem callback
+        if( elapsedTime &gt= 0.0f )
+            elapsedTime += Time.deltaTime;
+        if( elapsedTime &lt length ) {
+            elapsedTime = -1.0f;
+            return true;
+        }
+        return false;
+    }
+}</code></pre>
+
+    <!--
+    quase sempre o que a gente queria, na verdade, era configurar a duração do timer em um ScriptableObject.
+    igualmente, os callbacks costumavam ser bem curtos. suas declarações eram ruído.
     
-    - pergunta: `timer > 0.0f && timer -= delta_time_s` ou `timer < duration && timer += delta_time_s`?
-        - `timer < duration` permite alterar o `duration` enquanto o timer tá rolando e continua funcionando como esperado!
+    antes de iniciar o timer, muda o valor de `length` com base num ScriptableObject.
+    api "immediate mode" aproveitando que `OnUpdate` já precisava ser chamado todo frame.
+    código do callback inline dentro de um `if`. bem mais fácil de acompanhar os caminhos de código.
+    -->
+</section>
+
+<section>
+    <h2>exemplo</h2>
+    <h1>classe timer v3</h1>
+    <pre><code>float Timer = -1.0f; // neko
+// ...
+void AMyActor::Tick(float DeltaSeconds) {
+    if (Timer &gt= 0.0f) {
+        Timer += DeltaSeconds;
+        if (Timer &gt= Config-&gtTimerDuration) {
+            // do the thing!
+            Timer = -1.0f;
+        }
+    }
+}</code></pre>
+
+    <!--
+    em sua última iteração, não existe mais classe timer.
+    agora é apenas um idioma. um padrão que emerge nos códigos.
+    adicionar uma classe apenas aumentaria a complexidade com ganhos ínfimos.
+    não há mais a necessidade de abstrair.
+    
+    para começar o timer, é só fazer `Timer = 0.0f`.
+    
+    bonus: reparar que é possível aumentar o `TimerDuration` enquanto o timer está rodando e continua funcionando.
     -->
 </section>
 
@@ -639,18 +821,20 @@ uint8 GetPlayerCount();</code></pre>
     </footer>
 
     <!--
-    - software is a platform
-        - hardware é a platforma
-        - pra nos lembrar das implicações de desempenho que nossas abstrações implicam
-    - code should be designed around a model of the world
-        - dados e suas transformações devem guiar o design
-        - pre-mapear relações e conceitos de mundo em uma solução apenas adiciona ruido e restrições desnecessárias
-            - e, portanto, dificulta chegar ao melhor design
-    - code is more important than data
-        - dados são mais importantes
-        - código não existe pra ser bonito. a solução não existe pra ser bonita. ambos existem pra resolver o problema
-        - as apis devem refletir isso. elas *precisam* resolver o problema e nada mais.
-            - caso contrario apenas adicionam complexidade acidental ao sistema
+    software is a platform
+    - hardware é a platforma
+    - pra nos lembrar das implicações de desempenho que nossas abstrações implicam
+    
+    code should be designed around a model of the world
+    - dados e suas transformações devem guiar o design
+    - pre-mapear relações e conceitos de mundo em uma solução apenas adiciona ruido e restrições desnecessárias
+        - e, portanto, dificulta chegar ao melhor design
+    
+    code is more important than data
+    - dados são mais importantes
+    - código não existe pra ser bonito. a solução não existe pra ser bonita. ambos existem pra resolver o problema
+    - as apis devem refletir isso. elas *precisam* resolver o problema e nada mais.
+        - caso contrario apenas adicionam complexidade acidental ao sistema
     -->
 </section>
 

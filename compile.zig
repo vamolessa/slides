@@ -97,6 +97,8 @@ fn compileAll(memory: []u8) void {
             compile(memory, src, dst);
         }
     }
+
+    writer.writeAll("done!\n") catch {};
 }
 
 fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
@@ -230,7 +232,18 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
                     code_len -= 1;
                 }
 
-                write(writer, code_start[0..code_len]);
+                var code = code_start[0..code_len];
+                while (std.mem.indexOfAny(u8, code, "<>")) |i| {
+                    write(writer, code[0..i]);
+                    switch (code[i]) {
+                        '<' => write(writer, "&lt"),
+                        '>' => write(writer, "&gt"),
+                        else => unreachable,
+                    }
+                    code = code[i + 1..];
+                }
+                write(writer, code);
+
                 endTag(writer, "code");
                 endTag(writer, "pre");
                 write(writer, "\n");

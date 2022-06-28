@@ -114,11 +114,36 @@ prototipação é como se entende o problema!
 comunicação! comunicação com quem vai usar o sistema. quais são suas reais necessidades?
 a única maneira de acertar um bom design de primeira é com muita sorte ou ter experiência prévia resolvendo tal problema.
 é sobre a jornada! prototipar, iterar e refatorar!
+---
 
-TODO: incluir prints
-ex: sistema de dialogos neko
-- mudou por questão de usabilidade (alan usou de forma diferente)
-- mudou por entender melhor o problema (passar dialogo localmente x apenas o server passa)
+## exemplo
+# sistema de diálogo neko
+!dialog-before.png
+começou super flexível porém laborioso
+===
+foi inclusive latente o problema de usabilidade
+uma vez que o alan tentou abstrair a flexibilidade do sistema
+---
+
+## exemplo
+# sistema de diálogo neko
+!dialog-after.png
+reconhecendo o caso comum, otimizamos o processo
+===
+entendendo melhor a forma como o sistema seria usado,
+foi possível otimizar a usabilidade
+---
+
+## exemplo
+# sistema de diálogo neko
+!dialog-implementation.png
+inclusive, a forma simples é implementada por cima da flexível
+===
+assim a gente ainda tem a opção de ter controle total quando necessário
+mantendo a facilidade de uso para o caso comum: posicionar camera + sequência de diálogo
+
+importante entender que ainda existe tradeoff que é uma carga cognitiva maior
+por ter mais opções e mais funcionalidades em geral
 ---
 
 # código reutilizável vs código fácil de deletar
@@ -127,12 +152,16 @@ footer:[semantic compression](https://caseymuratori.com/blog_0015)
 footer:[how to write disposable code in large systems](https://programmingisterrible.com/post/139222674273/how-to-write-disposable-code-in-large-systems)
 ===
 código fácil de deletar é aquele que outros não dependem
+---
 
-ex: bitstrap
-- um bando de código reutilizável extraídos de um bando de código fácil de deletar
+## exemplo
+# bitstrap (umake)
+!umake.png
+umake v2 vs v3
+===
+bitstrap nada mais é que um bando de código reutilizável extraídos de um bando de código fácil de deletar
 
-TODO: incluir prints?
-ex: umake
+(repara nas referências fixas na v2)
 
 ex: scene config demagnete
 - começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
@@ -218,17 +247,30 @@ não são importantes enquanto estamos no mesmo módulo.
 ---
 
 # ortogonal
+!orthogonal.png
+conceitos são independentes e não se influenciam
 header:profunda
 ===
-conceitos são independentes e não se influenciam.
+conceitos são ortogonais até não serem mais
+---
 
-TODO: expandir
+ortogonal
+# altura do pulo ❌
+!jump-config.png
+!gravity-config.png
+!stick-config.png
+===
+tanto mudar impulso de pulo quanto gravidade influenciam altura do pulo
+mais ainda: quando o gato tá grudado a um prop, o peso do prop e os multiplicadores também influenciam
 ---
 
 # composível
 header:profunda
 ===
-é permitido e talvez até fácil de interagir com outras abstrações.
+um pouco menos prático para os nossos casos já que costumamos fazer sistemas especializados.
+mas algo a se levar em conta ao analizar códigos de terceiros.
+
+é permitido e, de preferência até, fácil de interagir com outras abstrações?
 
 TODO: expandir
 ---
@@ -239,16 +281,62 @@ no início, queremos simplicidade
 no final, queremos controle total
 header:profunda
 ===
-TODO: expandir
+"binding" é um conceito que vem de programação funcional. basicamente significa dar um nome a um valor (to bind).
+"late binding" era uma das propostas de alan kay em sua visão para orientação a objetos realizada em smalltalk.
+a linguagem deixa pra decidir no último momento qual o valor que um nome tem.
+temos reflexo disso em funções virtuais + overloading em que o código que será executado só é sabido na hora da chamada.
+
+não é bom nem ruim por si só. depende do contexto.
+
+late binding dá flexibilidade porém dificulta validação. e vice-versa para early binding.
+---
+
+## exemplo
+# late binding dialogo neko
+```
+class UNekoDialogueCharacterDataAsset : public UDataAsset {
+    ENekoDialogueCharacterId Id = ENekoDialogueCharacterId::None;
+
+    TArray<TSoftObjectPtr<UTexture2D>> Expressions;
+
+    // implementado com for
+    UTexture2D* GetExpression(ENekoDialogueCharacterExpression Expression);
+};
+```
+===
+todas as expressões ficam no array expressions.
+teoricamente temos flexibilidade pra configurar as expressões,
+mas na prática, todos os personagems vão ter as mesmas entradas.
+fácil esquecer ou duplicar uma expressão por não ter validação.
+
+`GetExpression` é um `for` que busca uma entrada em `Expressions` que seja do tipo `Expression`. operação falível.
+---
+
+## exemplo
+# early binding dialogo neko
+```
+class UNekoDialogueCharacterDataAsset : public UDataAsset {
+    ENekoDialogueCharacterId Id = ENekoDialogueCharacterId::None;
+
+    TSoftObjectPtr<UTexture2D> ExpressionDefault;
+    TSoftObjectPtr<UTexture2D> ExpressionAngry;
+    TSoftObjectPtr<UTexture2D> ExpressionHappy;
+
+    // implementado com switch
+    UTexture2D* GetExpression(ENekoDialogueCharacterExpression Expression);
+};
+```
+===
+agora listamos todas as expressões explicitamente.
+impossível duplicar. esquecer uma expressão significa ter um buraco vazio no editor.
+
+`GetExpression` agora é um `switch` que é implementado na mão. porém agora é uma operação infalível.
 ---
 
 # complexidade adicionada < complexidade abstraída
+abstrações devem puxar mais que seu próprio peso
+entender os tradeoffs feitos
 header:profunda
-===
-puxar mais que seu próprio peso.
-conhecer os tradeoffs que estão sendo feitos.
-
-TODO: expandir
 ---
 
 complexidade adicionada < complexidade abstraída
@@ -417,17 +505,88 @@ TODO: expandir exemplo?
 - comparar com as coleções que existem no pepper
     - parecidas porém não 100%
     - facil de adicionar propriedades exclusivas e realmente aconteceu!
+---
 
-TODO: expandir a evolução do exemplo
-ex: classe Timer (Holodrive e depois BitStrap)
-- começo era classe com timer e duration e callback
-- depois struct e duration vinha de scriptable object
-- ai reparamo que também não precisava de callback
-- hoje eu colapsaria tudo em apenas uma função tipo o `SmoothDamp` da unity (recebe um `ref float timer` por parâmetro)
-- moral: não juntar dado com comportamento cedo demais
+## exemplo
+# classe timer v1
+```
+public class Timer { // holodrive
+    [SerializeField] private float length = 1.0f; // serializado
+    private float counter = 0.0f;
+    public System.Action OnTimer { get; set; } // callback
 
-- pergunta: `timer > 0.0f && timer -= delta_time_s` ou `timer < duration && timer += delta_time_s`?
-    - `timer < duration` permite alterar o `duration` enquanto o timer tá rolando e continua funcionando como esperado!
+    public void OnUpdate() {
+        if( counter < 0.0f ) {
+            // Already triggered callback.
+        } else if( counter < length ) {
+            counter += Time.deltaTime;
+        } else {
+            counter = -1.0f;
+            if( OnTimer != null )
+                OnTimer();
+        }
+    }
+}
+```
+===
+vários detalhes omitidos
+clássica implementação orientada a objetos
+
+`length` é serializado no MonoBehaviour
+callbacks são configurados no Start/Awake
+---
+
+## exemplo
+# classe timer v2
+```
+public sealed class Timer { // demagnete
+    public float length = 1.0f; // dinamico
+    private float elapsedTime = -1.0f;
+
+    public bool OnUpdate() { // sem callback
+        if( elapsedTime >= 0.0f )
+            elapsedTime += Time.deltaTime;
+        if( elapsedTime < length ) {
+            elapsedTime = -1.0f;
+            return true;
+        }
+        return false;
+    }
+}
+```
+===
+quase sempre o que a gente queria, na verdade, era configurar a duração do timer em um ScriptableObject.
+igualmente, os callbacks costumavam ser bem curtos. suas declarações eram ruído.
+
+antes de iniciar o timer, muda o valor de `length` com base num ScriptableObject.
+api "immediate mode" aproveitando que `OnUpdate` já precisava ser chamado todo frame.
+código do callback inline dentro de um `if`. bem mais fácil de acompanhar os caminhos de código.
+---
+
+## exemplo
+# classe timer v3
+```
+float Timer = -1.0f; // neko
+// ...
+void AMyActor::Tick(float DeltaSeconds) {
+    if (Timer >= 0.0f) {
+        Timer += DeltaSeconds;
+        if (Timer >= Config->TimerDuration) {
+            // do the thing!
+            Timer = -1.0f;
+        }
+    }
+}
+```
+===
+em sua última iteração, não existe mais classe timer.
+agora é apenas um idioma. um padrão que emerge nos códigos.
+adicionar uma classe apenas aumentaria a complexidade com ganhos ínfimos.
+não há mais a necessidade de abstrair.
+
+para começar o timer, é só fazer `Timer = 0.0f`.
+
+bonus: reparar que é possível aumentar o `TimerDuration` enquanto o timer está rodando e continua funcionando.
 ---
 
 # 3 big lies
@@ -437,18 +596,20 @@ ex: classe Timer (Holodrive e depois BitStrap)
 background:main
 footer:[three big lies](https://cellperformance.beyond3d.com/articles/2008/03/three-big-lies.html)
 ===
-- software is a platform
-    - hardware é a platforma
-    - pra nos lembrar das implicações de desempenho que nossas abstrações implicam
-- code should be designed around a model of the world
-    - dados e suas transformações devem guiar o design
-    - pre-mapear relações e conceitos de mundo em uma solução apenas adiciona ruido e restrições desnecessárias
-        - e, portanto, dificulta chegar ao melhor design
-- code is more important than data
-    - dados são mais importantes
-    - código não existe pra ser bonito. a solução não existe pra ser bonita. ambos existem pra resolver o problema
-    - as apis devem refletir isso. elas *precisam* resolver o problema e nada mais.
-        - caso contrario apenas adicionam complexidade acidental ao sistema
+software is a platform
+- hardware é a platforma
+- pra nos lembrar das implicações de desempenho que nossas abstrações implicam
+
+code should be designed around a model of the world
+- dados e suas transformações devem guiar o design
+- pre-mapear relações e conceitos de mundo em uma solução apenas adiciona ruido e restrições desnecessárias
+    - e, portanto, dificulta chegar ao melhor design
+
+code is more important than data
+- dados são mais importantes
+- código não existe pra ser bonito. a solução não existe pra ser bonita. ambos existem pra resolver o problema
+- as apis devem refletir isso. elas *precisam* resolver o problema e nada mais.
+    - caso contrario apenas adicionam complexidade acidental ao sistema
 ---
 
 # design de api = ponderar custo-benefícios
