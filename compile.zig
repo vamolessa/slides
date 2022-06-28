@@ -131,6 +131,14 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
         const notes_separator = "===";
         const data_len = std.mem.indexOf(u8, slide_src, "\n" ++ notes_separator) orelse slide_src.len;
         const data = slide_src[0..data_len];
+        const notes = blk: {
+            var notes = slide_src[data_len..];
+            if (std.mem.startsWith(u8, notes, "\n" ++ notes_separator)) {
+                notes = notes[1 + notes_separator.len..];
+            }
+            notes = std.mem.trim(u8, notes, " \n\t");
+            break :blk notes;
+        };
 
         var first_metadata_offset: ?usize = null;
 
@@ -168,7 +176,7 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
         }
 
         beginSection(writer, maybe_background, headers[0..header_count]);
-        defer endSection(writer, footers[0..footer_count]);
+        defer endSection(writer, footers[0..footer_count], notes);
 
         const content_len = first_metadata_offset orelse data.len;
         const content = data[0..content_len];
@@ -320,7 +328,7 @@ fn beginSection(writer: Writer, maybe_background: ?[]const u8, headers: []const 
     }
 }
 
-fn endSection(writer: Writer, footers: []const []const u8) void {
+fn endSection(writer: Writer, footers: []const []const u8, notes: []const u8) void {
     if (footers.len > 0) {
         write(writer, "\n" ++ indentation);
         beginTag(writer, "footer");
@@ -335,6 +343,17 @@ fn endSection(writer: Writer, footers: []const []const u8) void {
         write(writer, indentation);
         endTag(writer, "footer");
         write(writer, "\n");
+    }
+
+    if (notes.len > 0) {
+        write(writer, "\n" ++ indentation ++ "<!--\n");
+        var notes_lines = std.mem.split(u8, notes, "\n");
+        while (notes_lines.next()) |line| {
+            write(writer, indentation);
+            write(writer, line);
+            write(writer, "\n");
+        }
+        write(writer, indentation ++ "-->\n");
     }
 
     endTag(writer, "section");

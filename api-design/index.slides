@@ -132,6 +132,8 @@ ex: bitstrap
 - um bando de código reutilizável extraídos de um bando de código fácil de deletar
 
 TODO: incluir prints?
+ex: umake
+
 ex: scene config demagnete
 - começou com tentar reaproveitar código genérico feito sem necessidade a ser resolvida
 - teve potencial suficiente pra ser possível implementar outros tipos de nós posteriormente
@@ -151,9 +153,6 @@ ex de abstracao:
 - carro manual => passar marcha é um vazamento da implementação do carro (como funciona internamente)
 - carro automatico => não é 100% pois ainda existem `1`, `2`, `P`, além do `D`
 - mesmo que fosse "100%", ainda existe manutenção => precisa entender quando precisa levar ao mecânico, checar agua, oleo, etc
-- toda abstração vaza detalhes de implementação!
-    - e tudo bem! isso não invalida suas utilidades
-    - porem, existe um gradiente aí! mesmo sempre existindo vazamento, é de nosso interesse minimizá-lo!!
 ---
 
 # abstrações apenas têm valor quando levantam seu próprio peso
@@ -363,6 +362,7 @@ dois tipos de erros:
 
 header:interface enxuta
 footer:"define errors out of existence" -- ousterhout, john
+footer:[assertions should be more debugger-oriented](https://nullprogram.com/blog/2022/06/26/)
 ===
 qualquer outro tipo de erro é desnecessário
 
