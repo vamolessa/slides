@@ -320,7 +320,7 @@
 
 <section style="background-image: url(granularity.jpg)">
     <h1>granularidade</h1>
-    <p>abstrações acontecem em vários níveis, mas o potencial é proporcional à escala</p>
+    <h2>abstrações acontecem em vários níveis, mas o potencial é proporcional à escala</h2>
 
     <!--
     níveis: nome, função, classe, módulo, programa, sistema, etc.
@@ -337,7 +337,7 @@
     -->
 </section>
 
-<section>
+<section class="main">
     <h1>profunda</h1>
     <ul>
     <li>ortogonal</li>
@@ -368,6 +368,10 @@
 </section>
 
 <section>
+    <header>
+        <p>profunda</p>
+    </header>
+
     <p>ortogonal</p>
     <h1>altura do pulo ❌</h1>
     <img src="jump-config.png" />
@@ -396,6 +400,10 @@
 </section>
 
 <section>
+    <header>
+        <p>profunda</p>
+    </header>
+
     <p>composível</p>
     <h1>narrow waist</h1>
     <p>exemplo: unix pipeline</p>
@@ -433,6 +441,10 @@
 </section>
 
 <section>
+    <header>
+        <p>profunda</p>
+    </header>
+
     <p>exemplo</p>
     <h1>late binding dialogo neko</h1>
     <pre><code>class UNekoDialogueCharacterDataAsset : public UDataAsset {
@@ -455,6 +467,10 @@
 </section>
 
 <section>
+    <header>
+        <p>profunda</p>
+    </header>
+
     <p>exemplo</p>
     <h1>early binding dialogo neko</h1>
     <pre><code>class UNekoDialogueCharacterDataAsset : public UDataAsset {
@@ -678,9 +694,19 @@ if (result) {
 
     <!--
     qualquer outro tipo de erro é desnecessário
-    
-    TODO: expandir exemplo
-    ex: pepper CommandTokenizer
+    -->
+</section>
+
+<section>
+    <p>exemplo</p>
+    <h1>pepper CommandTokenizer</h1>
+    <pre><code>open "folder/some file.txt</code></pre>
+
+    <!--
+    antes existiam vários tratamentos de erro por conta de tratamento de strings ao parsear comandos no editor pepper.
+    porém mudar a semantica para uma aspa não fechada significa string até o final da linha fez com que parsear comando
+    se tornasse uma operação infalível. ainda pode acontecer erro de semântica, mas todos os códigos que lidavam com o
+    tokenizador passaram a ser muito mais enxutos.
     -->
 </section>
 
@@ -689,7 +715,8 @@ if (result) {
         <p>interface enxuta</p>
     </header>
 
-    <h2>intervalo de valores</h2>
+    <p>invariantes explícitas</p>
+    <h1>intervalo de valores</h1>
     <p>usar tipos para codificar valores válidos</p>
     <pre><code>// evitar
 int GetPlayerCount();

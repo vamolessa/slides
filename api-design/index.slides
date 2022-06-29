@@ -226,7 +226,7 @@ criar abstrações que adicionam valor substancial ao sistema, à solução e ao
 ---
 
 # granularidade
-abstrações acontecem em vários níveis, mas o potencial é proporcional à escala
+## abstrações acontecem em vários níveis, mas o potencial é proporcional à escala
 background:granularity.jpg
 ===
 níveis: nome, função, classe, módulo, programa, sistema, etc.
@@ -251,6 +251,7 @@ não são importantes enquanto estamos no mesmo módulo.
 - estado mínimo
 - invariantes explícitas
 - intui sua implementação
+background:main
 ---
 
 # ortogonal
@@ -266,6 +267,7 @@ ortogonal
 !jump-config.png
 !gravity-config.png
 !stick-config.png
+header:profunda
 ===
 tanto mudar impulso de pulo quanto gravidade influenciam altura do pulo
 mais ainda: quando o gato tá grudado a um prop, o peso do prop e os multiplicadores também influenciam
@@ -286,6 +288,7 @@ exemplo: unix pipeline
 ```
 ls -l | grep key | less
 ```
+header:profunda
 footer:[a sketch of the biggest idea in software architecture](https://www.oilshell.org/blog/2022/03/backlog-arch.html)
 ===
 faca de dois legumes: facilita a comunicação entre sistemas, limita a comunicação entre sistemas
@@ -319,6 +322,7 @@ class UNekoDialogueCharacterDataAsset : public UDataAsset {
     UTexture2D* GetExpression(ENekoDialogueCharacterExpression Expression);
 };
 ```
+header:profunda
 ===
 todas as expressões ficam no array expressions.
 teoricamente temos flexibilidade pra configurar as expressões,
@@ -342,6 +346,7 @@ class UNekoDialogueCharacterDataAsset : public UDataAsset {
     UTexture2D* GetExpression(ENekoDialogueCharacterExpression Expression);
 };
 ```
+header:profunda
 ===
 agora listamos todas as expressões explicitamente.
 impossível duplicar. esquecer uma expressão significa ter um buraco vazio no editor.
@@ -475,12 +480,22 @@ footer:"define errors out of existence" -- ousterhout, john
 footer:[assertions should be more debugger-oriented](https://nullprogram.com/blog/2022/06/26/)
 ===
 qualquer outro tipo de erro é desnecessário
-
-TODO: expandir exemplo
-ex: pepper CommandTokenizer
 ---
 
-## intervalo de valores
+exemplo
+# pepper CommandTokenizer
+```
+open "folder/some file.txt
+```
+===
+antes existiam vários tratamentos de erro por conta de tratamento de strings ao parsear comandos no editor pepper.
+porém mudar a semantica para uma aspa não fechada significa string até o final da linha fez com que parsear comando
+se tornasse uma operação infalível. ainda pode acontecer erro de semântica, mas todos os códigos que lidavam com o
+tokenizador passaram a ser muito mais enxutos.
+---
+
+invariantes explícitas
+# intervalo de valores
 usar tipos para codificar valores válidos
 ```
 // evitar
