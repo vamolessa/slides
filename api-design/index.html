@@ -400,6 +400,25 @@
 </section>
 
 <section>
+    <p>composível</p>
+    <h1>padrão liga/desliga</h1>
+    <pre><code>// evitar
+void Enable(); // this.enabled = true; ...
+void Disable(); // this.enabled = false; ...
+// eventualmente força um `if` em alguma camada
+
+// preferir
+void SetEnabled(bool enabled); // this.enabled = enabled; ...
+// porém nem sempre possível!</code></pre>
+
+    <!--
+    quando fizer sentido, juntar duas funções em uma caso suas implementações permitam.
+    separar cedo em mais de uma função enventualmente força introduzir um `if` desnecessariamente.
+    o estado novo pode vir de uma configuração ou de uma outra função que o recebe como parâmetro.
+    -->
+</section>
+
+<section>
     <header>
         <p>profunda</p>
     </header>

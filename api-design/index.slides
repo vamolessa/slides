@@ -283,6 +283,24 @@ algo a se levar em conta ao analizar códigos de terceiros.
 ---
 
 composível
+# padrão liga/desliga
+```
+// evitar
+void Enable(); // this.enabled = true; ...
+void Disable(); // this.enabled = false; ...
+// eventualmente força um `if` em alguma camada
+
+// preferir
+void SetEnabled(bool enabled); // this.enabled = enabled; ...
+// porém nem sempre possível!
+```
+===
+quando fizer sentido, juntar duas funções em uma caso suas implementações permitam.
+separar cedo em mais de uma função enventualmente força introduzir um `if` desnecessariamente.
+o estado novo pode vir de uma configuração ou de uma outra função que o recebe como parâmetro.
+---
+
+composível
 # narrow waist
 exemplo: unix pipeline
 ```
