@@ -283,6 +283,18 @@ algo a se levar em conta ao analizar códigos de terceiros.
 ---
 
 composível
+# narrow waist
+exemplo: unix pipeline
+```
+ls -l | grep key | less
+```
+header:profunda
+footer:[a sketch of the biggest idea in software architecture](https://www.oilshell.org/blog/2022/03/backlog-arch.html)
+===
+faca de dois legumes: facilita a comunicação entre sistemas, limita a comunicação entre sistemas
+---
+
+composível
 # callbacks
 preferir api imediata
 callbacks adicionam indireção ao fluxo de código
@@ -308,18 +320,6 @@ void SetEnabled(bool enabled); // this.enabled = enabled; ...
 quando fizer sentido, juntar duas funções em uma caso suas implementações permitam.
 separar cedo em mais de uma função enventualmente força introduzir um `if` desnecessariamente.
 o estado novo pode vir de uma configuração ou de uma outra função que o recebe como parâmetro.
----
-
-composível
-# narrow waist
-exemplo: unix pipeline
-```
-ls -l | grep key | less
-```
-header:profunda
-footer:[a sketch of the biggest idea in software architecture](https://www.oilshell.org/blog/2022/03/backlog-arch.html)
-===
-faca de dois legumes: facilita a comunicação entre sistemas, limita a comunicação entre sistemas
 ---
 
 composível
