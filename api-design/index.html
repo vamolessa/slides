@@ -9,7 +9,7 @@
 
 <section class="main">
     <h1>design de apis</h1>
-    <h2>workshop bitcake 2022</h1>
+    <h2>workshop bitcake 2022</h2>
 
     <footer>
         <p>por @ahvamolessa</p>
@@ -18,7 +18,7 @@
 
 <section>
     <h1>objetivo</h1>
-    <h2>refletir ativamente a respeito das decisões que tomamos ao arquitetar nossas soluções</h1>
+    <h2>refletir ativamente a respeito das decisões que tomamos ao arquitetar nossas soluções</h2>
 
     <!--
     workshop um pouco filosófico com o intuito de trazer pra frente pensamentos, que possivelmente
@@ -60,7 +60,7 @@
 
 <section style="background-image: url(complexity.jpg)">
     <h1>é um modelo com o propósito de interpretar uma realidade rica em detalhes</h1>
-    <h2>alcançado por introduzir conceitos pertinentes ao domínio</h1>
+    <h2>alcançado por introduzir conceitos pertinentes ao domínio</h2>
 
     <!--
     nossa maior ferramenta para lidar com complexidade.
@@ -73,7 +73,7 @@
 
 <section style="background-image: url(faca-dois-legumes.jpg)">
     <h1>abstrair = faca de dois legumes</h1>
-    <h2>esconder complexidade <em>adiciona</em> complexidade</h1>
+    <h2>esconder complexidade <em>adiciona</em> complexidade</h2>
 
     <!--
     abstrair significa esconder detalhes adicionando presunções implícitas (contexto) que
@@ -90,7 +90,7 @@
 
 <section>
     <h1>abstrair != remover complexidade</h1>
-    <h2>esconder significa que ainda está lá</h1>
+    <h2>esconder significa que ainda está lá</h2>
 
     <!--
     importantíssimo lembrar que os detalhes ainda estão lá!
@@ -113,7 +113,7 @@
 </section>
 
 <section>
-    <h2>escrever mais código que o necessário <em>por definição</em> apenas aumenta a complexidade da solução</h1>
+    <h2>escrever mais código que o necessário <em>por definição</em> apenas aumenta a complexidade da solução</h2>
 
     <footer>
         <p><a href="http://number-none.com/blow/john_carmack_on_inlined_code.html">john carmack on inlined code</a></p>
@@ -129,12 +129,12 @@
 
 <section>
     <h1>complexidade inerente vs complexidade acidental</h1>
-    <h2>inerente</h1>
+    <h2>inerente</h2>
     <ul>
     <li>propriedades fundamentais do problema</li>
     <li>única maneira de reduzi-la é mudando o problema (e tudo bem!)</li>
     </ul>
-    <h2>acidental</h1>
+    <h2>acidental</h2>
     <ul>
     <li>adicionada por nós mesmos</li>
     <li>idealmente zero</li>
@@ -214,7 +214,7 @@
 
 <section>
     <h1>código reutilizável vs código fácil de deletar</h1>
-    <h2>a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h1>
+    <h2>a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h2>
 
     <footer>
         <p><a href="https://caseymuratori.com/blog_0015">semantic compression</a></p>
@@ -245,7 +245,7 @@
 
 <section>
     <h1>apesar de tudo, abstrações vazam</h1>
-    <h2>sem exceção</h1>
+    <h2>sem exceção</h2>
 
     <footer>
         <p><a href="https://www.youtube.com/watch?v=5l2wMgm7ZOk">why black boxes are so hard to reuse</a></p>
@@ -267,7 +267,7 @@
 
 <section>
     <h1>abstrações apenas têm valor quando levantam seu próprio peso</h1>
-    <h2>"programmers know the benefits of everything and the tradeoffs of nothing"</h1>
+    <h2>"programmers know the benefits of everything and the tradeoffs of nothing"</h2>
 
     <footer>
         <p><a href="https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ">there are no zero-cost abstractions</a></p>
@@ -320,7 +320,7 @@
 
 <section style="background-image: url(granularity.jpg)">
     <h1>granularidade</h1>
-    <h2>abstrações acontecem em vários níveis, mas o potencial é proporcional à escala</h1>
+    <h2>abstrações acontecem em vários níveis, mas o potencial é proporcional à escala</h2>
 
     <!--
     níveis: nome, função, classe, módulo, programa, sistema, etc.
@@ -342,7 +342,7 @@
     <ul>
     <li>ortogonal</li>
     <li>composível</li>
-    <li>complexidade adicionada < complexidade abstraída</li>
+    <li>complexidade adicionada &lt; complexidade abstraída</li>
     <h1>interface enxuta</h1>
     </ul>
     <ul>
@@ -485,7 +485,7 @@ void SetEnabled(bool enabled); // this.enabled = enabled; ...
     <pre><code>class UNekoDialogueCharacterDataAsset : public UDataAsset {
     ENekoDialogueCharacterId Id = ENekoDialogueCharacterId::None;
 
-    TArray&ltTSoftObjectPtr&ltUTexture2D&gt&gt Expressions;
+    TArray&lt;TSoftObjectPtr&lt;UTexture2D&gt;&gt; Expressions;
 
     // implementado com for
     UTexture2D* GetExpression(ENekoDialogueCharacterExpression Expression);
@@ -511,9 +511,9 @@ void SetEnabled(bool enabled); // this.enabled = enabled; ...
     <pre><code>class UNekoDialogueCharacterDataAsset : public UDataAsset {
     ENekoDialogueCharacterId Id = ENekoDialogueCharacterId::None;
 
-    TSoftObjectPtr&ltUTexture2D&gt ExpressionDefault;
-    TSoftObjectPtr&ltUTexture2D&gt ExpressionAngry;
-    TSoftObjectPtr&ltUTexture2D&gt ExpressionHappy;
+    TSoftObjectPtr&lt;UTexture2D&gt; ExpressionDefault;
+    TSoftObjectPtr&lt;UTexture2D&gt; ExpressionAngry;
+    TSoftObjectPtr&lt;UTexture2D&gt; ExpressionHappy;
 
     // implementado com switch
     UTexture2D* GetExpression(ENekoDialogueCharacterExpression Expression);
@@ -532,7 +532,7 @@ void SetEnabled(bool enabled); // this.enabled = enabled; ...
         <p>profunda</p>
     </header>
 
-    <h1>complexidade adicionada < complexidade abstraída</h1>
+    <h1>complexidade adicionada &lt; complexidade abstraída</h1>
     <p>abstrações devem puxar mais que seu próprio peso</p>
     <p>entender os tradeoffs feitos</p>
 </section>
@@ -542,7 +542,7 @@ void SetEnabled(bool enabled); // this.enabled = enabled; ...
         <p>profunda</p>
     </header>
 
-    <p>complexidade adicionada < complexidade abstraída</p>
+    <p>complexidade adicionada &lt; complexidade abstraída</p>
     <h1>desempenho</h1>
     <ul>
     <li>é um sistema pervasivo? muitas entidades?</li>
@@ -698,7 +698,7 @@ if (result) {
     <p>linguagens mais recentes têm esse conceito embutido (rust, zig, kotlin, c#8)</p>
     <ul>
     <li>c# da unity não tem isso</li>
-    <li>bitstrap: <code>Option<T></code></li>
+    <li>bitstrap: <code>Option&lt;T&gt;</code></li>
     </ul>
 
     <footer>
@@ -715,8 +715,8 @@ if (result) {
     <h1>minimizar erros</h1>
     <p>dois tipos de erros:</p>
     <ul>
-    <li>entrada/saída => tratar</li>
-    <li>lógica => assert</li>
+    <li>entrada/saída =&gt; tratar</li>
+    <li>lógica =&gt; assert</li>
     </ul>
 
     <footer>
@@ -806,7 +806,7 @@ uint8 GetPlayerCount();</code></pre>
 
 <section style="background-image: url(galaxy-brain.png)">
     <h1>às vezes não precisa de api ou abstração</h1>
-    <h2>código vai, design fica</h1>
+    <h2>código vai, design fica</h2>
 
     <!--
     nosso trabalho é resolver problema. escrever código é consequência.
@@ -822,19 +822,19 @@ uint8 GetPlayerCount();</code></pre>
     <pre><code>pub trait Asset: Sync + Send + 'static {
     type Id: fmt::Debug + Hash + Eq + Clone + Sync + Send;
 }
-pub trait AssetLoader&lt'a, A: Asset&gt {
+pub trait AssetLoader&lt;'a, A: Asset&gt; {
     type Storage;
-    fn load(&'a self, id: &A::Id, storage: &mut Self::Storage) -&gt Result&ltA, AssetLoadError&gt;
+    fn load(&'a self, id: &A::Id, storage: &mut Self::Storage) -&gt; Result&lt;A, AssetLoadError&gt;;
 }
-pub fn try_load&lt'a, S&gt(
+pub fn try_load&lt;'a, S&gt;(
     &mut self,
     id: &A::Id,
-    loader: &'a AssetLoader&lt'a, A, Storage = S&gt,
+    loader: &'a AssetLoader&lt;'a, A, Storage = S&gt;,
     storage: &mut S,
-) -&gt Result&ltAssetHandle&ltA&gt, AssetLoadError&gt {
+) -&gt; Result&lt;AssetHandle&lt;A&gt;, AssetLoadError&gt; {
     match self.cache_map.get(id).cloned() {
-        Some(handle) =&gt Ok(handle),
-        None =&gt {
+        Some(handle) =&gt; Ok(handle),
+        None =&gt; {
             let asset = loader.load(id, storage)?;
             let handle = self.add(asset);
             self.cache_map.insert(id.clone(), handle);
@@ -870,9 +870,9 @@ pub fn try_load&lt'a, S&gt(
     public System.Action OnTimer { get; set; } // callback
 
     public void OnUpdate() {
-        if( counter &lt 0.0f ) {
+        if( counter &lt; 0.0f ) {
             // Already triggered callback.
-        } else if( counter &lt length ) {
+        } else if( counter &lt; length ) {
             counter += Time.deltaTime;
         } else {
             counter = -1.0f;
@@ -899,9 +899,9 @@ pub fn try_load&lt'a, S&gt(
     private float elapsedTime = -1.0f;
 
     public bool OnUpdate() { // sem callback
-        if( elapsedTime &gt= 0.0f )
+        if( elapsedTime &gt;= 0.0f )
             elapsedTime += Time.deltaTime;
-        if( elapsedTime &lt length ) {
+        if( elapsedTime &lt; length ) {
             elapsedTime = -1.0f;
             return true;
         }
@@ -925,9 +925,9 @@ pub fn try_load&lt'a, S&gt(
     <pre><code>float Timer = -1.0f; // neko
 // ...
 void AMyActor::Tick(float DeltaSeconds) {
-    if (Timer &gt= 0.0f) {
+    if (Timer &gt;= 0.0f) {
         Timer += DeltaSeconds;
-        if (Timer &gt= Config-&gtTimerDuration) {
+        if (Timer &gt;= Config-&gt;TimerDuration) {
             // do the thing!
             Timer = -1.0f;
         }

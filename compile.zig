@@ -127,16 +127,15 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
 
     var buffered_writer = BufferedWriter{ .unbuffered_writer = output.writer() };
     defer buffered_writer.flush() catch {};
-    var writer = buffered_writer.writer();
-    defer endDocument(writer);
 
     var links_buf: [128]Link = undefined;
     var ctx = Context {
-        .writer = writer,
+        .writer = buffered_writer.writer(),
         .link_count = 0,
         .links = &links_buf,
     };
 
+    defer endDocument(ctx.writer);
     var begun_document = false;
 
     const slide_separator = "---";
@@ -194,7 +193,7 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
 
         if (!begun_document) {
             begun_document = true;
-            beginDocument(writer, title);
+            beginDocument(ctx.writer, title);
         }
 
         beginSection(&ctx, maybe_background, headers[0..header_count]);
@@ -215,14 +214,14 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
             } else if (consumePrefix(line, "- ")) |list_entry| {
                 is_inside_list = true;
                 if (!was_inside_list) {
-                    beginListing(writer);
+                    beginListing(ctx.writer);
                 }
 
-                write(writer, indentation);
-                beginTag(writer, "li");
+                write(ctx.writer, indentation);
+                beginTag(ctx.writer, "li");
                 writeLineContent(&ctx, list_entry);
-                endTag(writer, "li");
-                write(writer, "\n");
+                endTag(ctx.writer, "li");
+                write(ctx.writer, "\n");
             } else if (consumePrefix(line, "!!")) |links_heading| {
                 const max_per_section = 8;
 
@@ -247,11 +246,11 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
                     write(ctx.writer, "\n");
                 }
             } else if (consumePrefix(line, "!")) |image_src| {
-                writeImageTag(writer, image_src);
+                writeImageTag(ctx.writer, image_src);
             } else if (consumePrefix(line, "```") != null) {
-                write(writer, indentation);
-                beginTag(writer, "pre");
-                beginTag(writer, "code");
+                write(ctx.writer, indentation);
+                beginTag(ctx.writer, "pre");
+                beginTag(ctx.writer, "code");
 
                 const code_start = content_lines.rest();
                 var code_len: usize = 0;
@@ -267,36 +266,26 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
                     code_len -= 1;
                 }
 
-                var code = code_start[0..code_len];
-                while (std.mem.indexOfAny(u8, code, "<>")) |i| {
-                    write(writer, code[0..i]);
-                    switch (code[i]) {
-                        '<' => write(writer, "&lt"),
-                        '>' => write(writer, "&gt"),
-                        else => unreachable,
-                    }
-                    code = code[i + 1..];
-                }
-                write(writer, code);
+                writeEscapedLtAndGt(ctx.writer, code_start[0..code_len]);
 
-                endTag(writer, "code");
-                endTag(writer, "pre");
-                write(writer, "\n");
+                endTag(ctx.writer, "code");
+                endTag(ctx.writer, "pre");
+                write(ctx.writer, "\n");
             } else if (consumePrefix(line, "")) |paragraph| {
-                write(writer, indentation);
-                beginTag(writer, "p");
+                write(ctx.writer, indentation);
+                beginTag(ctx.writer, "p");
                 writeLineContent(&ctx, paragraph);
-                endTag(writer, "p");
-                write(writer, "\n");
+                endTag(ctx.writer, "p");
+                write(ctx.writer, "\n");
             }
 
             if (was_inside_list and !is_inside_list) {
-                endListing(writer);
+                endListing(ctx.writer);
             }
             was_inside_list = is_inside_list;
         }
         if (was_inside_list) {
-            endListing(writer);
+            endListing(ctx.writer);
         }
     }
 }
@@ -445,7 +434,7 @@ fn writeIndentedTagWithContent(ctx: *Context, tag: []const u8, content: []const 
     write(ctx.writer, indentation);
     beginTag(ctx.writer, tag);
     writeLineContent(ctx, content);
-    endTag(ctx.writer, "h1");
+    endTag(ctx.writer, tag);
     write(ctx.writer, "\n");
 }
 
@@ -473,10 +462,32 @@ fn nextByte(line: *[]const u8) ?u8 {
     }
 }
 
+fn writeEscapedLtAndGt(writer: Writer, text: []const u8) void {
+    var rest = text;
+    while (std.mem.indexOfAny(u8, rest, "<>")) |i| {
+        write(writer, rest[0..i]);
+        switch (rest[i]) {
+            '<' => write(writer, "&lt;"),
+            '>' => write(writer, "&gt;"),
+            else => unreachable,
+        }
+        rest = rest[i + 1..];
+    }
+    write(writer, rest);
+}
+
 fn writeLineContent(ctx: *Context, line: []const u8) void {
     var bytes = line;
     while (nextByte(&bytes)) |byte| {
         switch (byte) {
+            '<' => {
+                write(ctx.writer, "&lt;");
+                continue;
+            },
+            '>' => {
+                write(ctx.writer, "&gt;");
+                continue;
+            },
             '\\' => {
                 if (nextByte(&bytes)) |b| {
                     _ = b;
@@ -518,7 +529,7 @@ fn writeLineContent(ctx: *Context, line: []const u8) void {
             '`' => {
                 if (std.mem.indexOfScalar(u8, bytes, '`')) |len| {
                     beginTag(ctx.writer, "code");
-                    write(ctx.writer, bytes[0..len]);
+                    writeEscapedLtAndGt(ctx.writer, bytes[0..len]);
                     endTag(ctx.writer, "code");
 
                     bytes = bytes[len + 1 ..];
