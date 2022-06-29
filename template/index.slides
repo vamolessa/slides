@@ -41,8 +41,7 @@ if (true) {
 don't forget to comment the code!
 ---
 
-# all link
-!!
+!!all links
 ===
-adding a `!!` will expand all previous links in this slide
+adding a `!!` will expand all previous links in this slide with the text following it as the title
 

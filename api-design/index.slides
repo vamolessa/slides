@@ -371,9 +371,8 @@ header:profunda
 ---
 
 # padrões razoáveis
+almejar criar um "pit of success" pra quem for usar
 header:interface enxuta
-===
-criar um "pit of success" pra quem for usar
 ---
 
 padrões razoáveis
@@ -485,8 +484,8 @@ qualquer outro tipo de erro é desnecessário
 exemplo
 # pepper CommandTokenizer
 ```
-# ops, esqueci de fechar aspas
 open "folder/some file.txt
+# ops, esqueci de fechar aspas ^
 ```
 ===
 antes existiam vários tratamentos de erro por conta de tratamento de strings ao parsear comandos no editor pepper.
@@ -709,6 +708,5 @@ uma solução que é simples demais ignora detalhes importantes.
 é através de simplicidade que atingimos apis balanceadas entre custo e benefício
 ---
 
-# links
-!!8
+!!links
 ===

@@ -209,17 +209,9 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
             var is_inside_list = false;
 
             if (consumePrefix(line, "# ")) |heading| {
-                write(writer, indentation);
-                beginTag(writer, "h1");
-                writeLineContent(&ctx, heading);
-                endTag(writer, "h1");
-                write(writer, "\n");
+                writeIndentedTagWithContent(&ctx, "h1", heading);
             } else if (consumePrefix(line, "## ")) |heading| {
-                write(writer, indentation);
-                beginTag(writer, "h2");
-                writeLineContent(&ctx, heading);
-                endTag(writer, "h2");
-                write(writer, "\n");
+                writeIndentedTagWithContent(&ctx, "h2", heading);
             } else if (consumePrefix(line, "- ")) |list_entry| {
                 is_inside_list = true;
                 if (!was_inside_list) {
@@ -231,16 +223,13 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
                 writeLineContent(&ctx, list_entry);
                 endTag(writer, "li");
                 write(writer, "\n");
-            } else if (consumePrefix(line, "!!")) |max_per_section_text| {
-                var max_per_section = std.fmt.parseInt(u8, max_per_section_text, 10) catch 0;
-                if (max_per_section == 0) {
-                    max_per_section = std.math.maxInt(u8);
-                }
-
-                std.log.info("link count: {}", .{ctx.link_count});
+            } else if (consumePrefix(line, "!!")) |links_heading| {
+                const max_per_section = 8;
 
                 const links = ctx.links[0..ctx.link_count];
                 defer ctx.link_count = 0;
+
+                writeIndentedTagWithContent(&ctx, "h1", links_heading);
 
                 var link_count: u8 = 0;
                 for (links) |link| {
@@ -249,6 +238,8 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
                         link_count = 0;
                         endSection(&ctx, footers[0..footer_count], "");
                         beginSection(&ctx, maybe_background, headers[0..header_count]);
+
+                        writeIndentedTagWithContent(&ctx, "h1", links_heading);
                     }
 
                     write(ctx.writer, indentation);
@@ -450,6 +441,14 @@ fn endTag(writer: Writer, tag: []const u8) void {
     write(writer, ">");
 }
 
+fn writeIndentedTagWithContent(ctx: *Context, tag: []const u8, content: []const u8) void {
+    write(ctx.writer, indentation);
+    beginTag(ctx.writer, tag);
+    writeLineContent(ctx, content);
+    endTag(ctx.writer, "h1");
+    write(ctx.writer, "\n");
+}
+
 fn writeLinkTag(writer: Writer, link: Link) void {
     write(writer, "<a href=\"");
     write(writer, link.href);
@@ -498,7 +497,6 @@ fn writeLineContent(ctx: *Context, line: []const u8) void {
                         writeLinkTag(ctx.writer, link);
                         bytes = bytes[href_end + 1 ..];
 
-                        std.log.info("links len: {}", .{ctx.links.len});
                         if (ctx.link_count < ctx.links.len) {
                             ctx.links[ctx.link_count] = link;
                             ctx.link_count += 1;

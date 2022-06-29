@@ -9,7 +9,7 @@
 
 <section class="main">
     <h1>design de apis</h1>
-    <h2>workshop bitcake 2022</h2>
+    <h2>workshop bitcake 2022</h1>
 
     <footer>
         <p>por @ahvamolessa</p>
@@ -18,7 +18,7 @@
 
 <section>
     <h1>objetivo</h1>
-    <h2>refletir ativamente a respeito das decisões que tomamos ao arquitetar nossas soluções</h2>
+    <h2>refletir ativamente a respeito das decisões que tomamos ao arquitetar nossas soluções</h1>
 
     <!--
     workshop um pouco filosófico com o intuito de trazer pra frente pensamentos, que possivelmente
@@ -60,7 +60,7 @@
 
 <section style="background-image: url(complexity.jpg)">
     <h1>é um modelo com o propósito de interpretar uma realidade rica em detalhes</h1>
-    <h2>alcançado por introduzir conceitos pertinentes ao domínio</h2>
+    <h2>alcançado por introduzir conceitos pertinentes ao domínio</h1>
 
     <!--
     nossa maior ferramenta para lidar com complexidade.
@@ -73,7 +73,7 @@
 
 <section style="background-image: url(faca-dois-legumes.jpg)">
     <h1>abstrair = faca de dois legumes</h1>
-    <h2>esconder complexidade <em>adiciona</em> complexidade</h2>
+    <h2>esconder complexidade <em>adiciona</em> complexidade</h1>
 
     <!--
     abstrair significa esconder detalhes adicionando presunções implícitas (contexto) que
@@ -90,7 +90,7 @@
 
 <section>
     <h1>abstrair != remover complexidade</h1>
-    <h2>esconder significa que ainda está lá</h2>
+    <h2>esconder significa que ainda está lá</h1>
 
     <!--
     importantíssimo lembrar que os detalhes ainda estão lá!
@@ -113,7 +113,7 @@
 </section>
 
 <section>
-    <h2>escrever mais código que o necessário <em>por definição</em> apenas aumenta a complexidade da solução</h2>
+    <h2>escrever mais código que o necessário <em>por definição</em> apenas aumenta a complexidade da solução</h1>
 
     <footer>
         <p><a href="http://number-none.com/blow/john_carmack_on_inlined_code.html">john carmack on inlined code</a></p>
@@ -129,12 +129,12 @@
 
 <section>
     <h1>complexidade inerente vs complexidade acidental</h1>
-    <h2>inerente</h2>
+    <h2>inerente</h1>
     <ul>
     <li>propriedades fundamentais do problema</li>
     <li>única maneira de reduzi-la é mudando o problema (e tudo bem!)</li>
     </ul>
-    <h2>acidental</h2>
+    <h2>acidental</h1>
     <ul>
     <li>adicionada por nós mesmos</li>
     <li>idealmente zero</li>
@@ -214,7 +214,7 @@
 
 <section>
     <h1>código reutilizável vs código fácil de deletar</h1>
-    <h2>a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h2>
+    <h2>a única forma de criar código reutilizável é extraindo-o de código fácil de deletar</h1>
 
     <footer>
         <p><a href="https://caseymuratori.com/blog_0015">semantic compression</a></p>
@@ -245,7 +245,7 @@
 
 <section>
     <h1>apesar de tudo, abstrações vazam</h1>
-    <h2>sem exceção</h2>
+    <h2>sem exceção</h1>
 
     <footer>
         <p><a href="https://www.youtube.com/watch?v=5l2wMgm7ZOk">why black boxes are so hard to reuse</a></p>
@@ -267,7 +267,7 @@
 
 <section>
     <h1>abstrações apenas têm valor quando levantam seu próprio peso</h1>
-    <h2>"programmers know the benefits of everything and the tradeoffs of nothing"</h2>
+    <h2>"programmers know the benefits of everything and the tradeoffs of nothing"</h1>
 
     <footer>
         <p><a href="https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ">there are no zero-cost abstractions</a></p>
@@ -320,7 +320,7 @@
 
 <section style="background-image: url(granularity.jpg)">
     <h1>granularidade</h1>
-    <h2>abstrações acontecem em vários níveis, mas o potencial é proporcional à escala</h2>
+    <h2>abstrações acontecem em vários níveis, mas o potencial é proporcional à escala</h1>
 
     <!--
     níveis: nome, função, classe, módulo, programa, sistema, etc.
@@ -524,10 +524,7 @@
     </header>
 
     <h1>padrões razoáveis</h1>
-
-    <!--
-    criar um "pit of success" pra quem for usar
-    -->
+    <p>almejar criar um "pit of success" pra quem for usar</p>
 </section>
 
 <section>
@@ -700,8 +697,8 @@ if (result) {
 <section>
     <p>exemplo</p>
     <h1>pepper CommandTokenizer</h1>
-    <pre><code># ops, esqueci de fechar aspas
-open "folder/some file.txt</code></pre>
+    <pre><code>open "folder/some file.txt
+# ops, esqueci de fechar aspas ^</code></pre>
 
     <!--
     antes existiam vários tratamentos de erro por conta de tratamento de strings ao parsear comandos no editor pepper.
@@ -774,7 +771,7 @@ uint8 GetPlayerCount();</code></pre>
 
 <section style="background-image: url(galaxy-brain.png)">
     <h1>às vezes não precisa de api ou abstração</h1>
-    <h2>código vai, design fica</h2>
+    <h2>código vai, design fica</h1>
 
     <!--
     nosso trabalho é resolver problema. escrever código é consequência.
@@ -976,6 +973,7 @@ void AMyActor::Tick(float DeltaSeconds) {
 </section>
 
 <section>
+    <h1>links</h1>
     <a href="https://cellperformance.beyond3d.com/articles/2006/04/performance-and-good-data-design.html">performance and good data design</a>
     <a href="https://quuxplusone.github.io/blog/2022/06/23/unordered-multiset-equal-range/">c++: unordered_multiset's api affects its big-o</a>
     <a href="https://www.youtube.com/watch?v=bmSAYlu0NcY">a philosophy of software design</a>
@@ -987,6 +985,7 @@ void AMyActor::Tick(float DeltaSeconds) {
 </section>
 
 <section>
+    <h1>links</h1>
     <a href="https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25">List.cs</a>
     <a href="https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/">TInlineAllocator</a>
     <a href="https://github.com/bitcake/bitstrap/blob/master/Assets/Runtime/Functional/Option.cs">Option.cs</a>
