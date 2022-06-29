@@ -164,7 +164,7 @@
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>sistema de diálogo neko</h1>
     <img src="dialog-before.png" />
     <p>começou super flexível porém laborioso</p>
@@ -176,7 +176,7 @@
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>sistema de diálogo neko</h1>
     <img src="dialog-after.png" />
     <p>reconhecendo o caso comum, otimizamos o processo</p>
@@ -188,7 +188,7 @@
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>sistema de diálogo neko</h1>
     <img src="dialog-implementation.png" />
     <p>inclusive, a forma simples é implementada por cima da flexível</p>
@@ -217,7 +217,7 @@
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>bitstrap (umake)</h1>
     <img src="umake.png" />
     <p>umake v2 vs v3</p>
@@ -376,14 +376,27 @@
     </header>
 
     <h1>composível</h1>
+    <p>quão fácil é a interação com outras abstrações?</p>
+    <p>(mais prático quando há um canal uniforme que integra sistemas)</p>
 
     <!--
     um pouco menos prático para os nossos casos já que costumamos fazer sistemas especializados.
-    mas algo a se levar em conta ao analizar códigos de terceiros.
-    
-    é permitido e, de preferência até, fácil de interagir com outras abstrações?
-    
-    TODO: expandir
+    algo a se levar em conta ao analizar códigos de terceiros.
+    -->
+</section>
+
+<section>
+    <p>composível</p>
+    <h1>narrow waist</h1>
+    <p>exemplo: unix pipeline</p>
+    <pre><code>ls -l | grep key | less</code></pre>
+
+    <footer>
+        <p><a href="https://www.oilshell.org/blog/2022/03/backlog-arch.html">a sketch of the biggest idea in software architecture</a></p>
+    </footer>
+
+    <!--
+    faca de dois legumes: facilita a comunicação entre sistemas, limita a comunicação entre sistemas
     -->
 </section>
 
@@ -410,7 +423,7 @@
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>late binding dialogo neko</h1>
     <pre><code>class UNekoDialogueCharacterDataAsset : public UDataAsset {
     ENekoDialogueCharacterId Id = ENekoDialogueCharacterId::None;
@@ -432,7 +445,7 @@
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>early binding dialogo neko</h1>
     <pre><code>class UNekoDialogueCharacterDataAsset : public UDataAsset {
     ENekoDialogueCharacterId Id = ENekoDialogueCharacterId::None;
@@ -719,7 +732,7 @@ uint8 GetPlayerCount();</code></pre>
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>classe timer v1</h1>
     <pre><code>public class Timer { // holodrive
     [SerializeField] private float length = 1.0f; // serializado
@@ -749,7 +762,7 @@ uint8 GetPlayerCount();</code></pre>
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>classe timer v2</h1>
     <pre><code>public sealed class Timer { // demagnete
     public float length = 1.0f; // dinamico
@@ -777,7 +790,7 @@ uint8 GetPlayerCount();</code></pre>
 </section>
 
 <section>
-    <h2>exemplo</h2>
+    <p>exemplo</p>
     <h1>classe timer v3</h1>
     <pre><code>float Timer = -1.0f; // neko
 // ...

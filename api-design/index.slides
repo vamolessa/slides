@@ -116,7 +116,7 @@ a única maneira de acertar um bom design de primeira é com muita sorte ou ter 
 é sobre a jornada! prototipar, iterar e refatorar!
 ---
 
-## exemplo
+exemplo
 # sistema de diálogo neko
 !dialog-before.png
 começou super flexível porém laborioso
@@ -125,7 +125,7 @@ foi inclusive latente o problema de usabilidade
 uma vez que o alan tentou abstrair a flexibilidade do sistema
 ---
 
-## exemplo
+exemplo
 # sistema de diálogo neko
 !dialog-after.png
 reconhecendo o caso comum, otimizamos o processo
@@ -134,7 +134,7 @@ entendendo melhor a forma como o sistema seria usado,
 foi possível otimizar a usabilidade
 ---
 
-## exemplo
+exemplo
 # sistema de diálogo neko
 !dialog-implementation.png
 inclusive, a forma simples é implementada por cima da flexível
@@ -154,7 +154,7 @@ footer:[how to write disposable code in large systems](https://programmingisterr
 código fácil de deletar é aquele que outros não dependem
 ---
 
-## exemplo
+exemplo
 # bitstrap (umake)
 !umake.png
 umake v2 vs v3
@@ -265,14 +265,23 @@ mais ainda: quando o gato tá grudado a um prop, o peso do prop e os multiplicad
 ---
 
 # composível
+quão fácil é a interação com outras abstrações?
+(mais prático quando há um canal uniforme que integra sistemas)
 header:profunda
 ===
 um pouco menos prático para os nossos casos já que costumamos fazer sistemas especializados.
-mas algo a se levar em conta ao analizar códigos de terceiros.
+algo a se levar em conta ao analizar códigos de terceiros.
+---
 
-é permitido e, de preferência até, fácil de interagir com outras abstrações?
-
-TODO: expandir
+composível
+# narrow waist
+exemplo: unix pipeline
+```
+ls -l | grep key | less
+```
+footer:[a sketch of the biggest idea in software architecture](https://www.oilshell.org/blog/2022/03/backlog-arch.html)
+===
+faca de dois legumes: facilita a comunicação entre sistemas, limita a comunicação entre sistemas
 ---
 
 composível
@@ -291,7 +300,7 @@ não é bom nem ruim por si só. depende do contexto.
 late binding dá flexibilidade porém dificulta validação. e vice-versa para early binding.
 ---
 
-## exemplo
+exemplo
 # late binding dialogo neko
 ```
 class UNekoDialogueCharacterDataAsset : public UDataAsset {
@@ -312,7 +321,7 @@ fácil esquecer ou duplicar uma expressão por não ter validação.
 `GetExpression` é um `for` que busca uma entrada em `Expressions` que seja do tipo `Expression`. operação falível.
 ---
 
-## exemplo
+exemplo
 # early binding dialogo neko
 ```
 class UNekoDialogueCharacterDataAsset : public UDataAsset {
@@ -507,7 +516,7 @@ TODO: expandir exemplo?
     - facil de adicionar propriedades exclusivas e realmente aconteceu!
 ---
 
-## exemplo
+exemplo
 # classe timer v1
 ```
 public class Timer { // holodrive
@@ -536,7 +545,7 @@ clássica implementação orientada a objetos
 callbacks são configurados no Start/Awake
 ---
 
-## exemplo
+exemplo
 # classe timer v2
 ```
 public sealed class Timer { // demagnete
@@ -563,7 +572,7 @@ api "immediate mode" aproveitando que `OnUpdate` já precisava ser chamado todo 
 código do callback inline dentro de um `if`. bem mais fácil de acompanhar os caminhos de código.
 ---
 
-## exemplo
+exemplo
 # classe timer v3
 ```
 float Timer = -1.0f; // neko
