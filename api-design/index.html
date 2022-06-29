@@ -16,6 +16,16 @@
     </footer>
 </section>
 
+<section>
+    <h1>objetivo</h1>
+    <h2>refletir ativamente a respeito das decisões que tomamos ao arquitetar nossas soluções</h2>
+
+    <!--
+    workshop um pouco filosófico com o intuito de trazer pra frente pensamentos, que possivelmente
+    estavam apenas no subconsciente, a respeito de design e abordagem de desenvolvimento de software.
+    -->
+</section>
+
 <section style="background-image: url(thinker.jpg)">
     <h1><em>api</em> é apresentar <em>abstrações</em> através de uma <em>interface</em></h1>
 
@@ -337,8 +347,8 @@
     </ul>
     <ul>
     <li>padrões razoáveis</li>
-    <li>estado mínimo e explícito</li>
-    <li>pré-condições + invariantes + pós-condições</li>
+    <li>estado mínimo</li>
+    <li>invariantes explícitas</li>
     <li>intui sua implementação</li>
     </ul>
 </section>
@@ -539,7 +549,7 @@
         <p>interface enxuta</p>
     </header>
 
-    <h1>estado mínimo e explícito</h1>
+    <h1>estado mínimo</h1>
     <p>sobre quais os dados a api opera?</p>
     <p>onde eles são alterados?</p>
 
@@ -549,6 +559,7 @@
     </footer>
 
     <!--
+    não é sobre anarquia! :B
     facilitar entendimento e reflexão por diminuir "partes móveis".
     -->
 </section>
@@ -558,7 +569,7 @@
         <p>interface enxuta</p>
     </header>
 
-    <p>estado mínimo e explícito</p>
+    <p>estado mínimo</p>
     <h1>const correctness</h1>
     <p>preferir estilo funcional sempre que possível</p>
     <p>facilita compreensão. menos dependente de ordem de execução</p>
@@ -594,7 +605,7 @@ if (result) {
         <p>interface enxuta</p>
     </header>
 
-    <p>estado mínimo e explícito</p>
+    <p>estado mínimo</p>
     <h1>recursos e posse</h1>
     <p>quem é o responsável pelo recurso?</p>
     <p>posse vs empréstimo</p>
@@ -616,7 +627,14 @@ if (result) {
         <p>interface enxuta</p>
     </header>
 
-    <h1>pré-condições + invariantes + pós-condições</h1>
+    <h1>invariantes explícitas</h1>
+    <p>+ pré-condições</p>
+    <p>+ pós-condições</p>
+
+    <!--
+    uma propriedade do sistema que é sempre verdade.
+    ex: esse ponteiro sempre aponta para memória válida.
+    -->
 </section>
 
 <section>
@@ -624,7 +642,7 @@ if (result) {
         <p>interface enxuta</p>
     </header>
 
-    <p>pré-condições + invariantes + pós-condições</p>
+    <p>invariantes explícitas</p>
     <h1>null</h1>
     <p>pré-condição: quais funções podem <em>receber</em> null?</p>
     <p>pós-condição: quais funções podem <em>retornar</em> null?</p>
@@ -645,7 +663,7 @@ if (result) {
         <p>interface enxuta</p>
     </header>
 
-    <p>pré-condições + invariantes + pós-condições</p>
+    <p>invariantes explícitas</p>
     <h1>minimizar erros</h1>
     <p>dois tipos de erros:</p>
     <ul>
@@ -689,9 +707,18 @@ uint8 GetPlayerCount();</code></pre>
     <p>a partir de uma transformação conhecida, é possível inferir aproximadamente suas entradas e saídas</p>
 
     <!--
-    faz parte da interface saber pelo menos superficialmente sobre sua implementação.
+    quando nos dispomos a implementar um sistema, intuitivamente devemos ter noção da forma de suas entradas e saídas.
+    da mesma forma quando vamos consumir uma api que se propõe a resolver um determinado problema,
+    temos uma noção do que esperar de sua interface.
     
-    TODO: expandir
+    ex: api para baixar arquivo (url)
+    ex: api para desenhar retângulo (x, y, w, h, color)
+    
+    em cada um dos exemplos, dá pra se aprofundar em mais detalhes:
+    http vs ftp vs tcp/ip; rotação, tamanho borda, gradiente vs textura; etc.
+    
+    porém o importante é que ainda assim, o formato das entradas e saídas ainda se assemelham ao intuido.
+    se, por outro lado, a interface diverge demais do esperado, é provável que não seja uma boa api.
     -->
 </section>
 
@@ -728,6 +755,47 @@ uint8 GetPlayerCount();</code></pre>
     - comparar com as coleções que existem no pepper
         - parecidas porém não 100%
         - facil de adicionar propriedades exclusivas e realmente aconteceu!
+    -->
+</section>
+
+<section>
+    <p>exemplo</p>
+    <h1>classe AssetLoader</h1>
+    <pre><code>pub trait Asset: Sync + Send + 'static {
+    type Id: fmt::Debug + Hash + Eq + Clone + Sync + Send;
+}
+pub trait AssetLoader&lt'a, A: Asset&gt {
+    type Storage;
+    fn load(&'a self, id: &A::Id, storage: &mut Self::Storage) -&gt Result&ltA, AssetLoadError&gt;
+}
+pub fn try_load&lt'a, S&gt(
+    &mut self,
+    id: &A::Id,
+    loader: &'a AssetLoader&lt'a, A, Storage = S&gt,
+    storage: &mut S,
+) -&gt Result&ltAssetHandle&ltA&gt, AssetLoadError&gt {
+    match self.cache_map.get(id).cloned() {
+        Some(handle) =&gt Ok(handle),
+        None =&gt {
+            let asset = loader.load(id, storage)?;
+            let handle = self.add(asset);
+            self.cache_map.insert(id.clone(), handle);
+            Ok(handle)
+        }
+    }
+}</code></pre>
+
+    <!--
+    começou como uma abstração template pra carregar assets de vários tipos a partir de um path.
+    até que chegamos em fontes, que precisam de um path + font-size. quebrou a abstração precoce!
+    acontece que eu continuei no caminho da abstração criando mais camadas adicionando mais templates
+    se distanciando cada vez mais da solução do problema: carregar assets do disco.
+    
+    enquanto isso, a solução basicamente *pedia* que fosse separada em várias structs ao inves de uma genérica.
+    anos depois quando fui programar meu editor de código, não cai na mesma armadilha e separei as coleções de
+    Buffers, BufferViews, Plugins e Clients (todas têm um Handle associado).
+    Dessa forma, é super fácil de adicionar funcionalidade própria de cada coleção sem influenciar ou estar amarrado
+    às outras coleções.
     -->
 </section>
 
