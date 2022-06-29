@@ -205,18 +205,22 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
         var was_inside_list = false;
         var content_lines = std.mem.split(u8, content, "\n");
         while (content_lines.next()) |line| {
-            var is_inside_list = false;
+            const maybe_list_entry = consumePrefix(line, "- ");
+            {
+                const is_inside_list = maybe_list_entry != null;
+                if (!was_inside_list and is_inside_list) {
+                    beginListing(ctx.writer);
+                } else if (was_inside_list and !is_inside_list) {
+                    endListing(ctx.writer);
+                }
+                was_inside_list = is_inside_list;
+            }
 
             if (consumePrefix(line, "# ")) |heading| {
                 writeIndentedTagWithContent(&ctx, "h1", heading);
             } else if (consumePrefix(line, "## ")) |heading| {
                 writeIndentedTagWithContent(&ctx, "h2", heading);
-            } else if (consumePrefix(line, "- ")) |list_entry| {
-                is_inside_list = true;
-                if (!was_inside_list) {
-                    beginListing(ctx.writer);
-                }
-
+            } else if (maybe_list_entry) |list_entry| {
                 write(ctx.writer, indentation);
                 beginTag(ctx.writer, "li");
                 writeLineContent(&ctx, list_entry);
@@ -278,12 +282,8 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
                 endTag(ctx.writer, "p");
                 write(ctx.writer, "\n");
             }
-
-            if (was_inside_list and !is_inside_list) {
-                endListing(ctx.writer);
-            }
-            was_inside_list = is_inside_list;
         }
+
         if (was_inside_list) {
             endListing(ctx.writer);
         }
@@ -448,6 +448,8 @@ fn writeLinkTag(writer: Writer, link: Link) void {
 
 fn writeImageTag(writer: Writer, src: []const u8) void {
     write(writer, indentation ++ "<img src=\"");
+    write(writer, src);
+    write(writer, "\" alt=\"");
     write(writer, src);
     write(writer, "\" />\n");
 }
