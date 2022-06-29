@@ -283,6 +283,16 @@ algo a se levar em conta ao analizar códigos de terceiros.
 ---
 
 composível
+# callbacks
+preferir api imediata
+callbacks adicionam indireção ao fluxo de código
+footer:[immediate-mode graphical user interfaces - 2005](https://www.youtube.com/watch?v=Z1qyvQsjK5Y)
+===
+principalmente em implementações de módulos, onde dependências diretas não importam,
+preferir chamar funções diretamente a fim de eliminar indireções.
+---
+
+composível
 # padrão liga/desliga
 ```
 // evitar

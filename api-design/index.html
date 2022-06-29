@@ -401,6 +401,22 @@
 
 <section>
     <p>composível</p>
+    <h1>callbacks</h1>
+    <p>preferir api imediata</p>
+    <p>callbacks adicionam indireção ao fluxo de código</p>
+
+    <footer>
+        <p><a href="https://www.youtube.com/watch?v=Z1qyvQsjK5Y">immediate-mode graphical user interfaces - 2005</a></p>
+    </footer>
+
+    <!--
+    principalmente em implementações de módulos, onde dependências diretas não importam,
+    preferir chamar funções diretamente a fim de eliminar indireções.
+    -->
+</section>
+
+<section>
+    <p>composível</p>
     <h1>padrão liga/desliga</h1>
     <pre><code>// evitar
 void Enable(); // this.enabled = true; ...
@@ -996,15 +1012,16 @@ void AMyActor::Tick(float DeltaSeconds) {
     <a href="https://cellperformance.beyond3d.com/articles/2006/04/performance-and-good-data-design.html">performance and good data design</a>
     <a href="https://quuxplusone.github.io/blog/2022/06/23/unordered-multiset-equal-range/">c++: unordered_multiset's api affects its big-o</a>
     <a href="https://www.youtube.com/watch?v=bmSAYlu0NcY">a philosophy of software design</a>
+    <a href="https://www.youtube.com/watch?v=Z1qyvQsjK5Y">immediate-mode graphical user interfaces - 2005</a>
     <a href="https://www.oilshell.org/blog/2022/03/backlog-arch.html">a sketch of the biggest idea in software architecture</a>
     <a href="https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-">in detph: functional programming in c++</a>
     <a href="https://mobile.twitter.com/rygorous/status/1507178315886444544">twitter - sobre estado</a>
     <a href="https://isocpp.org/wiki/faq/const-correctness">c++ const correctness</a>
-    <a href="https://docs.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines#owners-consumers-and-lifetime-management">c# memory and spans - owners, consumers and lifetime management</a>
 </section>
 
 <section>
     <h1>links</h1>
+    <a href="https://docs.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines#owners-consumers-and-lifetime-management">c# memory and spans - owners, consumers and lifetime management</a>
     <a href="https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25">List.cs</a>
     <a href="https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/">TInlineAllocator</a>
     <a href="https://github.com/bitcake/bitstrap/blob/master/Assets/Runtime/Functional/Option.cs">Option.cs</a>
