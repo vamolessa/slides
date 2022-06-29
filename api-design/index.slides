@@ -566,6 +566,10 @@ anos depois quando fui programar meu editor de código, não cai na mesma armadi
 Buffers, BufferViews, Plugins e Clients (todas têm um Handle associado).
 Dessa forma, é super fácil de adicionar funcionalidade própria de cada coleção sem influenciar ou estar amarrado
 às outras coleções.
+
+basicamente um "falso cognato" de design!
+- duas coisas que a princípio se parecem e teriam um design parecido
+- mas na prática têm operações diferentes que impossibilita uma interface única
 ---
 
 exemplo
