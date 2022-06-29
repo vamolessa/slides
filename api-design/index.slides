@@ -1,5 +1,5 @@
 # design de apis
-## workshop bitcake 2022 (c)
+## workshop bitcake 2022
 background:main
 footer:por @ahvamolessa
 ---
@@ -485,6 +485,7 @@ qualquer outro tipo de erro é desnecessário
 exemplo
 # pepper CommandTokenizer
 ```
+# ops, esqueci de fechar aspas
 open "folder/some file.txt
 ```
 ===
@@ -505,11 +506,14 @@ int GetPlayerCount();
 uint8 GetPlayerCount();
 ```
 header:interface enxuta
+===
+mesma coisa também para parâmetros de funções e membros de structs/classes.
 ---
 
 # intui sua implementação
 a partir de uma transformação conhecida, é possível inferir aproximadamente suas entradas e saídas
 header:interface enxuta
+footer:[principle of least surprise](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)
 ===
 quando nos dispomos a implementar um sistema, intuitivamente devemos ter noção da forma de suas entradas e saídas.
 da mesma forma quando vamos consumir uma api que se propõe a resolver um determinado problema,
@@ -703,4 +707,8 @@ uma solução que poderia ser mais simples possui desperdício.
 uma solução que é simples demais ignora detalhes importantes.
 
 é através de simplicidade que atingimos apis balanceadas entre custo e benefício
+---
 
+# links
+!!8
+===

@@ -101,6 +101,19 @@ fn compileAll(memory: []u8) void {
     writer.writeAll("done!\n") catch {};
 }
 
+const BufferedWriter = std.io.BufferedWriter(4 * 1024, std.fs.File.Writer);
+const Writer = BufferedWriter.Writer;
+
+const Link = struct {
+    label: []const u8,
+    href: []const u8,
+};
+const Context = struct {
+    writer: Writer,
+    link_count: u8,
+    links: []Link,
+};
+
 fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
     const src_len = input.reader().readAll(memory) catch {
         output.writer().writeAll("could read src\n") catch {};
@@ -116,6 +129,13 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
     defer buffered_writer.flush() catch {};
     var writer = buffered_writer.writer();
     defer endDocument(writer);
+
+    var links_buf: [128]Link = undefined;
+    var ctx = Context {
+        .writer = writer,
+        .link_count = 0,
+        .links = &links_buf,
+    };
 
     var begun_document = false;
 
@@ -177,8 +197,8 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
             beginDocument(writer, title);
         }
 
-        beginSection(writer, maybe_background, headers[0..header_count]);
-        defer endSection(writer, footers[0..footer_count], notes);
+        beginSection(&ctx, maybe_background, headers[0..header_count]);
+        defer endSection(&ctx, footers[0..footer_count], notes);
 
         const content_len = first_metadata_offset orelse data.len;
         const content = data[0..content_len];
@@ -191,13 +211,13 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
             if (consumePrefix(line, "# ")) |heading| {
                 write(writer, indentation);
                 beginTag(writer, "h1");
-                writeLineContent(writer, heading);
+                writeLineContent(&ctx, heading);
                 endTag(writer, "h1");
                 write(writer, "\n");
             } else if (consumePrefix(line, "## ")) |heading| {
                 write(writer, indentation);
                 beginTag(writer, "h2");
-                writeLineContent(writer, heading);
+                writeLineContent(&ctx, heading);
                 endTag(writer, "h2");
                 write(writer, "\n");
             } else if (consumePrefix(line, "- ")) |list_entry| {
@@ -208,12 +228,36 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
 
                 write(writer, indentation);
                 beginTag(writer, "li");
-                writeLineContent(writer, list_entry);
+                writeLineContent(&ctx, list_entry);
                 endTag(writer, "li");
                 write(writer, "\n");
+            } else if (consumePrefix(line, "!!")) |max_per_section_text| {
+                var max_per_section = std.fmt.parseInt(u8, max_per_section_text, 10) catch 0;
+                if (max_per_section == 0) {
+                    max_per_section = std.math.maxInt(u8);
+                }
+
+                std.log.info("link count: {}", .{ctx.link_count});
+
+                const links = ctx.links[0..ctx.link_count];
+                defer ctx.link_count = 0;
+
+                var link_count: u8 = 0;
+                for (links) |link| {
+                    defer link_count += 1;
+                    if (link_count == max_per_section) {
+                        link_count = 0;
+                        endSection(&ctx, footers[0..footer_count], "");
+                        beginSection(&ctx, maybe_background, headers[0..header_count]);
+                    }
+
+                    write(ctx.writer, indentation);
+                    writeLinkTag(ctx.writer, link);
+                    write(ctx.writer, "\n");
+                }
             } else if (consumePrefix(line, "!")) |image_src| {
                 writeImageTag(writer, image_src);
-            } else if (std.mem.eql(u8, line, "```")) {
+            } else if (consumePrefix(line, "```") != null) {
                 write(writer, indentation);
                 beginTag(writer, "pre");
                 beginTag(writer, "code");
@@ -250,7 +294,7 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
             } else if (consumePrefix(line, "")) |paragraph| {
                 write(writer, indentation);
                 beginTag(writer, "p");
-                writeLineContent(writer, paragraph);
+                writeLineContent(&ctx, paragraph);
                 endTag(writer, "p");
                 write(writer, "\n");
             }
@@ -266,14 +310,11 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
     }
 }
 
-const BufferedWriter = std.io.BufferedWriter(4 * 1024, std.fs.File.Writer);
-const Writer = BufferedWriter.Writer;
-
 fn consumePrefix(bytes: []const u8, prefix: []const u8) ?[]const u8 {
     if (std.mem.startsWith(u8, bytes, prefix)) {
         const rest = bytes[prefix.len..];
         const trimmed = std.mem.trim(u8, rest, " ");
-        return if (trimmed.len > 0) trimmed else null;
+        return if (prefix.len == 0 and trimmed.len == 0) null else trimmed;
     } else {
         return null;
     }
@@ -311,66 +352,70 @@ fn endDocument(writer: Writer) void {
 
 const indentation = " " ** 4;
 
-fn beginSection(writer: Writer, maybe_background: ?[]const u8, headers: []const []const u8) void {
-    write(writer, "<section");
+fn beginSection(
+    ctx: *Context,
+    maybe_background: ?[]const u8,
+    headers: []const []const u8,
+) void {
+    write(ctx.writer, "<section");
     if (maybe_background) |background| {
         if (std.mem.eql(u8, background, "main")) {
-            write(writer, " class=\"main\"");
+            write(ctx.writer, " class=\"main\"");
         } else {
-            write(writer, " style=\"background-image: url(");
-            write(writer, background);
-            write(writer, ")\"");
+            write(ctx.writer, " style=\"background-image: url(");
+            write(ctx.writer, background);
+            write(ctx.writer, ")\"");
         }
     }
-    write(writer, ">\n");
+    write(ctx.writer, ">\n");
 
     if (headers.len > 0) {
-        write(writer, indentation);
-        beginTag(writer, "header");
-        write(writer, "\n");
+        write(ctx.writer, indentation);
+        beginTag(ctx.writer, "header");
+        write(ctx.writer, "\n");
         for (headers) |header| {
-            write(writer, indentation ** 2);
-            beginTag(writer, "p");
-            writeLineContent(writer, header);
-            endTag(writer, "p");
-            write(writer, "\n");
+            write(ctx.writer, indentation ** 2);
+            beginTag(ctx.writer, "p");
+            writeLineContent(ctx, header);
+            endTag(ctx.writer, "p");
+            write(ctx.writer, "\n");
         }
-        write(writer, indentation);
-        endTag(writer, "header");
-        write(writer, "\n\n");
+        write(ctx.writer, indentation);
+        endTag(ctx.writer, "header");
+        write(ctx.writer, "\n\n");
     }
 }
 
-fn endSection(writer: Writer, footers: []const []const u8, notes: []const u8) void {
+fn endSection(ctx: *Context, footers: []const []const u8, notes: []const u8) void {
     if (footers.len > 0) {
-        write(writer, "\n" ++ indentation);
-        beginTag(writer, "footer");
-        write(writer, "\n");
+        write(ctx.writer, "\n" ++ indentation);
+        beginTag(ctx.writer, "footer");
+        write(ctx.writer, "\n");
         for (footers) |footer| {
-            write(writer, indentation ** 2);
-            beginTag(writer, "p");
-            writeLineContent(writer, footer);
-            endTag(writer, "p");
-            write(writer, "\n");
+            write(ctx.writer, indentation ** 2);
+            beginTag(ctx.writer, "p");
+            writeLineContent(ctx, footer);
+            endTag(ctx.writer, "p");
+            write(ctx.writer, "\n");
         }
-        write(writer, indentation);
-        endTag(writer, "footer");
-        write(writer, "\n");
+        write(ctx.writer, indentation);
+        endTag(ctx.writer, "footer");
+        write(ctx.writer, "\n");
     }
 
     if (notes.len > 0) {
-        write(writer, "\n" ++ indentation ++ "<!--\n");
+        write(ctx.writer, "\n" ++ indentation ++ "<!--\n");
         var notes_lines = std.mem.split(u8, notes, "\n");
         while (notes_lines.next()) |line| {
-            write(writer, indentation);
-            write(writer, line);
-            write(writer, "\n");
+            write(ctx.writer, indentation);
+            write(ctx.writer, line);
+            write(ctx.writer, "\n");
         }
-        write(writer, indentation ++ "-->\n");
+        write(ctx.writer, indentation ++ "-->\n");
     }
 
-    endTag(writer, "section");
-    write(writer, "\n\n");
+    endTag(ctx.writer, "section");
+    write(ctx.writer, "\n\n");
 }
 
 fn write(writer: Writer, bytes: []const u8) void {
@@ -405,6 +450,14 @@ fn endTag(writer: Writer, tag: []const u8) void {
     write(writer, ">");
 }
 
+fn writeLinkTag(writer: Writer, link: Link) void {
+    write(writer, "<a href=\"");
+    write(writer, link.href);
+    write(writer, "\">");
+    write(writer, link.label);
+    endTag(writer, "a");
+}
+
 fn writeImageTag(writer: Writer, src: []const u8) void {
     write(writer, indentation ++ "<img src=\"");
     write(writer, src);
@@ -421,14 +474,14 @@ fn nextByte(line: *[]const u8) ?u8 {
     }
 }
 
-fn writeLineContent(writer: Writer, line: []const u8) void {
+fn writeLineContent(ctx: *Context, line: []const u8) void {
     var bytes = line;
     while (nextByte(&bytes)) |byte| {
         switch (byte) {
             '\\' => {
                 if (nextByte(&bytes)) |b| {
                     _ = b;
-                    writeByte(writer, b);
+                    writeByte(ctx.writer, b);
                 }
                 continue;
             },
@@ -436,26 +489,29 @@ fn writeLineContent(writer: Writer, line: []const u8) void {
                 const separator = "](";
                 if (std.mem.indexOf(u8, bytes, separator)) |label_end| {
                     const label = bytes[0..label_end];
-                    const link_start = label_end + separator.len;
-                    if (std.mem.indexOfScalarPos(u8, bytes, link_start, ')')) |link_end| {
-                        const link = bytes[link_start..link_end];
+                    const href_start = label_end + separator.len;
+                    if (std.mem.indexOfScalarPos(u8, bytes, href_start, ')')) |href_end| {
+                        const link = Link {
+                            .href = bytes[href_start..href_end],
+                            .label = label,
+                        };
+                        writeLinkTag(ctx.writer, link);
+                        bytes = bytes[href_end + 1 ..];
 
-                        write(writer, "<a href=\"");
-                        write(writer, link);
-                        write(writer, "\">");
-                        write(writer, label);
-                        endTag(writer, "a");
-
-                        bytes = bytes[link_end + 1 ..];
+                        std.log.info("links len: {}", .{ctx.links.len});
+                        if (ctx.link_count < ctx.links.len) {
+                            ctx.links[ctx.link_count] = link;
+                            ctx.link_count += 1;
+                        }
                         continue;
                     }
                 }
             },
             '*' => {
                 if (std.mem.indexOfScalar(u8, bytes, '*')) |len| {
-                    beginTag(writer, "em");
-                    write(writer, bytes[0..len]);
-                    endTag(writer, "em");
+                    beginTag(ctx.writer, "em");
+                    write(ctx.writer, bytes[0..len]);
+                    endTag(ctx.writer, "em");
 
                     bytes = bytes[len + 1 ..];
                     continue;
@@ -463,9 +519,9 @@ fn writeLineContent(writer: Writer, line: []const u8) void {
             },
             '`' => {
                 if (std.mem.indexOfScalar(u8, bytes, '`')) |len| {
-                    beginTag(writer, "code");
-                    write(writer, bytes[0..len]);
-                    endTag(writer, "code");
+                    beginTag(ctx.writer, "code");
+                    write(ctx.writer, bytes[0..len]);
+                    endTag(ctx.writer, "code");
 
                     bytes = bytes[len + 1 ..];
                     continue;
@@ -474,7 +530,7 @@ fn writeLineContent(writer: Writer, line: []const u8) void {
             else => {},
         }
 
-        writeByte(writer, byte);
+        writeByte(ctx.writer, byte);
     }
 }
 

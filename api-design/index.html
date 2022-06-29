@@ -9,7 +9,7 @@
 
 <section class="main">
     <h1>design de apis</h1>
-    <h2>workshop bitcake 2022 (c)</h2>
+    <h2>workshop bitcake 2022</h2>
 
     <footer>
         <p>por @ahvamolessa</p>
@@ -700,7 +700,8 @@ if (result) {
 <section>
     <p>exemplo</p>
     <h1>pepper CommandTokenizer</h1>
-    <pre><code>open "folder/some file.txt</code></pre>
+    <pre><code># ops, esqueci de fechar aspas
+open "folder/some file.txt</code></pre>
 
     <!--
     antes existiam vários tratamentos de erro por conta de tratamento de strings ao parsear comandos no editor pepper.
@@ -723,6 +724,10 @@ int GetPlayerCount();
 
 // preferir
 uint8 GetPlayerCount();</code></pre>
+
+    <!--
+    mesma coisa também para parâmetros de funções e membros de structs/classes.
+    -->
 </section>
 
 <section>
@@ -732,6 +737,10 @@ uint8 GetPlayerCount();</code></pre>
 
     <h1>intui sua implementação</h1>
     <p>a partir de uma transformação conhecida, é possível inferir aproximadamente suas entradas e saídas</p>
+
+    <footer>
+        <p><a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">principle of least surprise</a></p>
+    </footer>
 
     <!--
     quando nos dispomos a implementar um sistema, intuitivamente devemos ter noção da forma de suas entradas e saídas.
@@ -952,6 +961,38 @@ void AMyActor::Tick(float DeltaSeconds) {
     
     é através de simplicidade que atingimos apis balanceadas entre custo e benefício
     -->
+</section>
+
+<section>
+    <h1>links</h1>
+    <a href="http://number-none.com/blow/john_carmack_on_inlined_code.html">john carmack on inlined code</a>
+    <a href="https://ourmachinery.com/post/dig-shallow-graves/">dig shallow graves</a>
+    <a href="https://docs.godotengine.org/en/stable/community/contributing/best_practices_for_engine_contributors.html">best practices for godot engine contributors</a>
+    <a href="https://caseymuratori.com/blog_0015">semantic compression</a>
+    <a href="https://programmingisterrible.com/post/139222674273/how-to-write-disposable-code-in-large-systems">how to write disposable code in large systems</a>
+    <a href="https://www.youtube.com/watch?v=5l2wMgm7ZOk">why black boxes are so hard to reuse</a>
+    <a href="https://www.youtube.com/watch?v=rHIkrotSwcc&list=LLkSsu_JvG53vwdMNEDCLLqQ">there are no zero-cost abstractions</a>
+    <a href="https://www.youtube.com/watch?v=rI8tNMsozo0">simplicity matters</a>
+</section>
+
+<section>
+    <a href="https://cellperformance.beyond3d.com/articles/2006/04/performance-and-good-data-design.html">performance and good data design</a>
+    <a href="https://quuxplusone.github.io/blog/2022/06/23/unordered-multiset-equal-range/">c++: unordered_multiset's api affects its big-o</a>
+    <a href="https://www.youtube.com/watch?v=bmSAYlu0NcY">a philosophy of software design</a>
+    <a href="https://www.oilshell.org/blog/2022/03/backlog-arch.html">a sketch of the biggest idea in software architecture</a>
+    <a href="https://www.gamedeveloper.com/programming/in-depth-functional-programming-in-c-">in detph: functional programming in c++</a>
+    <a href="https://mobile.twitter.com/rygorous/status/1507178315886444544">twitter - sobre estado</a>
+    <a href="https://isocpp.org/wiki/faq/const-correctness">c++ const correctness</a>
+    <a href="https://docs.microsoft.com/en-us/dotnet/standard/memory-and-spans/memory-t-usage-guidelines#owners-consumers-and-lifetime-management">c# memory and spans - owners, consumers and lifetime management</a>
+</section>
+
+<section>
+    <a href="https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/List.cs#L25">List.cs</a>
+    <a href="https://docs.unrealengine.com/5.0/en-US/API/Runtime/Core/Containers/TInlineAllocator/">TInlineAllocator</a>
+    <a href="https://github.com/bitcake/bitstrap/blob/master/Assets/Runtime/Functional/Option.cs">Option.cs</a>
+    <a href="https://nullprogram.com/blog/2022/06/26/">assertions should be more debugger-oriented</a>
+    <a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">principle of least surprise</a>
+    <a href="https://cellperformance.beyond3d.com/articles/2008/03/three-big-lies.html">three big lies</a>
 </section>
 
 </body>

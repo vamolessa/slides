@@ -3,6 +3,7 @@
 
 background:main
 footer:[some link](ddg.gg)
+footer:[another link](ddg.gg?q=query)
 ---
 
 # another title
@@ -38,4 +39,10 @@ if (true) {
 ```
 ===
 don't forget to comment the code!
+---
+
+# all link
+!!
+===
+adding a `!!` will expand all previous links in this slide
 
