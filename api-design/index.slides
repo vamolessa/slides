@@ -98,6 +98,8 @@ criar mais funções não o torna mais simples
 - adicionada por nós mesmos
 - idealmente zero
 - limitações (linguagem, plataforma, design)
+
+footer:[complexity](https://www.ncameron.org/blog/complexity/)
 ===
 todo problema possui uma complexidade inerente.
 qualquer complexidade extra é acidental e deve ser ativamente minimizada.
