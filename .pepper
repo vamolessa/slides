@@ -1,4 +1,3 @@
-config indent_with_tabs false
 lsp-start "zls"
 
 map normal <space>b @": build-all<enter>"
