@@ -1,6 +1,7 @@
 # title
 ## sub title
 
+lang:pt-BR
 background:main
 footer:[some link](ddg.gg)
 footer:[another link](ddg.gg?q=query)

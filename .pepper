@@ -31,7 +31,7 @@ command -find-zig-pattern @{
 
 syntax "**/*.slides"
 syntax keywords "^#{.}"
-syntax types "background:|header:|footer:"
+syntax types "lang:|background:|header:|footer:"
 syntax symbols "%!|---|-"
 syntax literals "%[{!%].}%({!%).}"
 syntax strings "```{!(```).$}|`{!`.}"

@@ -1,5 +1,6 @@
 # design de apis
 ## workshop bitcake 2022
+lang:pt-BR
 background:main
 footer:por @ahvamolessa
 ---
@@ -507,6 +508,7 @@ dois tipos de erros:
 header:interface enxuta
 footer:"define errors out of existence" -- ousterhout, john
 footer:[assertions should be more debugger-oriented](https://nullprogram.com/blog/2022/06/26/)
+footer:[how "let it fail" leats to simpler code](https://yiming.dev/blog/2022/07/10/how-let-it-fail-leads-to-simpler-code/)
 ===
 qualquer outro tipo de erro é desnecessário
 ---

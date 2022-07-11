@@ -141,6 +141,7 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
     const slide_separator = "---";
     var slide_srcs = std.mem.split(u8, src, "\n" ++ slide_separator ++ "\n");
     while (slide_srcs.next()) |slide_src| {
+        var language: []const u8 = "";
         var title: []const u8 = "";
         var maybe_background: ?[]const u8 = null;
 
@@ -167,7 +168,10 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
         while (data_lines.next()) |line| {
             var is_metadata_line = false;
 
-            if (consumePrefix(line, "background:")) |background| {
+            if (consumePrefix(line, "lang:")) |l| {
+                language = l;
+                is_metadata_line = true;
+            } else if (consumePrefix(line, "background:")) |background| {
                 maybe_background = std.mem.trim(u8, background, " ");
                 is_metadata_line = true;
             } else if (consumePrefix(line, "header:")) |header| {
@@ -193,7 +197,7 @@ fn compile(memory: []u8, input: std.fs.File, output: std.fs.File) void {
 
         if (!begun_document) {
             begun_document = true;
-            beginDocument(ctx.writer, title);
+            beginDocument(ctx.writer, language, title);
         }
 
         beginSection(&ctx, maybe_background, headers[0..header_count]);
@@ -300,25 +304,21 @@ fn consumePrefix(bytes: []const u8, prefix: []const u8) ?[]const u8 {
     }
 }
 
-fn beginDocument(writer: Writer, title: []const u8) void {
-    const before_title =
+fn beginDocument(writer: Writer, language: []const u8, title: []const u8) void {
+    const format = 
         \\<!DOCTYPE html>
-        \\<html>
+        \\<html lang="{s}">
         \\<head>
         \\<meta charset="utf-8">
         \\<link rel="stylesheet" type="text/css" href="../style.css">
-        \\<title>
-    ;
-    const after_title =
-        \\</title>
+        \\<title>{s}</title>
         \\</head>
         \\<body>
         \\
         \\
-    ;
-    write(writer, before_title);
-    write(writer, title);
-    write(writer, after_title);
+        ;
+
+    writer.print(format, .{language, title}) catch std.debug.panic("could write document metadata", .{});
 }
 
 fn endDocument(writer: Writer) void {
